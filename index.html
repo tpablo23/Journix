@@ -260,6 +260,15 @@ footer{text-align:center;padding:36px 20px;font-size:.72rem;letter-spacing:.15em
   <div class="hk">中国 · Septiembre 2026</div>
   <h1 class="ht">China<span> ·</span> Pablo &amp; Aza</h1>
   <p class="hs">5 sep — 20 sep · 16 días</p>
+  <div id="countdown" class="countdown">
+    <div class="cd-unit"><div class="cd-num" id="cd-days">--</div><div class="cd-label">Días</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Horas</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Min</div></div>
+    <div class="cd-sep">:</div>
+    <div class="cd-unit"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Seg</div></div>
+  </div>
   <div class="hl"></div>
 </header>
 
@@ -1316,6 +1325,31 @@ document.querySelectorAll('.modal').forEach(m=>{
 /* ═══ INIT ═══ */
 const cal = document.getElementById('calendar');
 DAYS.forEach((d,i)=>cal.appendChild(buildCard(d,i)));
+
+// Countdown
+(function(){
+  const TARGET = new Date('2026-09-05T15:55:00+02:00'); // Madrid, hora de salida
+  const END    = new Date('2026-09-20T18:15:00+02:00'); // Vuelta a Madrid
+  function tick(){
+    const now  = new Date();
+    const diff = TARGET - now;
+    const box  = document.getElementById('countdown');
+    if(now >= END){
+      box.innerHTML='<span class="cd-msg">🏠 De vuelta a casa · ¡Qué viaje!</span>'; return;
+    }
+    if(diff <= 0){
+      box.innerHTML='<span class="cd-msg">✈️ ¡Ahora mismo en China! 🇨🇳</span>'; return;
+    }
+    const d=Math.floor(diff/864e5), h=Math.floor(diff%864e5/36e5),
+          m=Math.floor(diff%36e5/6e4), s=Math.floor(diff%6e4/1e3);
+    const p=n=>String(n).padStart(2,'0');
+    document.getElementById('cd-days').textContent=d;
+    document.getElementById('cd-hours').textContent=p(h);
+    document.getElementById('cd-mins').textContent=p(m);
+    document.getElementById('cd-secs').textContent=p(s);
+  }
+  tick(); setInterval(tick,1000);
+})();
 
 const h = window.location.hash.slice(1);
 if(h && ['calendar','map','reviews','expenses','journal'].includes(h)) switchTab(h);
