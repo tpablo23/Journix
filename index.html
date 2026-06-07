@@ -1,864 +1,1324 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>China · Sep 2026 · Pablo & Aza</title>
-  <style>
-    /* ═══════════════════════════════════════════
-       RESET & BASE
-    ═══════════════════════════════════════════ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>China 2026 · Pablo & Aza</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--bg2:#0f0f18;--card:#14141e;
+  --border:rgba(200,169,110,0.15);--border-hi:rgba(200,169,110,0.4);
+  --text:#e8e0d0;--text2:rgba(232,224,208,0.5);
+  --accent:#c8a96e;--accent-dim:rgba(200,169,110,0.15);
+  --danger:#c0392b;--success:#27ae60;
+}
+body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-height:100vh;overflow-x:hidden}
 
-    :root {
-      --bg: #0a0a0f;
-      --surface: #12121a;
-      --text: #e8e0d0;
-      --accent: #c8a96e;
-    }
+/* THEMES */
+.t-avion{--ca:#7eb8f7;--cb:#0d1b3e;--cg:linear-gradient(135deg,#050510,#0d1b3e,#1a1a3e);--cglow:rgba(126,184,247,.3)}
+.t-beijing{--ca:#d4a017;--cb:#3d0000;--cg:linear-gradient(135deg,#1a0000,#3d0000,#5c0a0a);--cglow:rgba(212,160,23,.25)}
+.t-chongqing{--ca:#ff4d00;--cb:#2d0a1e;--cg:linear-gradient(135deg,#0f0008,#2d0a1e,#3d1a0a);--cglow:rgba(255,77,0,.25)}
+.t-zhangjiajie{--ca:#5dba6e;--cb:#0a1a0f;--cg:linear-gradient(135deg,#020a04,#0a1a0f,#0f2a18);--cglow:rgba(93,186,110,.25)}
+.t-furong{--ca:#e8945a;--cb:#2a1a0a;--cg:linear-gradient(135deg,#120a02,#2a1a0a,#3d2415);--cglow:rgba(232,148,90,.25)}
+.t-fenghuang{--ca:#c0392b;--cb:#1a1a1a;--cg:linear-gradient(135deg,#080808,#1a1a1a,#252520);--cglow:rgba(192,57,43,.2)}
+.t-shanghai{--ca:#00ffcc;--cb:#050525;--cg:linear-gradient(135deg,#000010,#050525,#0a0030);--cglow:rgba(0,255,204,.35)}
+.t-canton{--ca:#ff6b35;--cb:#1a0a2a;--cg:linear-gradient(135deg,#080010,#1a0a2a,#2d1020);--cglow:rgba(255,107,53,.25)}
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Georgia', serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+/* HEADER */
+header{text-align:center;padding:48px 20px 28px;position:relative}
+header::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:500px;height:350px;background:radial-gradient(ellipse,rgba(200,169,110,.08) 0%,transparent 70%);pointer-events:none}
+.hk{font-size:.8rem;letter-spacing:.4em;color:var(--accent);opacity:.7;margin-bottom:12px;text-transform:uppercase}
+.ht{font-size:clamp(2rem,5vw,3.8rem);font-weight:normal;letter-spacing:.05em;line-height:1.1}
+.ht span{color:var(--accent)}
+.hs{margin-top:8px;font-size:.9rem;color:var(--text2);letter-spacing:.2em}
+.hl{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:20px auto 0}
+.countdown{display:flex;gap:6px;justify-content:center;align-items:flex-start;margin-top:20px;font-family:'Courier New',monospace}
+.cd-unit{text-align:center;min-width:52px}
+.cd-num{font-size:2.2rem;color:var(--accent);font-weight:bold;line-height:1;letter-spacing:-.02em;text-shadow:0 0 20px rgba(200,169,110,.35)}
+.cd-label{font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text2);margin-top:4px}
+.cd-sep{font-size:1.6rem;color:var(--accent);opacity:.25;padding-top:6px;user-select:none}
+.cd-msg{font-size:1.1rem;color:var(--accent);letter-spacing:.15em;text-transform:uppercase;text-shadow:0 0 20px rgba(200,169,110,.4)}
 
-    /* ═══════════════════════════════════════════
-       CITY THEMES
-    ═══════════════════════════════════════════ */
-    .theme-avion {
-      --city-primary: #1a1a3e; --city-accent: #7eb8f7; --city-text: #c5d8f5;
-      --city-glow: rgba(126,184,247,0.3); --city-gradient: linear-gradient(135deg, #050510 0%, #0d1b3e 50%, #1a1a3e 100%);
-      --city-border: #3a5a9e; --city-tag-bg: #0d1b3e; --city-section-bg: rgba(14,27,62,0.5);
-    }
-    .theme-beijing {
-      --city-primary: #8b0000; --city-accent: #d4a017; --city-text: #f5e6c8;
-      --city-glow: rgba(212,160,23,0.25); --city-gradient: linear-gradient(135deg, #1a0000 0%, #3d0000 50%, #5c0a0a 100%);
-      --city-border: #8b4513; --city-tag-bg: #3d0000; --city-section-bg: rgba(61,0,0,0.5);
-    }
-    .theme-chongqing {
-      --city-primary: #2d0a1e; --city-accent: #ff4d00; --city-text: #f0c0a0;
-      --city-glow: rgba(255,77,0,0.25); --city-gradient: linear-gradient(135deg, #0f0008 0%, #2d0a1e 50%, #3d1a0a 100%);
-      --city-border: #8b2200; --city-tag-bg: #2d0a1e; --city-section-bg: rgba(45,10,30,0.5);
-    }
-    .theme-zhangjiajie {
-      --city-primary: #0a1a0f; --city-accent: #5dba6e; --city-text: #c8f0d0;
-      --city-glow: rgba(93,186,110,0.25); --city-gradient: linear-gradient(135deg, #020a04 0%, #0a1a0f 50%, #0f2a18 100%);
-      --city-border: #2d6b3a; --city-tag-bg: #0a1a0f; --city-section-bg: rgba(10,26,15,0.5);
-    }
-    .theme-furong {
-      --city-primary: #2a1a0a; --city-accent: #e8945a; --city-text: #f5dcc8;
-      --city-glow: rgba(232,148,90,0.25); --city-gradient: linear-gradient(135deg, #120a02 0%, #2a1a0a 50%, #3d2415 100%);
-      --city-border: #8b5030; --city-tag-bg: #2a1a0a; --city-section-bg: rgba(42,26,10,0.5);
-    }
-    .theme-fenghuang {
-      --city-primary: #1a1a1a; --city-accent: #c0392b; --city-text: #f0ede8;
-      --city-glow: rgba(192,57,43,0.2); --city-gradient: linear-gradient(135deg, #080808 0%, #1a1a1a 50%, #252520 100%);
-      --city-border: #5a1a1a; --city-tag-bg: #1a1a1a; --city-section-bg: rgba(26,26,26,0.7);
-    }
-    .theme-shanghai {
-      --city-primary: #050515; --city-accent: #00ffcc; --city-text: #e0f0ff;
-      --city-glow: rgba(0,255,204,0.35); --city-gradient: linear-gradient(135deg, #000010 0%, #050525 50%, #0a0030 100%);
-      --city-border: #00ffcc; --city-tag-bg: #0a0030; --city-section-bg: rgba(5,5,37,0.7);
-    }
-    .theme-canton {
-      --city-primary: #1a0a2a; --city-accent: #ff6b35; --city-text: #ffe8d0;
-      --city-glow: rgba(255,107,53,0.25); --city-gradient: linear-gradient(135deg, #080010 0%, #1a0a2a 50%, #2d1020 100%);
-      --city-border: #8b3520; --city-tag-bg: #1a0a2a; --city-section-bg: rgba(26,10,42,0.5);
-    }
+/* TAB NAV */
+.tab-nav{position:sticky;top:0;z-index:100;background:rgba(10,10,15,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-btn{flex:none;padding:14px 20px;background:none;border:none;color:var(--text2);font-family:inherit;font-size:.82rem;letter-spacing:.08em;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
 
-    /* ═══════════════════════════════════════════
-       HEADER
-    ═══════════════════════════════════════════ */
-    header {
-      text-align: center;
-      padding: 60px 20px 40px;
-      position: relative;
-    }
-    header::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 50%;
-      transform: translateX(-50%);
-      width: 600px; height: 400px;
-      background: radial-gradient(ellipse, rgba(200,169,110,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .header-kana { font-size: 0.85rem; letter-spacing: 0.4em; color: var(--accent); opacity: 0.7; margin-bottom: 16px; text-transform: uppercase; }
-    .header-title { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: normal; letter-spacing: 0.05em; line-height: 1.1; }
-    .header-title span { color: var(--accent); }
-    .header-sub { margin-top: 12px; font-size: 1rem; color: rgba(232,224,208,0.5); letter-spacing: 0.2em; }
-    .header-line { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); margin: 24px auto 0; }
+/* TAB PANELS */
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 
-    /* ═══════════════════════════════════════════
-       LEGEND
-    ═══════════════════════════════════════════ */
-    .legend {
-      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
-      padding: 0 20px 40px; max-width: 900px; margin: 0 auto;
-    }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; letter-spacing: 0.08em; opacity: 0.6; }
-    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+/* CALENDAR */
+.calendar{max-width:1200px;margin:0 auto;padding:24px 20px 80px;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
 
-    /* ═══════════════════════════════════════════
-       CALENDAR GRID
-    ═══════════════════════════════════════════ */
-    .calendar {
-      max-width: 1200px; margin: 0 auto;
-      padding: 0 20px 80px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px;
-    }
+/* DAY CARD */
+.day-card{background:var(--cg);border:1px solid color-mix(in srgb,var(--ca) 35%,transparent);border-radius:4px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s;position:relative}
+.day-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px var(--cglow)}
+.day-card.open{grid-column:1/-1;cursor:default;transform:none}
+.t-shanghai.day-card::before{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,255,204,.04),transparent);animation:scan 4s infinite;pointer-events:none;z-index:0}
+@keyframes scan{0%{left:-100%}100%{left:200%}}
+.card-head{padding:16px 18px 12px;display:flex;align-items:flex-start;justify-content:space-between;position:relative;z-index:1}
+.card-num{font-size:2.6rem;font-weight:bold;line-height:1;color:var(--ca);letter-spacing:-.02em}
+.t-shanghai .card-num{font-family:'Courier New',monospace;text-shadow:0 0 20px var(--ca)}
+.card-wd{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text);opacity:.45;margin-top:2px}
+.card-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.card-city{font-size:.82rem;letter-spacing:.1em;color:var(--text);opacity:.9;text-transform:uppercase}
+.t-shanghai .card-city{font-family:'Courier New',monospace;color:var(--ca);text-shadow:0 0 8px var(--ca)}
+.card-night{display:inline-flex;align-items:center;gap:4px;background:rgba(0,0,0,.3);border:1px solid color-mix(in srgb,var(--ca) 30%,transparent);border-radius:20px;padding:2px 7px;font-size:.62rem;color:var(--text);opacity:.65}
+.card-div{height:1px;margin:0 18px;background:linear-gradient(90deg,color-mix(in srgb,var(--ca) 40%,transparent),transparent);position:relative;z-index:1}
+.card-prev{padding:10px 18px 14px;position:relative;z-index:1}
+.prev-item{font-size:.8rem;color:var(--text);opacity:.65;line-height:1.5;display:flex;align-items:flex-start;gap:6px}
+.prev-dot{width:4px;height:4px;border-radius:50%;background:var(--ca);flex-shrink:0;margin-top:7px}
+.card-hint{text-align:center;padding:6px;font-size:.62rem;letter-spacing:.15em;color:var(--ca);opacity:.35;text-transform:uppercase;position:relative;z-index:1}
 
-    /* ═══════════════════════════════════════════
-       DAY CARD
-    ═══════════════════════════════════════════ */
-    .day-card {
-      background: var(--city-gradient);
-      border: 1px solid var(--city-border);
-      border-radius: 4px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      position: relative;
-    }
-    .day-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px var(--city-glow), 0 0 0 1px var(--city-border);
-    }
-    .day-card.open { grid-column: 1 / -1; cursor: default; }
-    .day-card.open:hover { transform: none; }
+/* EXPANDED */
+.day-exp{display:none;position:relative;z-index:1}
+.day-card.open .day-exp{display:block;animation:expIn .3s ease}
+@keyframes expIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.exp-photo-wrap{position:relative;overflow:hidden}
+.exp-photo{width:100%;height:300px;object-fit:cover;display:block;border-top:1px solid color-mix(in srgb,var(--ca) 30%,transparent);filter:saturate(.85) brightness(.88)}
+.t-shanghai .exp-photo-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,204,.07),rgba(255,0,204,.05));pointer-events:none}
+.exp-photo-cap{position:absolute;bottom:0;left:0;right:0;padding:30px 24px 12px;background:linear-gradient(to top,rgba(0,0,0,.75),transparent);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.exp-body{padding:24px 24px 0}
+.exp-title{font-size:1.4rem;color:var(--ca);margin-bottom:12px;letter-spacing:.04em;line-height:1.2}
+.t-shanghai .exp-title{font-family:'Courier New',monospace;text-shadow:0 0 15px var(--ca);font-size:1.2rem;letter-spacing:.18em;text-transform:uppercase;position:relative}
+.t-shanghai .exp-title::before{content:attr(data-t);position:absolute;left:2px;top:0;color:#ff00cc;text-shadow:0 0 8px #ff00cc;clip-path:polygon(0 30%,100% 30%,100% 50%,0 50%);animation:glitch 5s infinite;opacity:.6}
+@keyframes glitch{0%,90%,100%{transform:translate(0)}92%{transform:translate(-3px,0)}94%{transform:translate(3px,0)}96%{transform:translate(-1px,0)}}
+.exp-desc{font-size:.92rem;line-height:1.8;color:var(--text);opacity:.82;max-width:900px}
+.t-fenghuang .exp-desc{font-style:italic;line-height:2}
+.exp-transport{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.tport-tag{background:rgba(0,0,0,.3);border:1px solid color-mix(in srgb,var(--ca) 30%,transparent);border-radius:3px;padding:4px 11px;font-size:.73rem;color:var(--text);opacity:.8;letter-spacing:.05em}
+.t-shanghai .tport-tag{font-family:'Courier New',monospace;border-color:var(--ca);color:var(--ca);text-shadow:0 0 5px var(--ca)}
+.exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+@media(max-width:640px){.exp-grid{grid-template-columns:1fr}}
+.sec-label{font-size:.63rem;letter-spacing:.25em;text-transform:uppercase;color:var(--ca);opacity:.7;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-label::after{content:'';flex:1;height:1px;background:color-mix(in srgb,var(--ca) 25%,transparent)}
+.hotel-box,.weather-box{background:rgba(0,0,0,.25);border:1px solid color-mix(in srgb,var(--ca) 20%,transparent);border-radius:4px;padding:16px}
+.hotel-name{font-size:.95rem;color:var(--text);margin-bottom:3px}
+.hotel-stars{color:var(--ca);font-size:.68rem;opacity:.8;margin-bottom:10px}
+.hotel-row{display:flex;justify-content:space-between;margin-bottom:5px}
+.hotel-k{font-size:.68rem;letter-spacing:.1em;color:var(--text2);text-transform:uppercase}
+.hotel-v{font-size:.8rem;color:var(--text);opacity:.85}
+.hotel-ref{margin-top:10px;padding:6px 9px;background:rgba(0,0,0,.3);border-radius:3px;font-size:.68rem;color:var(--text2);font-family:monospace;letter-spacing:.06em}
+.mock{font-size:.52rem;letter-spacing:.1em;background:rgba(255,200,0,.12);color:rgba(255,200,0,.65);border:1px solid rgba(255,200,0,.2);border-radius:10px;padding:1px 5px;vertical-align:middle;margin-left:5px}
+.wx-main{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.wx-icon{font-size:2.6rem;line-height:1}
+.wx-temp{font-size:2rem;color:var(--ca);line-height:1}
+.t-shanghai .wx-temp{font-family:'Courier New',monospace;text-shadow:0 0 10px var(--ca)}
+.wx-cond{font-size:.78rem;color:var(--text);opacity:.65;margin-top:3px;letter-spacing:.05em}
+.wx-details{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.wx-di{background:rgba(0,0,0,.2);border-radius:3px;padding:7px 9px}
+.wx-dk{font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text2);margin-bottom:2px}
+.wx-dv{font-size:.8rem;color:var(--text);opacity:.8}
+.wx-note{margin-top:9px;font-size:.63rem;color:var(--text2);font-style:italic;letter-spacing:.04em}
+.curio-sec{margin-top:22px}
+.curio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px;margin-top:12px}
+.curio-item{background:rgba(0,0,0,.22);border:1px solid color-mix(in srgb,var(--ca) 18%,transparent);border-radius:4px;padding:13px 15px;display:flex;gap:10px;transition:box-shadow .2s}
+.curio-item:hover{box-shadow:0 0 0 1px color-mix(in srgb,var(--ca) 35%,transparent),0 4px 18px var(--cglow)}
+.curio-n{font-size:1.5rem;color:var(--ca);opacity:.2;font-weight:bold;line-height:1;flex-shrink:0}
+.curio-title{font-size:.78rem;font-weight:bold;color:var(--ca);margin-bottom:3px;letter-spacing:.03em}
+.curio-text{font-size:.78rem;color:var(--text);opacity:.65;line-height:1.5}
+.exp-notes{margin-top:20px;padding:14px 16px;background:rgba(0,0,0,.22);border-left:2px solid var(--ca);border-radius:0 4px 4px 0}
+.exp-notes-t{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ca);opacity:.65;margin-bottom:7px}
+.exp-notes-b{font-size:.83rem;color:var(--text);opacity:.62;line-height:1.6}
+.close-hint{text-align:center;padding:18px;font-size:.68rem;letter-spacing:.15em;color:var(--ca);opacity:.3;cursor:pointer;text-transform:uppercase}
+.close-hint:hover{opacity:.7}
 
-    /* Shanghai scanline */
-    .theme-shanghai::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 50%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(0,255,204,0.04), transparent);
-      animation: scanline 4s infinite;
-      pointer-events: none;
-      z-index: 0;
-    }
-    @keyframes scanline { 0% { left: -100%; } 100% { left: 200%; } }
+/* ═══ MAP ═══ */
+#tab-map{height:calc(100vh - 200px);position:relative}
+#leaflet-map{height:100%;width:100%}
+.map-legend{position:absolute;bottom:20px;left:20px;z-index:999;background:rgba(10,10,15,.88);border:1px solid var(--border);border-radius:4px;padding:12px 16px;font-size:.72rem;backdrop-filter:blur(8px)}
+.map-legend-title{color:var(--accent);letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px;font-size:.65rem}
+.map-leg-row{display:flex;align-items:center;gap:8px;color:var(--text2);margin-bottom:4px}
+.leg-line{width:24px;height:2px;flex-shrink:0}
+.leaflet-popup-content-wrapper{background:#0d0d18!important;border:1px solid rgba(200,169,110,.3)!important;border-radius:4px!important;box-shadow:0 8px 30px rgba(0,0,0,.6)!important}
+.leaflet-popup-tip{background:#0d0d18!important}
+.leaflet-popup-content{margin:14px 16px!important;color:var(--text)}
+.pop-city{font-size:1rem;color:var(--accent);margin-bottom:2px;letter-spacing:.05em}
+.pop-sub{font-size:.72rem;color:var(--text2);margin-bottom:10px;letter-spacing:.06em}
+.pop-photo{width:100%;height:120px;object-fit:cover;border-radius:3px;margin-bottom:10px;filter:saturate(.8)}
+.pop-days{display:flex;flex-direction:column;gap:5px}
+.pop-day-link{display:block;font-size:.78rem;color:var(--accent);text-decoration:none;padding:5px 8px;background:rgba(200,169,110,.08);border:1px solid rgba(200,169,110,.15);border-radius:3px;cursor:pointer;transition:background .2s;letter-spacing:.04em}
+.pop-day-link:hover{background:rgba(200,169,110,.15)}
 
-    /* Beijing pattern */
-    .theme-beijing::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image: repeating-linear-gradient(45deg, rgba(212,160,23,0.02) 0px, rgba(212,160,23,0.02) 1px, transparent 1px, transparent 8px);
-      pointer-events: none;
-      z-index: 0;
-    }
+/* ═══ COMMON CONTENT SECTIONS ═══ */
+.section-wrap{max-width:960px;margin:0 auto;padding:32px 20px 80px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.section-title{font-size:1.4rem;color:var(--accent);letter-spacing:.06em}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.btn{padding:7px 15px;border-radius:3px;border:1px solid;cursor:pointer;font-size:.8rem;letter-spacing:.07em;font-family:inherit;transition:all .2s;white-space:nowrap}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#0a0a0f;font-weight:bold}
+.btn-primary:hover{background:#d4b87a}
+.btn-ghost{background:transparent;border-color:var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--border-hi);color:var(--text)}
+.btn-ghost.active{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:transparent;border-color:rgba(192,57,43,.35);color:var(--danger);padding:4px 9px;font-size:.72rem}
+.btn-danger:hover{background:rgba(192,57,43,.1)}
+.form-row{display:grid;gap:12px;margin-bottom:12px}
+.form-2{grid-template-columns:1fr 1fr}
+.form-3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:540px){.form-2,.form-3{grid-template-columns:1fr}}
+.form-label{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text2);display:block;margin-bottom:5px}
+.form-input,.form-select,.form-textarea{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:3px;color:var(--text);padding:8px 11px;font-family:inherit;font-size:.87rem;width:100%;transition:border-color .2s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--accent)}
+.form-select option{background:#0f0f18}
+.form-textarea{resize:vertical;min-height:90px;line-height:1.6}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text2);font-size:.9rem;letter-spacing:.06em}
+.empty-state .big{font-size:2.5rem;display:block;margin-bottom:12px;opacity:.4}
 
-    .card-header {
-      padding: 18px 20px 14px;
-      display: flex; align-items: flex-start; justify-content: space-between;
-      position: relative; z-index: 1;
-    }
-    .card-date-block { display: flex; flex-direction: column; }
-    .card-day-num { font-size: 2.8rem; font-weight: bold; line-height: 1; color: var(--city-accent); letter-spacing: -0.02em; }
-    .theme-shanghai .card-day-num { font-family: 'Courier New', monospace; text-shadow: 0 0 20px var(--city-accent), 0 0 40px rgba(0,255,204,0.5); }
-    .card-weekday { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--city-text); opacity: 0.5; margin-top: 2px; }
-    .card-city-badge { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
-    .city-name { font-size: 0.85rem; letter-spacing: 0.12em; color: var(--city-text); opacity: 0.9; text-transform: uppercase; }
-    .theme-shanghai .city-name { font-family: 'Courier New', monospace; color: var(--city-accent); text-shadow: 0 0 10px var(--city-accent); letter-spacing: 0.25em; }
-    .theme-fenghuang .city-name { font-style: italic; letter-spacing: 0.08em; }
-    .city-emoji-badge { font-size: 1.2rem; }
-    .card-night-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.3); border: 1px solid var(--city-border); border-radius: 20px; padding: 2px 8px; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--city-text); opacity: 0.7; margin-top: 4px; }
-    .card-divider { height: 1px; margin: 0 20px; background: linear-gradient(90deg, var(--city-border), transparent); opacity: 0.4; position: relative; z-index: 1; }
-    .card-preview { padding: 12px 20px 18px; position: relative; z-index: 1; }
-    .preview-item { font-size: 0.82rem; color: var(--city-text); opacity: 0.7; line-height: 1.5; display: flex; align-items: flex-start; gap: 6px; }
-    .preview-item + .preview-item { margin-top: 4px; }
-    .preview-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--city-accent); flex-shrink: 0; margin-top: 7px; }
-    .card-expand-hint { text-align: center; padding: 8px; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--city-accent); opacity: 0.4; text-transform: uppercase; position: relative; z-index: 1; }
+/* ═══ REVIEWS ═══ */
+.review-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:18px;margin-bottom:12px;transition:border-color .2s}
+.review-card:hover{border-color:var(--border-hi)}
+.rev-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:12px}
+.rev-name{font-size:1rem;color:var(--text);letter-spacing:.03em}
+.rev-meta{font-size:.72rem;color:var(--text2);margin-top:2px;display:flex;gap:8px;flex-wrap:wrap}
+.rev-stars{color:var(--accent);font-size:.88rem;letter-spacing:.05em}
+.rev-text{font-size:.87rem;line-height:1.7;color:var(--text);opacity:.78;margin-top:10px}
+.rev-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.badge{font-size:.68rem;padding:2px 8px;border-radius:10px;border:1px solid;letter-spacing:.05em}
+.badge-city{border-color:rgba(200,169,110,.25);color:var(--accent);background:var(--accent-dim)}
+.badge-type{border-color:var(--border);color:var(--text2);background:transparent}
+.badge-price{border-color:rgba(93,186,110,.25);color:#5dba6e;background:rgba(93,186,110,.08)}
+.star-picker{display:flex;gap:2px}
+.star-picker span{font-size:1.4rem;color:rgba(200,169,110,.2);cursor:pointer;transition:color .15s;line-height:1}
+.star-picker span.on{color:var(--accent)}
 
-    /* ═══════════════════════════════════════════
-       EXPANDED PANEL
-    ═══════════════════════════════════════════ */
-    .day-expanded {
-      display: none;
-      animation: expandIn 0.3s ease;
-      position: relative; z-index: 1;
-    }
-    @keyframes expandIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-    .day-card.open .day-expanded { display: block; }
+/* ═══ EXPENSES ═══ */
+.exp-summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:28px}
+.sum-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:16px}
+.sum-label{font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text2);margin-bottom:6px}
+.sum-val{font-size:1.5rem;color:var(--accent);font-weight:bold;letter-spacing:-.01em}
+.sum-sub{font-size:.75rem;color:var(--text2);margin-top:2px}
+.cat-bar-wrap{margin-bottom:20px}
+.cat-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:.8rem}
+.cat-bar-label{width:130px;flex-shrink:0;color:var(--text);opacity:.8}
+.cat-bar-bg{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.cat-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.cat-bar-amt{width:50px;text-align:right;color:var(--text2);font-size:.75rem}
+.exp-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.exp-table th{text-align:left;padding:8px 10px;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text2);border-bottom:1px solid var(--border)}
+.exp-table td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+.exp-table tr:hover td{background:rgba(255,255,255,.02)}
+.rate-bar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:12px 16px;margin-bottom:20px;flex-wrap:wrap}
+.rate-bar label{font-size:.75rem;color:var(--text2);letter-spacing:.08em}
+.rate-input{background:rgba(0,0,0,.4);border:1px solid var(--border);color:var(--text);border-radius:3px;padding:5px 9px;font-size:.88rem;width:80px;font-family:inherit}
+.rate-input:focus{outline:none;border-color:var(--accent)}
 
-    /* ── Hero Photo ── */
-    .expanded-photo {
-      width: 100%;
-      height: 320px;
-      object-fit: cover;
-      display: block;
-      border-top: 1px solid var(--city-border);
-      filter: saturate(0.85) brightness(0.9);
-    }
-    .photo-wrapper {
-      position: relative;
-      overflow: hidden;
-    }
-    .photo-caption {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 40px 28px 14px;
-      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-      font-size: 0.72rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.6);
-    }
-    /* Shanghai: neon photo overlay */
-    .theme-shanghai .photo-wrapper::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom right, rgba(0,255,204,0.07), rgba(255,0,204,0.05));
-      pointer-events: none;
-    }
-    /* Fenghuang: ink wash overlay */
-    .theme-fenghuang .photo-wrapper::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.4));
-      pointer-events: none;
-    }
+/* ═══ JOURNAL ═══ */
+.journal-day-sel{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:20px}
+.journal-day-picker{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.jday-btn{padding:5px 11px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text2);font-family:inherit;font-size:.78rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+.jday-btn:hover{border-color:var(--border-hi);color:var(--text)}
+.jday-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.journal-entry{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px}
+.journal-mood{display:flex;gap:8px;margin-bottom:18px}
+.mood-btn{font-size:1.5rem;cursor:pointer;opacity:.3;transition:opacity .15s,transform .15s;border:none;background:none;padding:2px}
+.mood-btn:hover,.mood-btn.active{opacity:1;transform:scale(1.2)}
+.photo-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.photo-thumb{position:relative;width:120px;height:90px;border-radius:3px;overflow:hidden;border:1px solid var(--border);flex-shrink:0}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-thumb .del-photo{position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);border:none;color:#fff;border-radius:50%;width:20px;height:20px;font-size:.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+.photo-thumb:hover .del-photo{opacity:1}
+.upload-zone{border:2px dashed var(--border);border-radius:4px;padding:24px;text-align:center;margin-top:12px;cursor:pointer;transition:border-color .2s,background .2s}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:var(--accent-dim)}
+.upload-zone input{display:none}
+.upload-zone p{font-size:.82rem;color:var(--text2);letter-spacing:.06em;margin-top:4px}
+.url-row{display:flex;gap:8px;margin-top:8px}
+.url-row .form-input{flex:1}
+.file-list{margin-top:12px}
+.file-item{display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(0,0,0,.2);border-radius:3px;margin-bottom:6px;font-size:.8rem;color:var(--text2)}
+.file-icon{flex-shrink:0;opacity:.5}
+.autosave-badge{font-size:.65rem;color:var(--success);letter-spacing:.1em;opacity:0;transition:opacity .3s}
+.autosave-badge.show{opacity:1}
 
-    /* ── Body ── */
-    .expanded-body { padding: 28px 28px 0; }
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);backdrop-filter:blur(5px);align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--border-hi);border-radius:4px;padding:26px;width:min(520px,92vw);max-height:88vh;overflow-y:auto}
+.modal-title{font-size:1.1rem;color:var(--accent);margin-bottom:20px;letter-spacing:.06em}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
 
-    .expanded-title {
-      font-size: 1.5rem;
-      color: var(--city-accent);
-      margin-bottom: 14px;
-      letter-spacing: 0.05em;
-      line-height: 1.2;
-    }
-    .theme-shanghai .expanded-title {
-      font-family: 'Courier New', monospace;
-      text-shadow: 0 0 20px var(--city-accent);
-      font-size: 1.3rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      position: relative;
-    }
-    .theme-shanghai .expanded-title::before {
-      content: attr(data-text);
-      position: absolute;
-      left: 2px; top: 0;
-      color: #ff00cc;
-      text-shadow: 0 0 8px #ff00cc;
-      clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
-      animation: glitch 5s infinite;
-      opacity: 0.6;
-    }
-    @keyframes glitch { 0%,90%,100% { transform:translate(0); } 92% { transform:translate(-3px,0); } 94% { transform:translate(3px,0); } 96% { transform:translate(-1px,0); } }
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;padding:0 20px 30px;max-width:900px;margin:0 auto}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:.73rem;letter-spacing:.07em;opacity:.55}
+.ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 
-    .expanded-description { font-size: 0.95rem; line-height: 1.8; color: var(--city-text); opacity: 0.85; max-width: 900px; }
-    .theme-fenghuang .expanded-description { font-style: italic; line-height: 2; opacity: 0.9; }
-
-    /* ── Transport ── */
-    .expanded-transport { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
-    .transport-tag {
-      background: var(--city-tag-bg);
-      border: 1px solid var(--city-border);
-      border-radius: 3px;
-      padding: 5px 12px;
-      font-size: 0.75rem;
-      color: var(--city-text);
-      opacity: 0.8;
-      letter-spacing: 0.06em;
-    }
-    .theme-shanghai .transport-tag { font-family: 'Courier New', monospace; border-color: var(--city-accent); color: var(--city-accent); text-shadow: 0 0 5px var(--city-accent); }
-
-    /* ── Two-column grid for hotel + weather ── */
-    .expanded-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 24px;
-    }
-    @media (max-width: 700px) { .expanded-grid { grid-template-columns: 1fr; } }
-
-    /* ── Hotel Card ── */
-    .hotel-card {
-      background: var(--city-section-bg);
-      border: 1px solid var(--city-border);
-      border-radius: 4px;
-      padding: 18px;
-    }
-    .section-label {
-      font-size: 0.65rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--city-accent);
-      opacity: 0.7;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--city-border); opacity: 0.4; }
-    .hotel-name { font-size: 1rem; color: var(--city-text); margin-bottom: 4px; letter-spacing: 0.04em; }
-    .theme-shanghai .hotel-name { font-family: 'Courier New', monospace; color: var(--city-accent); }
-    .hotel-stars { color: var(--city-accent); font-size: 0.7rem; opacity: 0.8; margin-bottom: 12px; }
-    .hotel-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .hotel-key { font-size: 0.7rem; letter-spacing: 0.1em; color: var(--city-text); opacity: 0.5; text-transform: uppercase; }
-    .hotel-val { font-size: 0.82rem; color: var(--city-text); opacity: 0.85; }
-    .hotel-confirmation { margin-top: 12px; padding: 8px 10px; background: rgba(0,0,0,0.3); border-radius: 3px; font-size: 0.72rem; color: var(--city-text); opacity: 0.5; letter-spacing: 0.08em; font-family: monospace; }
-    .mock-badge { font-size: 0.55rem; letter-spacing: 0.12em; background: rgba(255,200,0,0.15); color: rgba(255,200,0,0.7); border: 1px solid rgba(255,200,0,0.2); border-radius: 10px; padding: 1px 6px; vertical-align: middle; margin-left: 6px; }
-
-    /* ── Weather Widget ── */
-    .weather-card {
-      background: var(--city-section-bg);
-      border: 1px solid var(--city-border);
-      border-radius: 4px;
-      padding: 18px;
-    }
-    .weather-main { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
-    .weather-icon { font-size: 2.8rem; line-height: 1; }
-    .weather-temp { font-size: 2.2rem; color: var(--city-accent); line-height: 1; }
-    .theme-shanghai .weather-temp { font-family: 'Courier New', monospace; text-shadow: 0 0 10px var(--city-accent); }
-    .weather-condition { font-size: 0.8rem; color: var(--city-text); opacity: 0.7; margin-top: 4px; letter-spacing: 0.06em; }
-    .weather-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .weather-detail-item { background: rgba(0,0,0,0.2); border-radius: 3px; padding: 8px 10px; }
-    .weather-detail-key { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--city-text); opacity: 0.4; margin-bottom: 3px; }
-    .weather-detail-val { font-size: 0.82rem; color: var(--city-text); opacity: 0.8; }
-    .weather-note { margin-top: 10px; font-size: 0.65rem; color: var(--city-text); opacity: 0.35; letter-spacing: 0.06em; font-style: italic; }
-
-    /* ── Curiosities ── */
-    .curiosities-section { margin-top: 24px; }
-    .curiosities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-top: 14px; }
-    .curiosity-item {
-      background: var(--city-section-bg);
-      border: 1px solid var(--city-border);
-      border-radius: 4px;
-      padding: 14px 16px;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      transition: box-shadow 0.2s;
-    }
-    .curiosity-item:hover { box-shadow: 0 0 0 1px var(--city-border), 0 4px 20px var(--city-glow); }
-    .curiosity-num {
-      font-size: 1.6rem;
-      color: var(--city-accent);
-      opacity: 0.25;
-      font-weight: bold;
-      line-height: 1;
-      flex-shrink: 0;
-      font-family: Georgia, serif;
-    }
-    .theme-shanghai .curiosity-num { font-family: 'Courier New', monospace; }
-    .curiosity-body {}
-    .curiosity-title { font-size: 0.8rem; font-weight: bold; color: var(--city-accent); margin-bottom: 4px; letter-spacing: 0.04em; }
-    .theme-shanghai .curiosity-title { font-family: 'Courier New', monospace; }
-    .curiosity-text { font-size: 0.8rem; color: var(--city-text); opacity: 0.7; line-height: 1.55; }
-    .theme-fenghuang .curiosity-text { font-style: italic; }
-
-    /* ── Notes ── */
-    .expanded-notes {
-      margin-top: 24px;
-      padding: 16px 18px;
-      background: rgba(0,0,0,0.25);
-      border-left: 2px solid var(--city-accent);
-      border-radius: 0 4px 4px 0;
-    }
-    .expanded-notes-title { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--city-accent); opacity: 0.7; margin-bottom: 8px; }
-    .expanded-notes-body { font-size: 0.85rem; color: var(--city-text); opacity: 0.65; line-height: 1.6; }
-
-    .close-hint {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      color: var(--city-accent);
-      opacity: 0.35;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
-    .close-hint:hover { opacity: 0.7; }
-
-    /* ═══════════════════════════════════════════
-       FOOTER
-    ═══════════════════════════════════════════ */
-    footer { text-align: center; padding: 40px 20px; font-size: 0.75rem; letter-spacing: 0.15em; color: rgba(232,224,208,0.2); border-top: 1px solid rgba(200,169,110,0.1); }
-
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: rgba(200,169,110,0.3); border-radius: 3px; }
-  </style>
+/* FOOTER */
+footer{text-align:center;padding:36px 20px;font-size:.72rem;letter-spacing:.15em;color:rgba(232,224,208,.15);border-top:1px solid rgba(200,169,110,.08)}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(200,169,110,.25);border-radius:3px}
+</style>
 </head>
 <body>
 
 <header>
-  <div class="header-kana">中国 · Septiembre 2026</div>
-  <h1 class="header-title">China<span> ·</span> Pablo &amp; Aza</h1>
-  <p class="header-sub">5 sep — 20 sep · 16 días</p>
-  <div class="header-line"></div>
+  <div class="hk">中国 · Septiembre 2026</div>
+  <h1 class="ht">China<span> ·</span> Pablo &amp; Aza</h1>
+  <p class="hs">5 sep — 20 sep · 16 días</p>
+  <div class="hl"></div>
 </header>
 
-<div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:#7eb8f7"></div> Vuelo</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#d4a017"></div> Pekín</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#ff4d00"></div> Chongqing</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#5dba6e"></div> Zhangjiajie</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#e8945a"></div> Furong</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div> Fenghuang</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#00ffcc"></div> Shanghái</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#ff6b35"></div> Cantón</div>
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="calendar">📅 Calendario</button>
+  <button class="tab-btn" data-tab="map">🗺️ Mapa</button>
+  <button class="tab-btn" data-tab="reviews">⭐ Reseñas</button>
+  <button class="tab-btn" data-tab="expenses">💰 Gastos</button>
+  <button class="tab-btn" data-tab="journal">📖 Cuaderno</button>
+</nav>
+
+<!-- ══════ CALENDARIO ══════ -->
+<div id="tab-calendar" class="tab-panel active">
+  <div class="legend">
+    <div class="legend-item"><div class="ldot" style="background:#7eb8f7"></div>Vuelo</div>
+    <div class="legend-item"><div class="ldot" style="background:#d4a017"></div>Pekín</div>
+    <div class="legend-item"><div class="ldot" style="background:#ff4d00"></div>Chongqing</div>
+    <div class="legend-item"><div class="ldot" style="background:#5dba6e"></div>Zhangjiajie</div>
+    <div class="legend-item"><div class="ldot" style="background:#e8945a"></div>Furong</div>
+    <div class="legend-item"><div class="ldot" style="background:#c0392b"></div>Fenghuang</div>
+    <div class="legend-item"><div class="ldot" style="background:#00ffcc"></div>Shanghái</div>
+    <div class="legend-item"><div class="ldot" style="background:#ff6b35"></div>Cantón</div>
+  </div>
+  <div class="calendar" id="calendar"></div>
 </div>
 
-<div class="calendar" id="calendar"></div>
+<!-- ══════ MAPA ══════ -->
+<div id="tab-map" class="tab-panel">
+  <div id="leaflet-map"></div>
+  <div class="map-legend">
+    <div class="map-legend-title">Transporte</div>
+    <div class="map-leg-row"><div class="leg-line" style="background:#7eb8f7;border-top:2px dashed #7eb8f7;height:0"></div>Vuelo</div>
+    <div class="map-leg-row"><div class="leg-line" style="background:rgba(200,169,110,.6);height:2px"></div>Tren</div>
+    <div class="map-leg-row"><div class="leg-line" style="background:#e8945a;border-top:2px dotted #e8945a;height:0"></div>Autobús</div>
+  </div>
+</div>
 
-<footer>Pablo &amp; Aza · China 2026 · Hecho con ❤️ e IA</footer>
+<!-- ══════ RESEÑAS ══════ -->
+<div id="tab-reviews" class="tab-panel">
+  <div class="section-wrap">
+    <div class="section-head">
+      <div class="section-title">⭐ Reseñas</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <select class="form-select" id="rev-filter-city" style="width:auto;padding:6px 10px" onchange="renderReviews()">
+          <option value="">Todas las ciudades</option>
+          <option value="beijing">Pekín</option>
+          <option value="chongqing">Chongqing</option>
+          <option value="zhangjiajie">Zhangjiajie</option>
+          <option value="furong">Furong</option>
+          <option value="fenghuang">Fenghuang</option>
+          <option value="shanghai">Shanghái</option>
+          <option value="canton">Cantón</option>
+        </select>
+        <select class="form-select" id="rev-filter-type" style="width:auto;padding:6px 10px" onchange="renderReviews()">
+          <option value="">Todos los tipos</option>
+          <option value="food">🍜 Comida</option>
+          <option value="attraction">🎡 Atracción</option>
+          <option value="hotel">🏨 Hotel</option>
+          <option value="shop">🛍️ Tienda</option>
+          <option value="experience">💆 Experiencia</option>
+          <option value="cafe">☕ Café/Bar</option>
+        </select>
+        <button class="btn btn-primary" onclick="openModal('review')">+ Nueva reseña</button>
+      </div>
+    </div>
+    <div id="reviews-list"></div>
+  </div>
+</div>
 
+<!-- ══════ GASTOS ══════ -->
+<div id="tab-expenses" class="tab-panel">
+  <div class="section-wrap">
+    <div class="section-head">
+      <div class="section-title">💰 Gastos</div>
+      <button class="btn btn-primary" onclick="openModal('expense')">+ Nuevo gasto</button>
+    </div>
+    <div class="rate-bar">
+      <label>1 EUR =</label>
+      <input type="number" id="cny-rate" class="rate-input" value="7.8" step="0.1">
+      <label>CNY</label>
+      <button class="btn btn-ghost" onclick="saveRate()" style="padding:5px 10px;font-size:.75rem">Guardar</button>
+      <span style="margin-left:auto;font-size:.72rem;color:var(--text2)">Tipo de cambio aproximado</span>
+    </div>
+    <div class="exp-summary" id="exp-summary"></div>
+    <div style="margin-bottom:16px">
+      <div class="sec-label" style="margin-bottom:12px">Por categoría</div>
+      <div class="cat-bar-wrap" id="cat-bars"></div>
+    </div>
+    <div class="sec-label">Detalle de gastos</div>
+    <div style="overflow-x:auto">
+      <table class="exp-table">
+        <thead><tr>
+          <th>Fecha</th><th>Ciudad</th><th>Categoría</th><th>Descripción</th>
+          <th style="text-align:right">CNY</th><th style="text-align:right">EUR</th><th></th>
+        </tr></thead>
+        <tbody id="exp-rows"></tbody>
+      </table>
+    </div>
+    <div id="exp-empty" class="empty-state" style="display:none">
+      <span class="big">💴</span>
+      Añade tu primer gasto para empezar a llevar el control
+    </div>
+  </div>
+</div>
+
+<!-- ══════ CUADERNO ══════ -->
+<div id="tab-journal" class="tab-panel">
+  <div class="section-wrap">
+    <div class="section-head">
+      <div class="section-title">📖 Cuaderno de viaje</div>
+    </div>
+    <div class="journal-day-sel">
+      <div class="sec-label">Selecciona un día</div>
+      <div class="journal-day-picker" id="jday-picker"></div>
+    </div>
+    <div class="journal-entry" id="journal-entry" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+        <div id="jentry-title" style="font-size:1.1rem;color:var(--accent);letter-spacing:.05em"></div>
+        <span class="autosave-badge" id="autosave-badge">✓ Guardado</span>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="sec-label">Ánimo del día</div>
+        <div class="journal-mood" id="mood-picker">
+          <button class="mood-btn" data-mood="🤩">🤩</button>
+          <button class="mood-btn" data-mood="😊">😊</button>
+          <button class="mood-btn" data-mood="😌">😌</button>
+          <button class="mood-btn" data-mood="😴">😴</button>
+          <button class="mood-btn" data-mood="😕">😕</button>
+          <button class="mood-btn" data-mood="🤒">🤒</button>
+          <button class="mood-btn" data-mood="🥵">🥵</button>
+        </div>
+      </div>
+      <div style="margin-bottom:20px">
+        <div class="sec-label">Notas del día</div>
+        <textarea class="form-textarea" id="jnotes" style="min-height:140px" placeholder="Escribe lo que quieras recordar de este día..."></textarea>
+      </div>
+      <div style="margin-bottom:20px">
+        <div class="sec-label">Fotos del día</div>
+        <div class="photo-grid" id="photo-grid"></div>
+        <label class="upload-zone" id="upload-zone">
+          <input type="file" id="photo-file" accept="image/*" multiple>
+          <div style="font-size:1.8rem;opacity:.4">📷</div>
+          <p>Haz click o arrastra fotos aquí</p>
+          <p style="font-size:.72rem;opacity:.5;margin-top:4px">Las fotos se guardan localmente en el navegador (max ~15MB total)</p>
+        </label>
+        <div class="url-row" style="margin-top:10px">
+          <input type="url" class="form-input" id="photo-url-inp" placeholder="O pega una URL de foto (Google Photos, Dropbox...)">
+          <button class="btn btn-ghost" onclick="addPhotoUrl()">Añadir</button>
+        </div>
+      </div>
+      <div>
+        <div class="sec-label">Archivos y notas de referencia</div>
+        <div class="url-row">
+          <input type="text" class="form-input" id="file-ref-inp" placeholder="Nombre o URL de archivo (menú, mapa, captura...)">
+          <button class="btn btn-ghost" onclick="addFileRef()">Añadir</button>
+        </div>
+        <div class="file-list" id="file-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL RESEÑA ══════ -->
+<div class="modal" id="modal-review">
+  <div class="modal-box">
+    <div class="modal-title">Nueva reseña</div>
+    <div class="form-row form-2">
+      <div><label class="form-label">Ciudad</label>
+        <select class="form-select" id="rv-city">
+          <option value="beijing">Pekín</option><option value="chongqing">Chongqing</option>
+          <option value="zhangjiajie">Zhangjiajie</option><option value="furong">Furong</option>
+          <option value="fenghuang">Fenghuang</option><option value="shanghai">Shanghái</option>
+          <option value="canton">Cantón</option>
+        </select></div>
+      <div><label class="form-label">Tipo</label>
+        <select class="form-select" id="rv-type">
+          <option value="food">🍜 Comida</option><option value="attraction">🎡 Atracción</option>
+          <option value="hotel">🏨 Hotel</option><option value="shop">🛍️ Tienda</option>
+          <option value="experience">💆 Experiencia</option><option value="cafe">☕ Café/Bar</option>
+        </select></div>
+    </div>
+    <div class="form-row">
+      <div><label class="form-label">Nombre del sitio</label>
+        <input type="text" class="form-input" id="rv-name" placeholder="Ej: Restaurante Duck de Chine"></div>
+    </div>
+    <div class="form-row form-2">
+      <div><label class="form-label">Valoración</label>
+        <div class="star-picker" id="rv-stars">
+          <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span>
+          <span data-v="4">★</span><span data-v="5">★</span>
+        </div></div>
+      <div><label class="form-label">Precio aproximado</label>
+        <select class="form-select" id="rv-price">
+          <option value="">— Sin especificar</option>
+          <option value="¥">¥ Barato</option><option value="¥¥">¥¥ Moderado</option>
+          <option value="¥¥¥">¥¥¥ Caro</option><option value="¥¥¥¥">¥¥¥¥ Muy caro</option>
+        </select></div>
+    </div>
+    <div class="form-row">
+      <div><label class="form-label">Fecha</label>
+        <input type="date" class="form-input" id="rv-date"></div>
+    </div>
+    <div class="form-row">
+      <div><label class="form-label">Tu reseña</label>
+        <textarea class="form-textarea" id="rv-text" placeholder="¿Qué tal? Cuéntanos..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('review')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveReview()">Guardar reseña</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL GASTO ══════ -->
+<div class="modal" id="modal-expense">
+  <div class="modal-box">
+    <div class="modal-title">Nuevo gasto</div>
+    <div class="form-row form-2">
+      <div><label class="form-label">Fecha</label>
+        <input type="date" class="form-input" id="ex-date"></div>
+      <div><label class="form-label">Ciudad</label>
+        <select class="form-select" id="ex-city">
+          <option value="vuelo">✈️ Vuelo/Tránsito</option>
+          <option value="beijing">Pekín</option><option value="chongqing">Chongqing</option>
+          <option value="zhangjiajie">Zhangjiajie</option><option value="furong">Furong</option>
+          <option value="fenghuang">Fenghuang</option><option value="shanghai">Shanghái</option>
+          <option value="canton">Cantón</option>
+        </select></div>
+    </div>
+    <div class="form-row form-2">
+      <div><label class="form-label">Categoría</label>
+        <select class="form-select" id="ex-cat">
+          <option value="food">🍜 Comida y bebida</option>
+          <option value="transport">🚇 Transporte local</option>
+          <option value="flights">✈️ Vuelos y trenes</option>
+          <option value="hotel">🏨 Alojamiento</option>
+          <option value="activities">🎡 Actividades</option>
+          <option value="shopping">🛍️ Compras</option>
+          <option value="leisure">🍺 Ocio</option>
+          <option value="other">💊 Otros</option>
+        </select></div>
+      <div><label class="form-label">Importe en CNY (¥)</label>
+        <input type="number" class="form-input" id="ex-cny" placeholder="380" min="0" step="0.5"></div>
+    </div>
+    <div class="form-row">
+      <div><label class="form-label">Descripción</label>
+        <input type="text" class="form-input" id="ex-desc" placeholder="Ej: Pato laqueado restaurante Quanjude"></div>
+    </div>
+    <div class="form-row">
+      <div><label class="form-label">Nota opcional</label>
+        <input type="text" class="form-input" id="ex-note" placeholder="Ej: Solo cena, sin bebidas"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('expense')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveExpense()">Guardar gasto</button>
+    </div>
+  </div>
+</div>
+
+<footer>Pablo &amp; Aza · China 2026 · Cuaderno de viaje</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-/* ═══════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
    DATA
-   - photo: Unsplash query URL. Replace with real URLs when you have them.
-   - hotel: mock data. Replace with real bookings.
-   - weather: mock historical September data.
-     To connect to live data: fetch from https://api.openweathermap.org/data/2.5/weather?q={city}&appid={KEY}&units=metric
-═══════════════════════════════════════════ */
-const days = [
+═══════════════════════════════════════════════════════════ */
+const DAYS = [
   {
-    date: 5, month: "sep", weekday: "Sábado",
-    city: "Vuelo", theme: "avion", emoji: "✈️", night: "Avión",
-    preview: ["Madrid → Ámsterdam → Pekín", "Salida 15:55 · Llegada +1 a las 13:25"],
-    photo: { url: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80", caption: "Sobre las nubes · Ruta MAD–AMS–PEK" },
-    title: "Despegue · Madrid → Pekín",
-    description: "El viaje empieza. Vuelo Madrid–Ámsterdam a las 15:55 (llega 18:35), y conexión en Schiphol con el largo vuelo nocturno a Pekín (21:40 → 13:25+1). Casi diez horas sobre Asia Central — buena película, peor sueño.",
-    transport: ["MAD → AMS · 15:55–18:35", "AMS → PEK · 21:40–13:25+1"],
-    hotel: null,
-    weather: null,
-    curiosities: [
-      { title: "La ruta sobrevuela Mongolia", text: "Madrid–Pekín cubre ~9.200 km sobrevolando Francia, Rusia, Siberia y el desierto de Gobi." },
-      { title: "Schiphol como hub", text: "Amsterdam Schiphol es el 4.º aeropuerto más transitado de Europa y hub de KLM desde 1920." },
-      { title: "Diferencia horaria", text: "Pekín está a +6h de Madrid en verano. Habrá que armarse de paciencia el primer día." },
-      { title: "China tiene 240+ aeropuertos", text: "La segunda red aeroportuaria del mundo. El de Pekín PEK fue el más transitado del mundo en 2019." },
-      { title: "Sin jetlag total", text: "La ruta de ida es más amable que la de vuelta: viajas hacia el este y llegas de día, lo que ayuda a la adaptación." }
-    ],
-    notes: "Conexión de 3h en Ámsterdam. Buen momento para cenar tranquilo en el aeropuerto."
+    date:5,month:'sep',weekday:'Sábado',city:'Vuelo',theme:'avion',emoji:'✈️',night:'Avión',
+    preview:['Madrid → Ámsterdam → Pekín','Salida 15:55 · Llega +1 a las 13:25'],
+    photo:{url:'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80',cap:'Ruta MAD–AMS–PEK · Sobre las nubes'},
+    title:'Despegue · Madrid → Pekín',
+    description:'El viaje empieza. Vuelo Madrid–Ámsterdam a las 15:55, y conexión en Schiphol con el largo vuelo nocturno a Pekín (21:40 → 13:25+1). Casi diez horas sobre Asia Central.',
+    transport:['MAD → AMS · 15:55–18:35','AMS → PEK · 21:40–13:25+1'],
+    hotel:null,weather:null,
+    curiosities:[
+      {t:'La ruta sobrevuela Mongolia',x:'Madrid–Pekín cubre ~9.200 km cruzando Francia, Rusia, Siberia y el desierto de Gobi.'},
+      {t:'Schiphol como hub',x:'Amsterdam Schiphol es el 4.º aeropuerto más transitado de Europa y hub de KLM desde 1920.'},
+      {t:'Diferencia horaria',x:'Pekín está a +6h de Madrid en verano. El jetlag de ida es más amable que el de vuelta.'},
+      {t:'China tiene 240+ aeropuertos',x:'La segunda red aeroportuaria del mundo. El de Pekín PEK fue el más transitado del mundo en 2019.'},
+      {t:'La ruta más larga del mundo',x:'El récord de vuelo comercial sin escala es Singapur–Nueva York: 18h 45min. Madrid–Pekín son ~10h.'}
+    ],notes:'Conexión de 3h en Ámsterdam. Buen momento para cenar tranquilo en Schiphol.'
   },
   {
-    date: 6, month: "sep", weekday: "Domingo",
-    city: "Pekín", theme: "beijing", emoji: "🏯", night: "Pekín",
-    preview: ["Aterrizaje 13:25 en PEK", "Primeras horas en la capital"],
-    photo: { url: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1200&q=80", caption: "Ciudad Prohibida · Pekín" },
-    title: "Bienvenidos a Pekín",
-    description: "Llegada a Capital International Airport a las 13:25 con el cuerpo aún en hora española. Hay que aguantar hasta la noche para adaptarse: un primer paseo por los hutongs del barrio, algo de comida callejera y dejarse envolver por el olor a especias y carbón de la primera tarde china.",
-    transport: ["Aterrizaje 13:25 · PEK"],
-    hotel: { name: "Red Wall Garden Hotel", stars: "★★★★", checkin: "6 sep", checkout: "8 sep", room: "Superior Courtyard Room", ref: "MOCK-BJG-001" },
-    weather: { icon: "⛅", temp: "27°C", condition: "Parcialmente nublado", humidity: "62%", wind: "14 km/h NE", rain: "20%", feels: "29°C" },
-    curiosities: [
-      { title: "9.999 habitaciones", text: "La Ciudad Prohibida tiene exactamente ese número según la leyenda — el 9 simboliza el cielo y la perfección imperial." },
-      { title: "Khanbaliq", text: "Pekín fue fundada como capital mongola con el nombre de Khanbaliq en el siglo XIII por Kublai Khan." },
-      { title: "Capital de seis dinastías", text: "Yuan, Ming, Qing y tres repúblicas distintas. Pocas ciudades han acumulado tanta historia política." },
-      { title: "Tiananmen, la más grande", text: "La Plaza de Tiananmen tiene 440.000 m² — la plaza pública más grande del mundo, capaz de albergar 600.000 personas." },
-      { title: "Los hutongs llevan 800 años", text: "Los callejones históricos de Pekín datan del s. XIII mongol. Quedan unos 1.000 hutongs intactos de los 7.000 originales." }
-    ],
-    notes: "Por completar — ¿primer plan al llegar? ¿Hutongs de Nanluoguxiang?"
+    date:6,month:'sep',weekday:'Domingo',city:'Pekín',theme:'beijing',emoji:'🏯',night:'Pekín',
+    preview:['Aterrizaje 13:25 en PEK','Primeras horas en la capital imperial'],
+    photo:{url:'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1200&q=80',cap:'Ciudad Prohibida · Pekín'},
+    title:'Bienvenidos a Pekín',
+    description:'Llegada a Capital International Airport con el cuerpo aún en hora española. Hay que aguantar hasta la noche: primer paseo por los hutongs del barrio, comida callejera y dejarse envolver por el olor a especias y carbón.',
+    transport:['Aterrizaje 13:25 · PEK'],
+    hotel:{name:'Red Wall Garden Hotel',stars:'★★★★',ci:'6 sep',co:'8 sep',room:'Superior Courtyard Room',ref:'MOCK-BJG-001'},
+    weather:{icon:'⛅',temp:'27°C',cond:'Parcialmente nublado',hum:'62%',wind:'14 km/h NE',rain:'20%',feels:'29°C'},
+    curiosities:[
+      {t:'9.999 habitaciones',x:'La Ciudad Prohibida tiene exactamente ese número según la leyenda — el 9 simboliza el cielo imperial.'},
+      {t:'Khanbaliq',x:'Pekín fue fundada como capital mongola con el nombre de Khanbaliq en el s. XIII por Kublai Khan.'},
+      {t:'Capital de seis dinastías',x:'Yuan, Ming, Qing y tres repúblicas. Pocas ciudades han acumulado tanta historia política.'},
+      {t:'Tiananmen, la más grande',x:'La Plaza de Tiananmen tiene 440.000 m² — la plaza pública más grande del mundo.'},
+      {t:'Los hutongs llevan 800 años',x:'Los callejones históricos de Pekín datan del s. XIII mongol. Quedan ~1.000 de los 7.000 originales.'}
+    ],notes:'Por completar — ¿primer plan al llegar? ¿Hutongs de Nanluoguxiang?'
   },
   {
-    date: 7, month: "sep", weekday: "Lunes",
-    city: "Pekín", theme: "beijing", emoji: "🏯", night: "Pekín",
-    preview: ["Día completo en Pekín", "Ciudad Prohibida · Gran Muralla"],
-    photo: { url: "https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=1200&q=80", caption: "Gran Muralla · Badaling o Mutianyu" },
-    title: "Pekín · Día Imperial",
-    description: "Día completo para la capital. La Ciudad Prohibida, Tiananmen, el Templo del Cielo, los mercados de Nanluoguxiang o la Gran Muralla en Mutianyu (la sección menos masificada). Pekín tiene capas de historia sobre capas de historia.",
-    transport: [],
-    hotel: { name: "Red Wall Garden Hotel", stars: "★★★★", checkin: "6 sep", checkout: "8 sep", room: "Superior Courtyard Room", ref: "MOCK-BJG-001" },
-    weather: { icon: "☀️", temp: "28°C", condition: "Soleado", humidity: "55%", wind: "10 km/h", rain: "5%", feels: "30°C" },
-    curiosities: [
-      { title: "El Templo del Cielo", text: "Construido en 1420, los emperadores Ming y Qing venían aquí cada solsticio de invierno a rogar por buenas cosechas." },
-      { title: "La Gran Muralla no es visible desde el espacio", text: "Es uno de los mitos más famosos de la historia: con un ancho máximo de 9m, es imposible distinguirla desde la ISS." },
-      { title: "Pato Pekín desde el s. XIV", text: "El pato laqueado de Pekín lleva cocinándose desde la dinastía Yuan — es uno de los platos más antiguos con receta documentada de China." },
-      { title: "El Parque Beihai", text: "Con más de 1.000 años de antigüedad, es uno de los parques imperiales más antiguos del mundo, construido sobre un lago artificial." },
-      { title: "Mutianyu vs Badaling", text: "Mutianyu está menos masificada que Badaling, restaurada de forma más auténtica y permite bajar en tobogán por la ladera." }
-    ],
-    notes: "Por completar — ¿Gran Muralla o Ciudad Prohibida primero?"
+    date:7,month:'sep',weekday:'Lunes',city:'Pekín',theme:'beijing',emoji:'🏯',night:'Pekín',
+    preview:['Día completo en Pekín','Ciudad Prohibida · Gran Muralla'],
+    photo:{url:'https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=1200&q=80',cap:'Gran Muralla · Mutianyu'},
+    title:'Pekín · Día Imperial',
+    description:'Día completo para la capital. La Ciudad Prohibida, Tiananmen, el Templo del Cielo o la Gran Muralla en Mutianyu. Pekín tiene capas de historia sobre capas de historia.',
+    transport:[],
+    hotel:{name:'Red Wall Garden Hotel',stars:'★★★★',ci:'6 sep',co:'8 sep',room:'Superior Courtyard Room',ref:'MOCK-BJG-001'},
+    weather:{icon:'☀️',temp:'28°C',cond:'Soleado',hum:'55%',wind:'10 km/h',rain:'5%',feels:'30°C'},
+    curiosities:[
+      {t:'El Templo del Cielo',x:'Construido en 1420, los emperadores venían aquí cada solsticio a rogar por buenas cosechas.'},
+      {t:'Mito de la Gran Muralla',x:'Es uno de los mitos más famosos: con un ancho máximo de 9m, es imposible verla desde el espacio.'},
+      {t:'Pato Pekín desde el s. XIV',x:'El pato laqueado lleva cocinándose desde la dinastía Yuan — uno de los platos más antiguos con receta documentada.'},
+      {t:'El Parque Beihai',x:'Con más de 1.000 años de antigüedad, es uno de los parques imperiales más antiguos del mundo.'},
+      {t:'Mutianyu vs Badaling',x:'Mutianyu está menos masificada, restaurada de forma más auténtica, y permite bajar en tobogán por la ladera.'}
+    ],notes:'Por completar — ¿Gran Muralla o Ciudad Prohibida primero?'
   },
   {
-    date: 8, month: "sep", weekday: "Martes",
-    city: "Vuelo", theme: "avion", emoji: "✈️", night: "Avión",
-    preview: ["Mañana libre en Pekín", "Vuelo nocturno 23:05 → Chongqing"],
-    photo: { url: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=1200&q=80", caption: "Pekín de noche · Salida hacia el oeste" },
-    title: "Pekín → Chongqing · Vuelo Nocturno",
-    description: "La mañana y tarde son libres para los últimos rincones de Pekín. A las 23:05 sale el vuelo hacia Chongqing, la megaciudad de las nieblas y el picante. Llegada a las 01:55.",
-    transport: ["PEK → CKG · 23:05–01:55+1"],
-    hotel: null,
-    weather: null,
-    curiosities: [
-      { title: "Vuelo doméstico de 3h", text: "La distancia Pekín–Chongqing es de ~1.450 km — similar a Madrid–Berlín, pero en territorio de un solo país." },
-      { title: "China tiene 6 zonas horarias geográficas", text: "Pero oficialmente solo una: la hora de Pekín. Salir de PEK a las 23h y llegar a las 2h es perfectamente normal." },
-      { title: "Chongqing, antigua capital de guerra", text: "Fue capital provisional de la República de China durante la Segunda Guerra Mundial, bombardeada por Japón." },
-      { title: "El Yangtze empieza aquí", text: "Las tres gargantas del Yangtze comienzan en Chongqing — era el puerto de embarque histórico para el interior del país." },
-      { title: "Conexión Chengdu–Chongqing", text: "Las dos ciudades rivales a 300 km son la mayor aglomeración urbana del mundo interior de China, con 100 millones de habitantes en la región." }
-    ],
-    notes: "Confirmar si el hotel de Chongqing hace check-in nocturno."
+    date:8,month:'sep',weekday:'Martes',city:'Vuelo',theme:'avion',emoji:'✈️',night:'Avión',
+    preview:['Mañana libre en Pekín','Vuelo nocturno 23:05 → Chongqing'],
+    photo:{url:'https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=1200&q=80',cap:'Pekín de noche · Rumbo al sur'},
+    title:'Pekín → Chongqing · Nocturno',
+    description:'Mañana y tarde libres para los últimos rincones de Pekín. A las 23:05 sale el vuelo hacia Chongqing, la megaciudad de las nieblas y el picante.',
+    transport:['PEK → CKG · 23:05–01:55+1'],
+    hotel:null,weather:null,
+    curiosities:[
+      {t:'Vuelo doméstico de 3h',x:'La distancia Pekín–Chongqing es de ~1.450 km, similar a Madrid–Berlín, pero en un solo país.'},
+      {t:'Solo una zona horaria',x:'China tiene 6 zonas geográficas pero oficialmente una sola: la hora de Pekín.'},
+      {t:'Chongqing, capital de guerra',x:'Fue capital provisional de la República bajo Chiang Kai-shek, bombardeada por Japón en WWII.'},
+      {t:'El Yangtze empieza aquí',x:'Las Tres Gargantas del Yangtze comienzan en Chongqing — el puerto de embarque histórico hacia el interior.'},
+      {t:'100 millones de personas',x:'La región Chengdu–Chongqing es la mayor aglomeración urbana del interior de China.'}
+    ],notes:'Confirmar check-in nocturno en el hotel de Chongqing.'
   },
   {
-    date: 9, month: "sep", weekday: "Miércoles",
-    city: "Chongqing", theme: "chongqing", emoji: "🌶️", night: "Chongqing",
-    preview: ["Llegada 01:55 de madrugada", "La ciudad más grande del mundo"],
-    photo: { url: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&q=80", caption: "Chongqing · Luces sobre el Yangtze" },
-    title: "Chongqing · La Ciudad de la Niebla",
-    description: "Chongqing: 30 millones de personas, niebla permanente, el picante más extremo de China y una topografía vertical que parece diseñada por un visionario. Llegada de madrugada — día para descansar, pasear por Jiefangbei y dejarse sorprender por la escala de la ciudad.",
-    transport: ["Llegada CKG · 01:55"],
-    hotel: { name: "Raffles Chongqing", stars: "★★★★★", checkin: "9 sep", checkout: "11 sep", room: "Deluxe River View", ref: "MOCK-CKG-002" },
-    weather: { icon: "🌫️", temp: "29°C", condition: "Nublado · Niebla matinal", humidity: "80%", wind: "8 km/h", rain: "35%", feels: "33°C" },
-    curiosities: [
-      { title: "La ciudad más grande del mundo", text: "Con 82.000 km², Chongqing es técnicamente el municipio más grande del mundo por área — más que Austria." },
-      { title: "300 días de niebla al año", text: "Su apodo es '雾都' (Ciudad de la Niebla). La cuenca rodeada de montañas atrapa la humedad del Yangtze." },
-      { title: "Capital de guerra", text: "Entre 1937 y 1945 fue capital provisional bajo Chiang Kai-shek, bombardeada por Japón en los ataques más intensos de la guerra." },
-      { title: "Metro-montaña-rusa", text: "El metro de Chongqing atraviesa edificios de apartamentos. La línea 2 pasa literalmente por los pisos 6 y 7 del edificio Liziba." },
-      { title: "Hotpot y numbing spice", text: "El 麻辣 (málà) mezcla pimienta de Sichuan con chile — la pimienta de Sichuan es única: entumece la boca en lugar de quemarla." }
-    ],
-    notes: "Por completar — ¿excursión a Wulong o Dazu?"
+    date:9,month:'sep',weekday:'Miércoles',city:'Chongqing',theme:'chongqing',emoji:'🌶️',night:'Chongqing',
+    preview:['Llegada 01:55 de madrugada','La ciudad de la niebla y el picante'],
+    photo:{url:'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&q=80',cap:'Chongqing · Luces sobre el Yangtze'},
+    title:'Chongqing · La Ciudad de la Niebla',
+    description:'Chongqing: 30 millones de personas, niebla permanente, el picante más brutal de China y una topografía vertical que parece de ciencia ficción. Llegada de madrugada — día para descansar y explorar Jiefangbei.',
+    transport:['Llegada CKG · 01:55'],
+    hotel:{name:'Raffles Chongqing',stars:'★★★★★',ci:'9 sep',co:'11 sep',room:'Deluxe River View',ref:'MOCK-CKG-002'},
+    weather:{icon:'🌫️',temp:'29°C',cond:'Nublado · Niebla matinal',hum:'80%',wind:'8 km/h',rain:'35%',feels:'33°C'},
+    curiosities:[
+      {t:'La ciudad más grande del mundo',x:'Con 82.000 km², Chongqing es el municipio más grande del mundo por área — más que Austria.'},
+      {t:'300 días de niebla al año',x:'Su apodo es 雾都 (Ciudad de la Niebla). La cuenca rodeada de montañas atrapa la humedad.'},
+      {t:'Capital de guerra',x:'Entre 1937 y 1945 fue capital provisional bombardeada por Japón en los ataques más intensos de la guerra.'},
+      {t:'El metro atraviesa edificios',x:'La línea 2 del metro pasa literalmente por los pisos 6 y 7 del edificio Liziba.'},
+      {t:'El 麻辣 (málà)',x:'La pimienta de Sichuan es única: entumece la boca en lugar de quemarla. Nada que ver con el chile.'}
+    ],notes:'Por completar — ¿excursión a Wulong o Dazu?'
   },
   {
-    date: 10, month: "sep", weekday: "Jueves",
-    city: "Chongqing", theme: "chongqing", emoji: "🌶️", night: "Chongqing",
-    preview: ["Día completo en Chongqing", "Sabores extremos del Sichuan"],
-    photo: { url: "https://images.unsplash.com/photo-1544961371-516024cf8aec?w=1200&q=80", caption: "Ciqikou · El barrio antiguo" },
-    title: "Chongqing · Profundidades",
-    description: "Un día para perderse de verdad: los bunkers de la Segunda Guerra Mundial, el barrio antiguo de Ciqikou, el teleférico sobre el río. Por la noche, hotpot obligatorio — bienvenidos al límite del picante.",
-    transport: [],
-    hotel: { name: "Raffles Chongqing", stars: "★★★★★", checkin: "9 sep", checkout: "11 sep", room: "Deluxe River View", ref: "MOCK-CKG-002" },
-    weather: { icon: "🌧️", temp: "27°C", condition: "Lluvia intermitente", humidity: "85%", wind: "12 km/h", rain: "60%", feels: "30°C" },
-    curiosities: [
-      { title: "Los bunkers de la WWII", text: "Bajo la ciudad hay cientos de kilómetros de túneles excavados en los años 30 para protegerse de los bombardeos japoneses." },
-      { title: "Ciqikou, 1.000 años de historia", text: "Este barrio antiguo a orillas del Jialing fue un próspero puerto comercial durante las dinastías Tang y Song." },
-      { title: "El teleférico más largo sobre un río", text: "El teleférico sobre el Yangtze en Chongqing conecta dos distritos a 1.166 m de longitud y fue construido en 1987." },
-      { title: "Chongqing y la industria pesada", text: "Fue el centro industrial de China durante la guerra fría — aquí se fabricaron tanques, armas y munición para el ejército." },
-      { title: "El hotpot se come con palillos largos", text: "A diferencia del fondue europeo, el hotpot de Chongqing se come directamente del caldo hirviendo. El aceite de la olla puede alcanzar 130°C." }
-    ],
-    notes: "Por completar — ¿crucero nocturno por el Yangtze?"
+    date:10,month:'sep',weekday:'Jueves',city:'Chongqing',theme:'chongqing',emoji:'🌶️',night:'Chongqing',
+    preview:['Día completo en Chongqing','Hotpot obligatorio · Ciqikou'],
+    photo:{url:'https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=1200&q=80',cap:'Ciqikou · Barrio antiguo'},
+    title:'Chongqing · Profundidades',
+    description:'Un día para perderse de verdad: los bunkers de la Segunda Guerra Mundial, el barrio antiguo de Ciqikou, el teleférico sobre el río. Por la noche, hotpot obligatorio.',
+    transport:[],
+    hotel:{name:'Raffles Chongqing',stars:'★★★★★',ci:'9 sep',co:'11 sep',room:'Deluxe River View',ref:'MOCK-CKG-002'},
+    weather:{icon:'🌧️',temp:'27°C',cond:'Lluvia intermitente',hum:'85%',wind:'12 km/h',rain:'60%',feels:'30°C'},
+    curiosities:[
+      {t:'Km de bunkers bajo la ciudad',x:'Cientos de km de túneles excavados en los años 30 para protegerse de los bombardeos japoneses.'},
+      {t:'Ciqikou, 1.000 años',x:'Este barrio fue un próspero puerto comercial durante las dinastías Tang y Song.'},
+      {t:'El teleférico más largo sobre río',x:'El teleférico sobre el Yangtze, 1.166 m de longitud, conecta dos distritos desde 1987.'},
+      {t:'Centro industrial de la guerra fría',x:'Chongqing fabricó tanques, armas y munición para el Ejército Popular de Liberación.'},
+      {t:'El aceite del hotpot',x:'La olla del hotpot de Chongqing puede alcanzar 130°C en el aceite. Los palillos tienen que ser de metal.'}
+    ],notes:'Por completar — ¿crucero nocturno por el Yangtze?'
   },
   {
-    date: 11, month: "sep", weekday: "Viernes",
-    city: "Zhangjiajie", theme: "zhangjiajie", emoji: "🏔️", night: "Zhangjiajie",
-    preview: ["Tren 07:00 → 09:40", "Montañas que inspiraron Avatar"],
-    photo: { url: "https://images.unsplash.com/photo-1537531443994-f03c15e77bbd?w=1200&q=80", caption: "Pilares de cuarzo · Zhangjiajie" },
-    title: "Zhangjiajie · Columnas del Cielo",
-    description: "Tren temprano desde Chongqing hacia Zhangjiajie, el parque que inspiró las montañas flotantes de Avatar. Pilares de arenisca que se elevan entre nubes, puentes de cristal y una naturaleza que parece generada por ordenador. Primera tarde en el parque.",
-    transport: ["CKG → ZJJ · Tren 07:00–09:40"],
-    hotel: { name: "Avatar Hotel Zhangjiajie", stars: "★★★★", checkin: "11 sep", checkout: "13 sep", room: "Mountain View Suite", ref: "MOCK-ZJJ-003" },
-    weather: { icon: "🌫️", temp: "23°C", condition: "Niebla matinal · Despeja a mediodía", humidity: "75%", wind: "6 km/h", rain: "25%", feels: "22°C" },
-    curiosities: [
-      { title: "El origen de Avatar", text: "James Cameron visitó Zhangjiajie antes de rodar Avatar. Los pilares de Hallelujah Mountain están modelados directamente sobre las formaciones del parque." },
-      { title: "Primer Parque Forestal Nacional de China", text: "Zhangjiajie fue declarado en 1982 como el primero de su categoría. Hoy hay más de 900 pilares de cuarzo en el parque." },
-      { title: "El ascensor más alto al aire libre", text: "El ascensor Bailong mide 326 m de altura — el doble del Big Ben — y fue el más alto del mundo en su exterior al inaugurarse en 2002." },
-      { title: "380 millones de años de historia geológica", text: "Los pilares de cuarzo se formaron durante el período Devónico, erosionados por agua y viento durante cientos de millones de años." },
-      { title: "Puente de vidrio récord", text: "El puente de cristal de Zhangjiajie (430m de longitud, 300m de altura) fue el más largo y alto del mundo al inaugurarse en 2016." }
-    ],
-    notes: "Por completar — ¿Tianmen Mountain o ruta dentro del parque?"
+    date:11,month:'sep',weekday:'Viernes',city:'Zhangjiajie',theme:'zhangjiajie',emoji:'🏔️',night:'Zhangjiajie',
+    preview:['Tren 07:00 → 09:40','Montañas que inspiraron Avatar'],
+    photo:{url:'https://images.unsplash.com/photo-1537531443994-f03c15e77bbd?w=1200&q=80',cap:'Pilares de cuarzo · Zhangjiajie'},
+    title:'Zhangjiajie · Columnas del Cielo',
+    description:'Tren temprano desde Chongqing. Zhangjiajie: el parque que inspiró las montañas flotantes de Avatar. Pilares de arenisca que emergen entre nubes, una naturaleza que parece generada por ordenador.',
+    transport:['CKG → ZJJ · Tren 07:00–09:40'],
+    hotel:{name:'Avatar Hotel Zhangjiajie',stars:'★★★★',ci:'11 sep',co:'13 sep',room:'Mountain View Suite',ref:'MOCK-ZJJ-003'},
+    weather:{icon:'🌫️',temp:'23°C',cond:'Niebla matinal · Despeja a mediodía',hum:'75%',wind:'6 km/h',rain:'25%',feels:'22°C'},
+    curiosities:[
+      {t:'El origen de Avatar',x:'James Cameron visitó Zhangjiajie antes de rodar Avatar. Las Hallelujah Mountains están modeladas sobre este parque.'},
+      {t:'Primer Parque Forestal Nacional',x:'Zhangjiajie fue declarado en 1982 como el primero de su categoría en China. Hay más de 900 pilares.'},
+      {t:'El ascensor más alto al aire libre',x:'El ascensor Bailong mide 326 m de altura — el doble del Big Ben.'},
+      {t:'380 millones de años de geología',x:'Los pilares de cuarzo se formaron durante el Devónico, erosionados por agua y viento durante cientos de millones de años.'},
+      {t:'Puente de vidrio récord',x:'El puente de cristal (430m de longitud, 300m de altura) fue el más largo y alto del mundo al inaugurarse en 2016.'}
+    ],notes:'Por completar — ¿Tianmen Mountain o ruta Golden Whip Stream?'
   },
   {
-    date: 12, month: "sep", weekday: "Sábado",
-    city: "Zhangjiajie", theme: "zhangjiajie", emoji: "🏔️", night: "Zhangjiajie",
-    preview: ["Día completo en el parque", "Niebla entre los pilares"],
-    photo: { url: "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=1200&q=80", caption: "Senderos entre nubes · Parque Nacional" },
-    title: "Zhangjiajie · Entre Nubes",
-    description: "Día completo para explorar el parque. El funicular de Bailong, los senderos entre pilares, el puente de vidrio. Si la niebla matinal cubre los picos, la experiencia es alucinante — los pilares flotan sobre un mar de nubes.",
-    transport: [],
-    hotel: { name: "Avatar Hotel Zhangjiajie", stars: "★★★★", checkin: "11 sep", checkout: "13 sep", room: "Mountain View Suite", ref: "MOCK-ZJJ-003" },
-    weather: { icon: "🌤️", temp: "24°C", condition: "Parcialmente nublado", humidity: "70%", wind: "8 km/h", rain: "15%", feels: "23°C" },
-    curiosities: [
-      { title: "La mina de oro del turismo chino", text: "Zhangjiajie recibe más de 50 millones de turistas al año — más que Alemania entera." },
-      { title: "El bosque de cuarzo más denso", text: "La concentración de pilares de arenisca es única en el mundo. La roca principal es casi puro cuarzo silíceo." },
-      { title: "Los monos macacos", text: "El parque alberga la mayor colonia de macacos rhesus del sur de China. Son tan audaces que roban comida a los turistas." },
-      { title: "La flora única del parque", text: "Más de 3.000 especies vegetales distintas, incluyendo ginkgo y cycas que llevan sin cambiar 200 millones de años." },
-      { title: "Sin coches en el parque", text: "El tráfico rodado está prohibido dentro del parque. Solo funiculares, ascensores y pies." }
-    ],
-    notes: "Buscar el sendero del Golden Whip Stream — 7,5 km entre pilares, sin multitudes si se va temprano."
+    date:12,month:'sep',weekday:'Sábado',city:'Zhangjiajie',theme:'zhangjiajie',emoji:'🏔️',night:'Zhangjiajie',
+    preview:['Día completo en el parque','Niebla entre los pilares'],
+    photo:{url:'https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=1200&q=80',cap:'Mar de nubes · Parque Nacional'},
+    title:'Zhangjiajie · Entre Nubes',
+    description:'Día completo para explorar. El funicular de Bailong, los senderos entre pilares, el puente de vidrio. Si la niebla matinal cubre los picos, los pilares flotan sobre un mar de nubes.',
+    transport:[],
+    hotel:{name:'Avatar Hotel Zhangjiajie',stars:'★★★★',ci:'11 sep',co:'13 sep',room:'Mountain View Suite',ref:'MOCK-ZJJ-003'},
+    weather:{icon:'🌤️',temp:'24°C',cond:'Parcialmente nublado',hum:'70%',wind:'8 km/h',rain:'15%',feels:'23°C'},
+    curiosities:[
+      {t:'50 millones de turistas al año',x:'Zhangjiajie recibe más visitantes anuales que Alemania entera como destino turístico.'},
+      {t:'El bosque de cuarzo más denso',x:'La concentración de pilares de arenisca es única en el mundo. La roca es casi puro cuarzo silíceo.'},
+      {t:'Macacos audaces',x:'El parque alberga la mayor colonia de macacos rhesus del sur de China. Roban comida a los turistas.'},
+      {t:'3.000 especies vegetales',x:'Incluyendo ginkgo y cycas que llevan sin cambiar 200 millones de años.'},
+      {t:'Sin coches en el parque',x:'El tráfico rodado está prohibido dentro. Solo funiculares, ascensores y senderos.'}
+    ],notes:'Golden Whip Stream: 7,5 km entre pilares, sin multitudes si se va temprano.'
   },
   {
-    date: 13, month: "sep", weekday: "Domingo",
-    city: "Furong", theme: "furong", emoji: "🌿", night: "Furong",
-    preview: ["Autobús mediodía (~3h)", "Pueblo Tujia suspendido en el tiempo"],
-    photo: { url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80", caption: "Pueblo Tujia · Diaojiaolou" },
-    title: "Furong · El Pueblo Suspendido",
-    description: "Autobús a mediodía hacia Furong, un pueblo Tujia literalmente colgado sobre un precipicio. Casas de madera antiquísimas, ambiente tranquilo y la sensación de haber encontrado algo que la mayoría de turistas se salta.",
-    transport: ["ZJJ → Furong · Autobús mediodía ~3h"],
-    hotel: { name: "Furong Cliff House", stars: "★★★", checkin: "13 sep", checkout: "14 sep", room: "Casa tradicional Tujia", ref: "MOCK-FRG-004" },
-    weather: { icon: "🌤️", temp: "25°C", condition: "Soleado con brisa", humidity: "65%", wind: "10 km/h", rain: "10%", feels: "24°C" },
-    curiosities: [
-      { title: "Los Tujia, minoría étnica ancestral", text: "Los Tujia son una de las 55 minorías étnicas reconocidas en China, con lengua propia no relacionada con el chino mandarín." },
-      { title: "Diaojiaolou · Casas sobre pilotes", text: "El diseño típico Tujia construye las casas sobre pilotes en el borde del precipicio para aprovechar el terreno sin talar árboles." },
-      { title: "Sin clavos metálicos", text: "Las casas tradicionales Tujia se construyen íntegramente con madera ensamblada sin ningún clavo metálico — solo mortajas y espigas." },
-      { title: "Redescubierto en los 90", text: "Furong era prácticamente inaccesible hasta que se construyó la carretera en los años 90. Antes solo se llegaba a pie o por río." },
-      { title: "El río Youshui como frontera", text: "El río que rodea el pueblo fue durante siglos la frontera entre territorios del Imperio y zonas autónomas de las minorías del sur." }
-    ],
-    notes: "Pueblo pequeño — confirmar alojamiento con antelación. Llevar efectivo."
+    date:13,month:'sep',weekday:'Domingo',city:'Furong',theme:'furong',emoji:'🌿',night:'Furong',
+    preview:['Autobús mediodía (~3h)','Pueblo Tujia suspendido en el tiempo'],
+    photo:{url:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80',cap:'Diaojiaolou · Pueblo Tujia'},
+    title:'Furong · El Pueblo Suspendido',
+    description:'Autobús a mediodía hacia Furong, un pueblo Tujia colgado sobre un precipicio. Casas de madera antiquísimas, ambiente tranquilo y la sensación de haber encontrado algo que la mayoría de turistas se salta.',
+    transport:['ZJJ → Furong · Autobús mediodía ~3h'],
+    hotel:{name:'Furong Cliff House',stars:'★★★',ci:'13 sep',co:'14 sep',room:'Casa tradicional Tujia',ref:'MOCK-FRG-004'},
+    weather:{icon:'🌤️',temp:'25°C',cond:'Soleado con brisa',hum:'65%',wind:'10 km/h',rain:'10%',feels:'24°C'},
+    curiosities:[
+      {t:'Los Tujia, minoría ancestral',x:'Una de las 55 minorías étnicas reconocidas en China, con lengua propia no relacionada con el mandarín.'},
+      {t:'Diaojiaolou · Casas sobre pilotes',x:'El diseño típico Tujia construye sobre el borde del precipicio para aprovechar el terreno sin talar.'},
+      {t:'Sin clavos metálicos',x:'Las casas tradicionales Tujia se ensamblan sin ningún clavo — solo mortajas y espigas de madera.'},
+      {t:'Redescubierto en los 90',x:'Furong era prácticamente inaccesible hasta que se construyó la carretera en los años 90.'},
+      {t:'El río Youshui como frontera',x:'Fue durante siglos la frontera entre el Imperio y los territorios autónomos del sur.'}
+    ],notes:'Pueblo pequeño — llevar efectivo. Confirmar alojamiento con antelación.'
   },
   {
-    date: 14, month: "sep", weekday: "Lunes",
-    city: "Fenghuang", theme: "fenghuang", emoji: "🏮", night: "Fenghuang",
-    preview: ["Autobús desde Furong (~2h)", "La Ciudad Fénix"],
-    photo: { url: "https://images.unsplash.com/photo-1598256024095-42fa0cd0dad9?w=1200&q=80", caption: "Río Tuojiang · Fenghuang al atardecer" },
-    title: "Fenghuang · Ciudad Fénix",
-    description: "Fenghuang — la Ciudad Fénix. Casas de madera sobre pilotes en el río Tuojiang, puentes de piedra, faroles rojos reflejados en el agua al atardecer. Una ciudad antigua conservada como si el tiempo se hubiera detenido en la dinastía Ming. Uno de los paisajes más fotografiados de China.",
-    transport: ["Furong → Fenghuang · Autobús ~2h"],
-    hotel: { name: "Tuojiang Riverside Inn", stars: "★★★", checkin: "14 sep", checkout: "15 sep", room: "Habitación con vista al río", ref: "MOCK-FHG-005" },
-    weather: { icon: "🌅", temp: "25°C", condition: "Soleado · Perfecto para fotos", humidity: "60%", wind: "8 km/h", rain: "5%", feels: "24°C" },
-    curiosities: [
-      { title: "El nombre", text: "Fenghuang significa 'Fénix' en chino. La ciudad recibe el nombre de dos colinas que, vistas desde el aire, recuerdan las alas del ave mítica." },
-      { title: "Shen Congwen", text: "El escritor Shen Congwen nació aquí en 1902 y fue nominado al Nobel de Literatura. Su novela 'La ciudad fronteriza' transcurre en este río." },
-      { title: "La muralla de 1704", text: "La muralla que rodea el casco histórico fue construida durante la dinastía Qing en 1704, hace más de 320 años, y sigue en pie." },
-      { title: "Los puentes de salto", text: "Los puentes de piedra irregulares sobre el Tuojiang (con piedras separadas por las que hay que saltar) son únicos en su tipo en China." },
-      { title: "Última ciudad del Imperio", text: "Fenghuang fue durante siglos el último puesto del Imperio chino antes de los territorios no sometidos al sur, con guarnición militar permanente." }
-    ],
-    notes: "Atardecer junto al río es el momento más especial. Llegar a hora de luz."
+    date:14,month:'sep',weekday:'Lunes',city:'Fenghuang',theme:'fenghuang',emoji:'🏮',night:'Fenghuang',
+    preview:['Autobús desde Furong (~2h)','La Ciudad Fénix'],
+    photo:{url:'https://images.unsplash.com/photo-1601931935821-5fbe71157695?w=1200&q=80',cap:'Río Tuojiang · Fenghuang al atardecer'},
+    title:'Fenghuang · Ciudad Fénix',
+    description:'Fenghuang. Casas de madera sobre pilotes en el río Tuojiang, puentes de piedra, faroles rojos al atardecer. Una ciudad antigua conservada como si el tiempo se hubiera detenido en la dinastía Ming.',
+    transport:['Furong → Fenghuang · Autobús ~2h'],
+    hotel:{name:'Tuojiang Riverside Inn',stars:'★★★',ci:'14 sep',co:'15 sep',room:'Vista al río',ref:'MOCK-FHG-005'},
+    weather:{icon:'🌅',temp:'25°C',cond:'Soleado · Perfecto para fotos',hum:'60%',wind:'8 km/h',rain:'5%',feels:'24°C'},
+    curiosities:[
+      {t:'El nombre',x:'Fenghuang significa "Fénix". Dos colinas a sus lados, vistas desde el aire, recuerdan las alas del ave mítica.'},
+      {t:'Shen Congwen',x:'El escritor Shen Congwen nació aquí en 1902 y fue nominado al Nobel. Su novela "La ciudad fronteriza" transcurre en este río.'},
+      {t:'La muralla de 1704',x:'La muralla que rodea el casco histórico fue construida durante la dinastía Qing, hace más de 320 años.'},
+      {t:'Los puentes de salto',x:'Los puentes irregulares sobre el Tuojiang — con piedras separadas por las que hay que saltar — son únicos en China.'},
+      {t:'Último puesto del Imperio',x:'Fenghuang fue durante siglos el límite del Imperio chino, con guarnición militar permanente.'}
+    ],notes:'Atardecer junto al río: el momento más especial. Llegar con luz.'
   },
   {
-    date: 15, month: "sep", weekday: "Martes",
-    city: "Shanghái", theme: "shanghai", emoji: "🌃", night: "Shanghái",
-    preview: ["Tren 08:39 → 15:09 vía Huaihua", "Bienvenidos al futuro"],
-    photo: { url: "https://images.unsplash.com/photo-1474487548417-781cb6d646b4?w=1200&q=80", caption: "El Bund · Shanghái de noche" },
-    title: "SHANGHÁI · SISTEMA INICIADO",
-    description: "De la China milenaria al siglo XXII en un tren. Salida 08:39 desde Fenghuang, llegada 15:09 a Shanghái. El skyline del Bund y Pudong aparece como una alucinación después de días en pueblos de madera. La ciudad más densa, más rápida y más eléctrica del viaje.",
-    transport: ["Fenghuang → SHA · Tren 08:39–15:09 (vía Huaihua)"],
-    hotel: { name: "The Peninsula Shanghai", stars: "★★★★★", checkin: "15 sep", checkout: "19 sep", room: "Deluxe Bund View Room", ref: "MOCK-SHA-006" },
-    weather: { icon: "🌆", temp: "28°C", condition: "Cálido · Algo brumoso", humidity: "72%", wind: "15 km/h SE", rain: "20%", feels: "31°C" },
-    curiosities: [
-      { title: "El metro más largo del mundo", text: "El metro de Shanghái tiene 831 km de red con 508 estaciones — el más extenso del planeta por delante de Pekín y Londres." },
-      { title: "Capital del jazz en Asia", text: "En los años 30, Shanghái tenía más salas de jazz que Nueva York. El French Concession era el epicentro de la vida nocturna asiática." },
-      { title: "La comunidad judía de la guerra", text: "Entre 1937 y 1941, Shanghái acogió a 25.000 refugiados judíos huyendo del nazismo — la mayor comunidad judía de Asia." },
-      { title: "El Bund fue territorio extranjero", text: "Los edificios del Bund fueron construidos íntegramente por empresas británicas, francesas y americanas entre 1860 y 1940." },
-      { title: "La mayor ciudad del mundo en 1930", text: "Shanghái era la quinta ciudad más grande del mundo en 1930 y la más cosmopolita: 52 nacionalidades distintas con consulado." }
-    ],
-    notes: "Primera tarde: orientarse en el Bund. Reservar cena en el French Concession."
+    date:15,month:'sep',weekday:'Martes',city:'Shanghái',theme:'shanghai',emoji:'🌃',night:'Shanghái',
+    preview:['Tren 08:39 → 15:09 vía Huaihua','Bienvenidos al futuro'],
+    photo:{url:'https://images.unsplash.com/photo-1474487548417-781cb6d646b4?w=1200&q=80',cap:'El Bund · Shanghái de noche'},
+    title:'SHANGHÁI · SISTEMA INICIADO',
+    description:'De la China milenaria al siglo XXII en un tren. El skyline del Bund aparece como una alucinación después de días en pueblos de madera. La ciudad más densa, más rápida y más eléctrica del viaje.',
+    transport:['Fenghuang → SHA · Tren 08:39–15:09 (vía Huaihua)'],
+    hotel:{name:'The Peninsula Shanghai',stars:'★★★★★',ci:'15 sep',co:'19 sep',room:'Deluxe Bund View',ref:'MOCK-SHA-006'},
+    weather:{icon:'🌆',temp:'28°C',cond:'Cálido · Algo brumoso',hum:'72%',wind:'15 km/h SE',rain:'20%',feels:'31°C'},
+    curiosities:[
+      {t:'El metro más largo del mundo',x:'831 km de red, 508 estaciones — el más extenso del planeta, por delante de Pekín y Londres.'},
+      {t:'Capital del jazz asiático',x:'En los años 30, Shanghái tenía más salas de jazz que Nueva York. El French Concession era el epicentro.'},
+      {t:'25.000 refugiados judíos',x:'Entre 1937 y 1941, Shanghái acogió a 25.000 refugiados huyendo del nazismo — la mayor comunidad judía de Asia.'},
+      {t:'El Bund fue territorio extranjero',x:'Sus edificios fueron construidos íntegramente por empresas británicas, francesas y americanas entre 1860 y 1940.'},
+      {t:'5ª ciudad del mundo en 1930',x:'Y la más cosmopolita: 52 nacionalidades distintas con consulado propio en la ciudad.'}
+    ],notes:'Primera tarde: orientarse en el Bund. Reservar cena en el French Concession.'
   },
   {
-    date: 16, month: "sep", weekday: "Miércoles",
-    city: "Shanghái", theme: "shanghai", emoji: "🌃", night: "Shanghái",
-    preview: ["Día completo · Shanghai", "Bund · Pudong · French Concession"],
-    photo: { url: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=1200&q=80", caption: "Pudong · Skyline del futuro" },
-    title: "SHANGHÁI · EXPLORACIÓN",
-    description: "Shanghái tiene capas: la arquitectura colonial del Bund, los rascacielos imposibles de Pudong, los callejones art-déco del French Concession, los jardines de Yu Garden. Cada barrio es un mundo, cada cuadra una sorpresa.",
-    transport: [],
-    hotel: { name: "The Peninsula Shanghai", stars: "★★★★★", checkin: "15 sep", checkout: "19 sep", room: "Deluxe Bund View Room", ref: "MOCK-SHA-006" },
-    weather: { icon: "☀️", temp: "29°C", condition: "Soleado", humidity: "68%", wind: "12 km/h", rain: "8%", feels: "32°C" },
-    curiosities: [
-      { title: "El Tower Oriental Pearl", text: "La Torre de Televisión Oriental (468m), inaugurada en 1994, fue el edificio más alto de China durante una década. Hoy es el 9.º." },
-      { title: "Xintiandi", text: "El barrio de Xintiandi fue una favela hasta 2001. Hoy es el barrio más caro de Shanghái, rehabilitado con arquitectura shikumen tradicional." },
-      { title: "El precio del metro cuadrado", text: "El French Concession es uno de los cinco barrios más caros del mundo en precio por metro cuadrado, por encima de Mayfair o Monaco." },
-      { title: "Yu Garden, el jardín del placer", text: "El Jardín Yu fue construido en 1559 por un funcionario Ming como regalo a sus padres ancianos. Tardó 18 años en completarse." },
-      { title: "Shanghái tiene 24 millones de habitantes", text: "Si fuese un país, sería el 48.º más poblado del mundo, por delante de Australia, Rumania o Países Bajos." }
-    ],
-    notes: "Por completar — ¿Museo de Arte Moderno? ¿Tianzifang? ¿Xintiandi?"
+    date:16,month:'sep',weekday:'Miércoles',city:'Shanghái',theme:'shanghai',emoji:'🌃',night:'Shanghái',
+    preview:['Día completo · Shanghái','Bund · Pudong · French Concession'],
+    photo:{url:'https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=1200&q=80',cap:'Pudong · Skyline del futuro'},
+    title:'SHANGHÁI · EXPLORACIÓN',
+    description:'Shanghái tiene capas: la arquitectura colonial del Bund, los rascacielos imposibles de Pudong, los callejones art-déco del French Concession, los jardines de Yu Garden.',
+    transport:[],
+    hotel:{name:'The Peninsula Shanghai',stars:'★★★★★',ci:'15 sep',co:'19 sep',room:'Deluxe Bund View',ref:'MOCK-SHA-006'},
+    weather:{icon:'☀️',temp:'29°C',cond:'Soleado',hum:'68%',wind:'12 km/h',rain:'8%',feels:'32°C'},
+    curiosities:[
+      {t:'Oriental Pearl Tower',x:'Inaugurada en 1994, fue el edificio más alto de China durante una década. Hoy es el 9.º.'},
+      {t:'Xintiandi',x:'Era una favela hasta 2001. Hoy es el barrio más caro de Shanghái, rehabilitado con arquitectura shikumen.'},
+      {t:'Metro cuadrado de lujo',x:'El French Concession figura entre los cinco barrios más caros del mundo en precio/m², por encima de Mayfair.'},
+      {t:'Yu Garden, 1559',x:'El Jardín Yu fue construido como regalo de un funcionario Ming a sus padres ancianos. Tardó 18 años.'},
+      {t:'24 millones de habitantes',x:'Si fuese un país, sería el 48.º más poblado del mundo, por delante de Australia.'}
+    ],notes:'Por completar — ¿Tianzifang? ¿Xintiandi? ¿Museo de Arte Moderno?'
   },
   {
-    date: 17, month: "sep", weekday: "Jueves",
-    city: "Shanghái", theme: "shanghai", emoji: "🌃", night: "Shanghái",
-    preview: ["Shanghái · Día 3", "La ciudad que no duerme"],
-    photo: { url: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&q=80&sig=sha17", caption: "French Concession · Luces nocturnas" },
-    title: "SHANGHÁI · PROFUNDIDAD",
-    description: "Con dos días encima, Shanghái empieza a revelar sus capas más interesantes: barrios que no salen en las guías, restaurantes donde el menú es solo en chino, la vida del río Huangpu por la noche. La ciudad que siempre tiene otra capa.",
-    transport: [],
-    hotel: { name: "The Peninsula Shanghai", stars: "★★★★★", checkin: "15 sep", checkout: "19 sep", room: "Deluxe Bund View Room", ref: "MOCK-SHA-006" },
-    weather: { icon: "⛅", temp: "27°C", condition: "Parcialmente nublado", humidity: "70%", wind: "18 km/h SE", rain: "25%", feels: "29°C" },
-    curiosities: [
-      { title: "La gastronomía de Shanghái", text: "La cocina shanghainesa es la más dulce de China — el azúcar se añade incluso a platos salados como el cerdo rojo estofado (红烧肉)." },
-      { title: "Longhua, el templo budista vivo", text: "El Templo Longhua data del año 977 d.C. y sigue siendo un lugar de culto activo con más de 100 monjes residentes." },
-      { title: "El Barrio Tilanqiao", text: "El Barrio Judío (Tilanqiao) en Hongkou fue el mayor gueto voluntario de la historia: 25.000 personas en 1 km²." },
-      { title: "Shanghái en la ciencia ficción", text: "La ciudad aparece en más de 50 películas de ciencia ficción como símbolo del futuro: Her, Gravity, Her, Blade Runner 2049." },
-      { title: "El tren maglev más rápido del mundo", text: "El Transrapid de Shanghái, operativo desde 2004, alcanza 431 km/h y conecta el aeropuerto Pudong con la ciudad en 7 minutos." }
-    ],
-    notes: "Por completar — ¿excursión a Suzhou o Hangzhou en un día?"
+    date:17,month:'sep',weekday:'Jueves',city:'Shanghái',theme:'shanghai',emoji:'🌃',night:'Shanghái',
+    preview:['Shanghái · Día 3','La ciudad que siempre tiene otra capa'],
+    photo:{url:'https://images.unsplash.com/photo-1508804052814-cd3ba865a116?w=1200&q=80',cap:'French Concession · Luces nocturnas'},
+    title:'SHANGHÁI · PROFUNDIDAD',
+    description:'Con dos días encima, Shanghái empieza a revelar sus capas más interesantes: barrios que no salen en las guías, restaurantes con menú solo en chino, la vida del río Huangpu por la noche.',
+    transport:[],
+    hotel:{name:'The Peninsula Shanghai',stars:'★★★★★',ci:'15 sep',co:'19 sep',room:'Deluxe Bund View',ref:'MOCK-SHA-006'},
+    weather:{icon:'⛅',temp:'27°C',cond:'Parcialmente nublado',hum:'70%',wind:'18 km/h SE',rain:'25%',feels:'29°C'},
+    curiosities:[
+      {t:'La gastronomía más dulce',x:'La cocina shanghainesa es la más dulce de China — el azúcar se añade incluso a platos salados como el cerdo estofado (红烧肉).'},
+      {t:'Longhua, templo vivo',x:'El Templo Longhua data del año 977 d.C. y sigue siendo lugar de culto activo con más de 100 monjes residentes.'},
+      {t:'El Barrio Judío de Tilanqiao',x:'El mayor gueto voluntario de la historia: 25.000 personas en 1 km² durante la Segunda Guerra Mundial.'},
+      {t:'Shanghái en la ciencia ficción',x:'Aparece en más de 50 películas de ciencia ficción como símbolo del futuro: Her, Blade Runner 2049...'},
+      {t:'El tren maglev más rápido',x:'El Transrapid, operativo desde 2004, alcanza 431 km/h y conecta el aeropuerto con la ciudad en 7 minutos.'}
+    ],notes:'Por completar — ¿excursión a Suzhou en el día?'
   },
   {
-    date: 18, month: "sep", weekday: "Viernes",
-    city: "Shanghái", theme: "shanghai", emoji: "🌃", night: "Shanghái",
-    preview: ["Último día en Shanghái", "Vuelo mañana muy temprano"],
-    photo: { url: "https://images.unsplash.com/photo-1508804052814-cd3ba865a116?w=1200&q=80", caption: "Shanghái · Última noche en el Bund" },
-    title: "SHANGHÁI · ÚLTIMA NOCHE",
-    description: "Último día en Shanghái. Compras pendientes, sitios que quedaron en el tintero, o simplemente sentarse en un café del French Concession a ver pasar la vida. Mañana vuelo muy temprano — hacer maletas antes de la noche.",
-    transport: ["Vuelo mañana: SHA → CAN · 08:50"],
-    hotel: { name: "The Peninsula Shanghai", stars: "★★★★★", checkin: "15 sep", checkout: "19 sep", room: "Deluxe Bund View Room", ref: "MOCK-SHA-006" },
-    weather: { icon: "🌤️", temp: "28°C", condition: "Buena tarde", humidity: "65%", wind: "10 km/h", rain: "10%", feels: "30°C" },
-    curiosities: [
-      { title: "El Huaihai Lu", text: "La calle comercial Huaihai Road tiene más de 6 km de boutiques, cafés y restaurantes — la 5.ª Avenida de Asia." },
-      { title: "El mercado de antigüedades", text: "El Mercado de Fuyou tiene 4 pisos de antigüedades, desde porcelana Ming hasta propaganda maoísta. Regatear es obligatorio." },
-      { title: "El cielo de Shanghái", text: "Shanghái tiene más rascacielos de más de 150m que cualquier otra ciudad del mundo excepto Hong Kong." },
-      { title: "La vida nocturna de Shanghái", text: "Los clubs del Bund y de Xintiandi cierran a las 6am. Shanghái tiene una de las escenas de música electrónica más activas de Asia." },
-      { title: "La pelea del taxi", text: "Los taxis de Shanghái usan taxímetro pero hay que acordar el destino antes — si no hablas chino, muéstrales la dirección escrita." }
-    ],
-    notes: "Despertador muy temprano. Preparar transfer al aeropuerto la noche anterior."
+    date:18,month:'sep',weekday:'Viernes',city:'Shanghái',theme:'shanghai',emoji:'🌃',night:'Shanghái',
+    preview:['Último día en Shanghái','Vuelo mañana muy temprano'],
+    photo:{url:'https://images.unsplash.com/photo-1474487548417-781cb6d646b4?w=1200&q=80&sig=d18',cap:'Shanghái · Última noche en el Bund'},
+    title:'SHANGHÁI · ÚLTIMA NOCHE',
+    description:'Último día. Compras pendientes, sitios que quedaron en el tintero, o simplemente sentarse en un café del French Concession a ver pasar la vida. Mañana vuelo muy temprano.',
+    transport:['Vuelo mañana: SHA → CAN · 08:50'],
+    hotel:{name:'The Peninsula Shanghai',stars:'★★★★★',ci:'15 sep',co:'19 sep',room:'Deluxe Bund View',ref:'MOCK-SHA-006'},
+    weather:{icon:'🌤️',temp:'28°C',cond:'Buena tarde',hum:'65%',wind:'10 km/h',rain:'10%',feels:'30°C'},
+    curiosities:[
+      {t:'Huaihai Lu',x:'La calle comercial Huaihai Road tiene más de 6 km de boutiques, cafés y restaurantes — la 5ª Avenida de Asia.'},
+      {t:'Mercado de Fuyou',x:'4 pisos de antigüedades: desde porcelana Ming hasta propaganda maoísta. Regatear es obligatorio.'},
+      {t:'Más rascacielos que nadie',x:'Shanghái tiene más edificios de más de 150m que cualquier ciudad del mundo excepto Hong Kong.'},
+      {t:'Vida nocturna',x:'Los clubs del Bund cierran a las 6am. Shanghái tiene una de las escenas de música electrónica más activas de Asia.'},
+      {t:'Consejo del taxi',x:'Siempre lleva el destino escrito en chino. Muéstraselo al taxista antes de subir.'}
+    ],notes:'Despertador muy temprano. Preparar transfer al aeropuerto la noche anterior.'
   },
   {
-    date: 19, month: "sep", weekday: "Sábado",
-    city: "Cantón", theme: "canton", emoji: "🌺", night: "Cantón",
-    preview: ["Vuelo 08:50 → llega 11:15", "Guangzhou · Capital gastronómica"],
-    photo: { url: "https://images.unsplash.com/photo-1529824604608-c4bab6870d54?w=1200&q=80", caption: "Guangzhou · Templo de los Seis Banyans" },
-    title: "Cantón · Guangzhou",
-    description: "Vuelo matutino a Cantón (Guangzhou), la capital gastronómica de China. La cocina cantonesa es la más refinada del país: dim sum de calidad imposible, mariscos, pato al horno. Un día y noche para disfrutar antes del gran vuelo de vuelta.",
-    transport: ["SHA → CAN · 08:50–11:15"],
-    hotel: { name: "Four Points by Sheraton Guangzhou", stars: "★★★★", checkin: "19 sep", checkout: "20 sep", room: "Superior Room", ref: "MOCK-CAN-007" },
-    weather: { icon: "☀️", temp: "31°C", condition: "Cálido y húmedo", humidity: "78%", wind: "12 km/h S", rain: "15%", feels: "35°C" },
-    curiosities: [
-      { title: "El único puerto abierto al mundo", text: "Durante más de 1.000 años, Cantón fue el único puerto de China autorizado para comerciar con el exterior — el Sistema Cantón." },
-      { title: "El origen del dim sum", text: "El dim sum nació en las teahouses cantonesas hace más de 2.000 años como pequeños bocados para acompañar el té de la mañana." },
-      { title: "La diáspora cantonesa", text: "Más de 30 millones de cantoneses viven fuera de China. La mayoría de chinos en Europa, América y Australia descienden de esta región." },
-      { title: "La Feria de Cantón", text: "La Canton Trade Fair es la mayor feria de exportación del mundo, celebrada dos veces al año desde 1957 sin interrupciones." },
-      { title: "Guangzhou, ciudad eterna del comercio", text: "El primer contacto árabe con China fue en Cantón en el siglo VII. La mezquita de Huaisheng, construida en 627 d.C., es una de las más antiguas del mundo." }
-    ],
-    notes: "Por completar — dim sum imprescindible. ¿Templo de los Seis Banyan? ¿Shamian Island?"
+    date:19,month:'sep',weekday:'Sábado',city:'Cantón',theme:'canton',emoji:'🌺',night:'Cantón',
+    preview:['Vuelo 08:50 → llega 11:15','Guangzhou · Capital gastronómica'],
+    photo:{url:'https://images.unsplash.com/photo-1529824604608-c4bab6870d54?w=1200&q=80',cap:'Guangzhou · Templo de los Seis Banyans'},
+    title:'Cantón · Guangzhou',
+    description:'Vuelo matutino a Cantón, la capital gastronómica de China. La cocina cantonesa es la más refinada: dim sum de calidad imposible, mariscos, pato al horno. Un día y noche para disfrutar antes del vuelo de vuelta.',
+    transport:['SHA → CAN · 08:50–11:15'],
+    hotel:{name:'Four Points by Sheraton Guangzhou',stars:'★★★★',ci:'19 sep',co:'20 sep',room:'Superior Room',ref:'MOCK-CAN-007'},
+    weather:{icon:'☀️',temp:'31°C',cond:'Cálido y húmedo',hum:'78%',wind:'12 km/h S',rain:'15%',feels:'35°C'},
+    curiosities:[
+      {t:'El único puerto abierto al mundo',x:'Durante más de 1.000 años, Cantón fue el único puerto de China autorizado para el comercio exterior.'},
+      {t:'El origen del dim sum',x:'El dim sum nació en las teahouses cantonesas hace más de 2.000 años como bocados para acompañar el té.'},
+      {t:'30 millones de cantoneses en el exterior',x:'La mayoría de chinos en Europa, América y Australia descienden de esta región.'},
+      {t:'La Feria de Cantón',x:'La mayor feria de exportación del mundo, celebrada dos veces al año desde 1957 sin interrupciones.'},
+      {t:'La mezquita más antigua de China',x:'La de Huaisheng fue construida en 627 d.C. por comerciantes árabes — una de las más antiguas del mundo.'}
+    ],notes:'Dim sum imprescindible para desayunar. ¿Templo de los Seis Banyan? ¿Shamian Island?'
   },
   {
-    date: 20, month: "sep", weekday: "Domingo",
-    city: "Vuelo", theme: "avion", emoji: "✈️", night: "Madrid",
-    preview: ["Vuelo 09:45 → Madrid 18:15", "Fin del viaje"],
-    photo: { url: "https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=1200&q=80", caption: "Volviendo a casa · Hasta la próxima" },
-    title: "Vuelta a Casa",
-    description: "El último amanecer en China. Vuelo a las 09:45 desde Cantón hacia Madrid, aterrizando a las 18:15. El tiempo en el avión para procesar 16 días de China: emperadores, montañas imposibles, niebla de Chongqing, neon de Shanghái, faroles en el agua. Y ya estar pensando en la próxima.",
-    transport: ["CAN → MAD · 09:45–18:15"],
-    hotel: null,
-    weather: null,
-    curiosities: [
-      { title: "16 días, 8 destinos", text: "Del Imperio a la modernidad, de la niebla al neon. Un itinerario que cruza 3.000 años de historia china." },
-      { title: "Distancia total recorrida", text: "Madrid→Pekín→Chongqing→Zhangjiajie→Fenghuang→Shanghái→Cantón→Madrid: aproximadamente 25.000 km." },
-      { title: "El jetlag de vuelta", text: "La ruta de vuelta hacia el oeste es la peor para el jetlag: llegaréis a casa con 6 horas de diferencia y el cuerpo confundido." },
-      { title: "La regla de las 3 semanas", text: "Los expertos en viajes dicen que los mejores recuerdos cristalizan a las tres semanas de volver. Preparad el álbum de fotos." },
-      { title: "Ya hay que volver", text: "China tiene 34 provincias, 55 minorías étnicas y 5.000 años de historia. Quedan por ver: Yunnan, Tibet, Guilin, Chengdu..." }
-    ],
-    notes: "Transfer al aeropuerto a primera hora. Guardar la última moneda de yuan como recuerdo."
+    date:20,month:'sep',weekday:'Domingo',city:'Vuelo',theme:'avion',emoji:'✈️',night:'Madrid',
+    preview:['Vuelo 09:45 → Madrid 18:15','Fin del viaje · Hasta la próxima'],
+    photo:{url:'https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=1200&q=80',cap:'Volviendo a casa'},
+    title:'Vuelta a Casa',
+    description:'El último amanecer en China. Vuelo a las 09:45 hacia Madrid, llegando a las 18:15. El tiempo en el avión para procesar 16 días: emperadores, montañas imposibles, niebla de Chongqing, neon de Shanghái, faroles en el agua.',
+    transport:['CAN → MAD · 09:45–18:15'],
+    hotel:null,weather:null,
+    curiosities:[
+      {t:'16 días, 8 destinos',x:'Del Imperio a la modernidad, de la niebla al neon. Un itinerario que cruza 3.000 años de historia.'},
+      {t:'~25.000 km recorridos',x:'MAD→PEK→CKG→ZJJ→Fenghuang→SHA→CAN→MAD. Casi dos tercios de vuelta al mundo.'},
+      {t:'El jetlag de vuelta',x:'La ruta hacia el oeste es la peor: llegaréis con el cuerpo en la madrugada china.'},
+      {t:'Las 3 semanas de los recuerdos',x:'Los expertos dicen que los mejores recuerdos cristalizan a las tres semanas de volver. Preparad el álbum.'},
+      {t:'China tiene mucho más',x:'Yunnan, Tibet, Guilin, Xi\'an, Chengdu... Quedan pendientes. Hay excusa para volver.'}
+    ],notes:'Guardar la última moneda de yuan como recuerdo.'
   }
 ];
 
-/* ═══════════════════════════════════════════
-   RENDER
-═══════════════════════════════════════════ */
-function buildCard(day) {
+const CITIES = [
+  {id:'beijing',name:'Pekín',theme:'beijing',emoji:'🏯',coords:[39.9042,116.4074],color:'#d4a017',
+   dayIndices:[1,2],transport:'2 noches · Vuelo MAD→PEK',
+   photo:'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=300&q=70'},
+  {id:'chongqing',name:'Chongqing',theme:'chongqing',emoji:'🌶️',coords:[29.5630,106.5516],color:'#ff4d00',
+   dayIndices:[4,5],transport:'2 noches · Vuelo PEK→CKG',
+   photo:'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=300&q=70'},
+  {id:'zhangjiajie',name:'Zhangjiajie',theme:'zhangjiajie',emoji:'🏔️',coords:[29.1252,110.4791],color:'#5dba6e',
+   dayIndices:[6,7],transport:'2 noches · Tren desde Chongqing',
+   photo:'https://images.unsplash.com/photo-1537531443994-f03c15e77bbd?w=300&q=70'},
+  {id:'furong',name:'Furong',theme:'furong',emoji:'🌿',coords:[28.9184,110.0158],color:'#e8945a',
+   dayIndices:[8],transport:'1 noche · Autobús desde Zhangjiajie',
+   photo:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=70'},
+  {id:'fenghuang',name:'Fenghuang',theme:'fenghuang',emoji:'🏮',coords:[27.9487,109.5988],color:'#c0392b',
+   dayIndices:[9],transport:'1 noche · Autobús desde Furong',
+   photo:'https://images.unsplash.com/photo-1601931935821-5fbe71157695?w=300&q=70'},
+  {id:'shanghai',name:'Shanghái',theme:'shanghai',emoji:'🌃',coords:[31.2304,121.4737],color:'#00ffcc',
+   dayIndices:[10,11,12,13],transport:'4 noches · Tren desde Fenghuang',
+   photo:'https://images.unsplash.com/photo-1474487548417-781cb6d646b4?w=300&q=70'},
+  {id:'canton',name:'Cantón',theme:'canton',emoji:'🌺',coords:[23.1291,113.2644],color:'#ff6b35',
+   dayIndices:[14],transport:'1 noche · Vuelo SHA→CAN',
+   photo:'https://images.unsplash.com/photo-1529824604608-c4bab6870d54?w=300&q=70'},
+];
+
+/* ═══ STORAGE ═══ */
+const S = {
+  get:(k)=>{ try{return JSON.parse(localStorage.getItem('china26_'+k))||null}catch{return null} },
+  set:(k,v)=>{ try{localStorage.setItem('china26_'+k,JSON.stringify(v))}catch(e){console.warn('Storage full',e)} },
+};
+
+/* ═══ TABS ═══ */
+let mapInited = false;
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));
+  const panel = document.getElementById('tab-'+id);
+  if(panel) panel.classList.add('active');
+  if(id==='map' && !mapInited){ setTimeout(initMap,50); mapInited=true; }
+  if(id==='reviews') renderReviews();
+  if(id==='expenses') renderExpenses();
+  if(id==='journal') renderJournalPicker();
+  history.replaceState(null,'','#'+id);
+}
+document.querySelectorAll('.tab-btn').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+
+/* ═══ CALENDAR ═══ */
+function buildCard(day, idx) {
   const card = document.createElement('div');
-  card.className = `day-card theme-${day.theme}`;
+  card.className = `day-card t-${day.theme}`;
 
-  const previewItems = day.preview.map(p =>
-    `<div class="preview-item"><div class="preview-dot"></div><span>${p}</span></div>`
-  ).join('');
+  const prevs = day.preview.map(p=>`<div class="prev-item"><div class="prev-dot"></div><span>${p}</span></div>`).join('');
+  const tports = day.transport.length ? `<div class="exp-transport">${day.transport.map(t=>`<span class="tport-tag">⬡ ${t}</span>`).join('')}</div>` : '';
 
-  // Transport
-  const transportHTML = day.transport.length
-    ? `<div class="expanded-transport">${day.transport.map(t => `<span class="transport-tag">⬡ ${t}</span>`).join('')}</div>`
-    : '';
-
-  // Hotel
-  const hotelHTML = day.hotel ? `
-    <div class="hotel-card">
-      <div class="section-label">🏨 Hotel <span class="mock-badge">MOCK</span></div>
+  const hotelH = day.hotel ? `
+    <div class="hotel-box">
+      <div class="sec-label">🏨 Hotel <span class="mock">MOCK</span></div>
       <div class="hotel-name">${day.hotel.name}</div>
       <div class="hotel-stars">${day.hotel.stars}</div>
-      <div class="hotel-row"><span class="hotel-key">Check-in</span><span class="hotel-val">${day.hotel.checkin}</span></div>
-      <div class="hotel-row"><span class="hotel-key">Check-out</span><span class="hotel-val">${day.hotel.checkout}</span></div>
-      <div class="hotel-row"><span class="hotel-key">Habitación</span><span class="hotel-val">${day.hotel.room}</span></div>
-      <div class="hotel-confirmation">REF: ${day.hotel.ref}</div>
+      <div class="hotel-row"><span class="hotel-k">Check-in</span><span class="hotel-v">${day.hotel.ci}</span></div>
+      <div class="hotel-row"><span class="hotel-k">Check-out</span><span class="hotel-v">${day.hotel.co}</span></div>
+      <div class="hotel-row"><span class="hotel-k">Habitación</span><span class="hotel-v">${day.hotel.room}</span></div>
+      <div class="hotel-ref">REF: ${day.hotel.ref}</div>
     </div>` : '';
 
-  // Weather
-  const weatherHTML = day.weather ? `
-    <div class="weather-card">
-      <div class="section-label">🌤 Tiempo en Septiembre <span class="mock-badge">MOCK</span></div>
-      <div class="weather-main">
-        <div class="weather-icon">${day.weather.icon}</div>
-        <div>
-          <div class="weather-temp">${day.weather.temp}</div>
-          <div class="weather-condition">${day.weather.condition}</div>
-        </div>
+  const wxH = day.weather ? `
+    <div class="weather-box">
+      <div class="sec-label">🌤 Septiembre <span class="mock">HISTÓRICO</span></div>
+      <div class="wx-main">
+        <div class="wx-icon">${day.weather.icon}</div>
+        <div><div class="wx-temp">${day.weather.temp}</div><div class="wx-cond">${day.weather.cond}</div></div>
       </div>
-      <div class="weather-details">
-        <div class="weather-detail-item"><div class="weather-detail-key">Humedad</div><div class="weather-detail-val">${day.weather.humidity}</div></div>
-        <div class="weather-detail-item"><div class="weather-detail-key">Viento</div><div class="weather-detail-val">${day.weather.wind}</div></div>
-        <div class="weather-detail-item"><div class="weather-detail-key">Lluvia</div><div class="weather-detail-val">${day.weather.rain}</div></div>
-        <div class="weather-detail-item"><div class="weather-detail-key">Sensación</div><div class="weather-detail-val">${day.weather.feels}</div></div>
+      <div class="wx-details">
+        <div class="wx-di"><div class="wx-dk">Humedad</div><div class="wx-dv">${day.weather.hum}</div></div>
+        <div class="wx-di"><div class="wx-dk">Viento</div><div class="wx-dv">${day.weather.wind}</div></div>
+        <div class="wx-di"><div class="wx-dk">Lluvia</div><div class="wx-dv">${day.weather.rain}</div></div>
+        <div class="wx-di"><div class="wx-dk">Sensación</div><div class="wx-dv">${day.weather.feels}</div></div>
       </div>
-      <div class="weather-note">Datos históricos de septiembre. Conexión a API en desarrollo.</div>
+      <div class="wx-note">Conectar a API live: openweathermap.org</div>
     </div>` : '';
 
-  // Grid (hotel + weather)
-  const gridHTML = (hotelHTML || weatherHTML)
-    ? `<div class="expanded-grid">${hotelHTML}${weatherHTML}</div>` : '';
+  const gridH = (hotelH||wxH) ? `<div class="exp-grid">${hotelH}${wxH}</div>` : '';
 
-  // Curiosities
-  const curiositiesHTML = day.curiosities.map((c, i) => `
-    <div class="curiosity-item">
-      <div class="curiosity-num">${i + 1}</div>
-      <div class="curiosity-body">
-        <div class="curiosity-title">${c.title}</div>
-        <div class="curiosity-text">${c.text}</div>
-      </div>
+  const curioH = day.curiosities.map((c,i)=>`
+    <div class="curio-item">
+      <div class="curio-n">${i+1}</div>
+      <div><div class="curio-title">${c.t}</div><div class="curio-text">${c.x}</div></div>
     </div>`).join('');
 
-  // Notes
-  const notesHTML = day.notes ? `
-    <div class="expanded-notes">
-      <div class="expanded-notes-title">Notas</div>
-      <div class="expanded-notes-body">${day.notes}</div>
-    </div>` : '';
+  const notesH = day.notes ? `<div class="exp-notes"><div class="exp-notes-t">Notas</div><div class="exp-notes-b">${day.notes}</div></div>` : '';
 
   card.innerHTML = `
-    <div class="card-header">
-      <div class="card-date-block">
-        <div class="card-day-num">${day.date}</div>
-        <div class="card-weekday">${day.weekday} ${day.month}</div>
-      </div>
-      <div class="card-city-badge">
-        <span class="city-emoji-badge">${day.emoji}</span>
-        <span class="city-name">${day.city}</span>
-        <span class="card-night-badge">🌙 ${day.night}</span>
+    <div class="card-head">
+      <div><div class="card-num">${day.date}</div><div class="card-wd">${day.weekday} ${day.month}</div></div>
+      <div class="card-right">
+        <span style="font-size:1.2rem">${day.emoji}</span>
+        <span class="card-city">${day.city}</span>
+        <span class="card-night">🌙 ${day.night}</span>
       </div>
     </div>
-    <div class="card-divider"></div>
-    <div class="card-preview">${previewItems}</div>
-    <div class="card-expand-hint">· click para expandir ·</div>
-
-    <div class="day-expanded">
-      <div class="photo-wrapper">
-        <img class="expanded-photo" src="${day.photo.url}" alt="${day.city}" loading="lazy" onerror="this.style.display='none'">
-        <div class="photo-caption">${day.photo.caption}</div>
+    <div class="card-div"></div>
+    <div class="card-prev">${prevs}</div>
+    <div class="card-hint">· click para expandir ·</div>
+    <div class="day-exp">
+      <div class="exp-photo-wrap">
+        <img class="exp-photo" src="${day.photo.url}" loading="lazy" onerror="this.style.display='none'" alt="${day.city}">
+        <div class="exp-photo-cap">${day.photo.cap}</div>
       </div>
-      <div class="expanded-body">
-        <div class="expanded-title" data-text="${day.title}">${day.title}</div>
-        <div class="expanded-description">${day.description}</div>
-        ${transportHTML}
-        ${gridHTML}
-        <div class="curiosities-section">
-          <div class="section-label">📜 Curiosidades históricas</div>
-          <div class="curiosities-grid">${curiositiesHTML}</div>
+      <div class="exp-body">
+        <div class="exp-title" data-t="${day.title}">${day.title}</div>
+        <div class="exp-desc">${day.description}</div>
+        ${tports}${gridH}
+        <div class="curio-sec">
+          <div class="sec-label">📜 Curiosidades históricas</div>
+          <div class="curio-grid">${curioH}</div>
         </div>
-        ${notesHTML}
+        ${notesH}
+        <div style="margin-top:16px;padding:12px;background:rgba(0,0,0,.2);border-radius:4px;font-size:.78rem;color:var(--text2)">
+          📖 <a href="#" onclick="switchTab('journal');setTimeout(()=>selectJDay(${idx}),100);return false;" style="color:var(--accent);text-decoration:none">Ver notas en el Cuaderno →</a>
+        </div>
         <div class="close-hint" onclick="closeCard(this)">▲ cerrar</div>
       </div>
-    </div>
-  `;
+    </div>`;
 
-  card.querySelector('.card-header').addEventListener('click', () => toggleCard(card));
-  card.querySelector('.card-preview').addEventListener('click', () => toggleCard(card));
-  card.querySelector('.card-expand-hint').addEventListener('click', () => toggleCard(card));
-
+  // click to open (not on already-open card)
+  ['card-head','card-prev','card-hint'].forEach(cls=>{
+    card.querySelector('.'+cls).addEventListener('click',()=>toggleCard(card));
+  });
   return card;
 }
 
-function toggleCard(card) {
-  const isOpen = card.classList.contains('open');
-  document.querySelectorAll('.day-card.open').forEach(c => c.classList.remove('open'));
-  if (!isOpen) {
+function toggleCard(card){
+  const wasOpen = card.classList.contains('open');
+  document.querySelectorAll('.day-card.open').forEach(c=>c.classList.remove('open'));
+  if(!wasOpen){
     card.classList.add('open');
-    setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'start'}),50);
   }
 }
+function closeCard(btn){ btn.closest('.day-card').classList.remove('open'); }
 
-function closeCard(btn) {
-  btn.closest('.day-card').classList.remove('open');
+window.goToDay = function(idx){
+  switchTab('calendar');
+  setTimeout(()=>{
+    const cards = document.querySelectorAll('.day-card');
+    const card = cards[idx];
+    if(!card) return;
+    document.querySelectorAll('.day-card.open').forEach(c=>c.classList.remove('open'));
+    card.classList.add('open');
+    setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'start'}),80);
+  },150);
+};
+
+/* ═══ MAP ═══ */
+function initMap(){
+  const map = L.map('leaflet-map',{center:[29,111],zoom:5,zoomControl:true,attributionControl:true});
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'©<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ©<a href="https://carto.com/">CARTO</a>',
+    maxZoom:18,subdomains:'abcd'
+  }).addTo(map);
+
+  // Route lines
+  const flightStyle = {color:'#7eb8f7',weight:1.5,dashArray:'8,6',opacity:.55};
+  const trainStyle  = {color:'rgba(200,169,110,.55)',weight:1.8,opacity:.8};
+  const busStyle    = {color:'#e8945a',weight:1.5,dashArray:'3,5',opacity:.6};
+
+  L.polyline([[39.9042,116.4074],[29.5630,106.5516]],flightStyle).addTo(map); // BJS→CKG flight
+  L.polyline([[29.5630,106.5516],[29.1252,110.4791]],trainStyle).addTo(map);  // CKG→ZJJ train
+  L.polyline([[29.1252,110.4791],[28.9184,110.0158]],busStyle).addTo(map);    // ZJJ→Furong bus
+  L.polyline([[28.9184,110.0158],[27.9487,109.5988]],busStyle).addTo(map);    // Furong→FHG bus
+  L.polyline([[27.9487,109.5988],[31.2304,121.4737]],trainStyle).addTo(map);  // FHG→SHA train
+  L.polyline([[31.2304,121.4737],[23.1291,113.2644]],flightStyle).addTo(map); // SHA→CAN flight
+
+  // City markers & popups
+  CITIES.forEach(city=>{
+    const icon = L.divIcon({
+      className:'',
+      html:`<div style="width:42px;height:42px;border-radius:50%;background:${city.color}1a;border:2px solid ${city.color};display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 0 18px ${city.color}55,0 2px 8px rgba(0,0,0,.5);cursor:pointer;transition:transform .2s">${city.emoji}</div>`,
+      iconSize:[42,42],iconAnchor:[21,21],popupAnchor:[0,-24]
+    });
+
+    const dayLinks = city.dayIndices.map(i=>{
+      const d = DAYS[i];
+      return `<a class="pop-day-link" onclick="window.goToDay(${i});return false;" href="#">${d.date} sep · ${d.preview[0]}</a>`;
+    }).join('');
+
+    const popupContent = `
+      <div style="width:220px">
+        <img class="pop-photo" src="${city.photo}" onerror="this.style.display='none'" alt="${city.name}">
+        <div class="pop-city">${city.emoji} ${city.name}</div>
+        <div class="pop-sub">${city.transport}</div>
+        <div class="pop-days">${dayLinks}</div>
+      </div>`;
+
+    L.marker(city.coords,{icon})
+      .addTo(map)
+      .bindPopup(popupContent,{maxWidth:240,className:'dark-popup'});
+  });
+
+  setTimeout(()=>map.invalidateSize(),200);
 }
 
-const calendar = document.getElementById('calendar');
-days.forEach(day => calendar.appendChild(buildCard(day)));
+/* ═══ REVIEWS ═══ */
+const TYPE_LABELS = {food:'🍜 Comida',attraction:'🎡 Atracción',hotel:'🏨 Hotel',shop:'🛍️ Tienda',experience:'💆 Experiencia',cafe:'☕ Café/Bar'};
+const CITY_LABELS = {beijing:'Pekín',chongqing:'Chongqing',zhangjiajie:'Zhangjiajie',furong:'Furong',fenghuang:'Fenghuang',shanghai:'Shanghái',canton:'Cantón'};
+let rvStars = 0;
+
+function renderReviews(){
+  const all = S.get('reviews') || [];
+  const fc = document.getElementById('rev-filter-city').value;
+  const ft = document.getElementById('rev-filter-type').value;
+  const filtered = all.filter(r=>(fc?r.city===fc:true)&&(ft?r.type===ft:true));
+  const list = document.getElementById('reviews-list');
+  if(!filtered.length){
+    list.innerHTML=`<div class="empty-state"><span class="big">⭐</span>Aún no hay reseñas${fc||ft?' con estos filtros':''}<br><span style="font-size:.82rem;margin-top:8px;display:block">Añade la primera al volver del viaje</span></div>`;
+    return;
+  }
+  list.innerHTML = filtered.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(r=>`
+    <div class="review-card">
+      <div class="rev-head">
+        <div>
+          <div class="rev-name">${r.name}</div>
+          <div class="rev-meta">
+            <span>${r.date||''}</span>
+            ${r.price?`<span>${r.price}</span>`:''}
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <div class="rev-stars">${'★'.repeat(r.rating||0)}${'☆'.repeat(5-(r.rating||0))}</div>
+          <button class="btn btn-danger" onclick="deleteReview('${r.id}')">✕</button>
+        </div>
+      </div>
+      ${r.text?`<div class="rev-text">${r.text}</div>`:''}
+      <div class="rev-badges">
+        <span class="badge badge-city">${CITY_LABELS[r.city]||r.city}</span>
+        <span class="badge badge-type">${TYPE_LABELS[r.type]||r.type}</span>
+        ${r.price?`<span class="badge badge-price">${r.price}</span>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function deleteReview(id){
+  if(!confirm('¿Borrar esta reseña?')) return;
+  const all = (S.get('reviews')||[]).filter(r=>r.id!==id);
+  S.set('reviews',all); renderReviews();
+}
+
+let rvEditId = null;
+function openModal(type){
+  if(type==='review'){
+    rvStars=0; rvEditId=null;
+    document.getElementById('rv-name').value='';
+    document.getElementById('rv-text').value='';
+    document.getElementById('rv-price').value='';
+    document.getElementById('rv-date').value=new Date().toISOString().slice(0,10);
+    document.querySelectorAll('#rv-stars span').forEach(s=>s.classList.remove('on'));
+  } else {
+    document.getElementById('ex-date').value=new Date().toISOString().slice(0,10);
+    document.getElementById('ex-cny').value='';
+    document.getElementById('ex-desc').value='';
+    document.getElementById('ex-note').value='';
+  }
+  document.getElementById('modal-'+type).classList.add('open');
+}
+function closeModal(type){ document.getElementById('modal-'+type).classList.remove('open'); }
+
+// Star picker
+document.querySelectorAll('#rv-stars span').forEach(s=>{
+  s.addEventListener('mouseover',()=>document.querySelectorAll('#rv-stars span').forEach(x=>x.classList.toggle('on',x.dataset.v<=s.dataset.v)));
+  s.addEventListener('mouseout',()=>document.querySelectorAll('#rv-stars span').forEach(x=>x.classList.toggle('on',x.dataset.v<=rvStars)));
+  s.addEventListener('click',()=>{ rvStars=parseInt(s.dataset.v); });
+});
+
+function saveReview(){
+  const name=document.getElementById('rv-name').value.trim();
+  if(!name) return alert('Añade el nombre del sitio');
+  const all=S.get('reviews')||[];
+  all.push({id:Date.now().toString(36),city:document.getElementById('rv-city').value,
+    type:document.getElementById('rv-type').value,name,rating:rvStars,
+    price:document.getElementById('rv-price').value,date:document.getElementById('rv-date').value,
+    text:document.getElementById('rv-text').value.trim()});
+  S.set('reviews',all); closeModal('review'); renderReviews();
+}
+
+/* ═══ EXPENSES ═══ */
+const CAT = {
+  food:{label:'🍜 Comida',color:'#ff6b35'},transport:{label:'🚇 Transporte',color:'#7eb8f7'},
+  flights:{label:'✈️ Vuelos/Trenes',color:'#7eb8f7'},hotel:{label:'🏨 Alojamiento',color:'#c0392b'},
+  activities:{label:'🎡 Actividades',color:'#5dba6e'},shopping:{label:'🛍️ Compras',color:'#d4a017'},
+  leisure:{label:'🍺 Ocio',color:'#9b59b6'},other:{label:'💊 Otros',color:'#7f8c8d'}
+};
+
+function getRate(){ return parseFloat(document.getElementById('cny-rate').value)||7.8; }
+function saveRate(){ S.set('rate',getRate()); renderExpenses(); }
+
+function renderExpenses(){
+  const rate = S.get('rate')||7.8;
+  document.getElementById('cny-rate').value = rate;
+  const all = S.get('expenses')||[];
+  const rows = document.getElementById('exp-rows');
+  const empty = document.getElementById('exp-empty');
+  const sumDiv = document.getElementById('exp-summary');
+  const catDiv = document.getElementById('cat-bars');
+
+  if(!all.length){
+    rows.innerHTML=''; empty.style.display='block'; sumDiv.innerHTML=''; catDiv.innerHTML=''; return;
+  }
+  empty.style.display='none';
+
+  const totalCNY = all.reduce((s,e)=>s+parseFloat(e.cny||0),0);
+  const totalEUR = totalCNY/rate;
+  const perPerson = totalEUR/2;
+
+  sumDiv.innerHTML = `
+    <div class="sum-card"><div class="sum-label">Total viaje</div><div class="sum-val">${totalEUR.toFixed(0)}€</div><div class="sum-sub">${totalCNY.toFixed(0)} CNY</div></div>
+    <div class="sum-card"><div class="sum-label">Por persona</div><div class="sum-val">${perPerson.toFixed(0)}€</div><div class="sum-sub">entre 2</div></div>
+    <div class="sum-card"><div class="sum-label">Gastos registrados</div><div class="sum-val">${all.length}</div><div class="sum-sub">entradas</div></div>`;
+
+  const byCat = {};
+  all.forEach(e=>{ byCat[e.cat]=(byCat[e.cat]||0)+parseFloat(e.cny||0); });
+  const maxCat = Math.max(...Object.values(byCat),1);
+  catDiv.innerHTML = Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+    <div class="cat-bar-row">
+      <span class="cat-bar-label">${(CAT[k]||{label:k}).label}</span>
+      <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${(v/maxCat*100).toFixed(0)}%;background:${(CAT[k]||{color:'#888'}).color}"></div></div>
+      <span class="cat-bar-amt">${(v/rate).toFixed(0)}€</span>
+    </div>`).join('');
+
+  rows.innerHTML = all.slice().reverse().map(e=>`
+    <tr>
+      <td style="color:var(--text2)">${e.date||''}</td>
+      <td style="color:var(--text2)">${CITY_LABELS[e.city]||e.city||''}</td>
+      <td>${(CAT[e.cat]||{label:e.cat}).label}</td>
+      <td>${e.desc||''}${e.note?`<br><span style="font-size:.72rem;color:var(--text2)">${e.note}</span>`:''}</td>
+      <td style="text-align:right;color:var(--accent)">${parseFloat(e.cny||0).toFixed(0)} ¥</td>
+      <td style="text-align:right;color:var(--text2)">${(parseFloat(e.cny||0)/rate).toFixed(0)}€</td>
+      <td><button class="btn btn-danger" onclick="deleteExpense('${e.id}')">✕</button></td>
+    </tr>`).join('');
+}
+
+function saveExpense(){
+  const cny = parseFloat(document.getElementById('ex-cny').value);
+  if(!cny||cny<=0) return alert('Introduce el importe');
+  const all = S.get('expenses')||[];
+  all.push({id:Date.now().toString(36),date:document.getElementById('ex-date').value,
+    city:document.getElementById('ex-city').value,cat:document.getElementById('ex-cat').value,
+    cny,desc:document.getElementById('ex-desc').value.trim(),note:document.getElementById('ex-note').value.trim()});
+  S.set('expenses',all); closeModal('expense'); renderExpenses();
+}
+
+function deleteExpense(id){
+  if(!confirm('¿Borrar este gasto?')) return;
+  S.set('expenses',(S.get('expenses')||[]).filter(e=>e.id!==id)); renderExpenses();
+}
+
+/* ═══ JOURNAL ═══ */
+let jCurrentDay = null;
+let jSaveTimer = null;
+
+function renderJournalPicker(){
+  const picker = document.getElementById('jday-picker');
+  picker.innerHTML = DAYS.map((d,i)=>`
+    <button class="jday-btn${jCurrentDay===i?' active':''}" onclick="selectJDay(${i})">
+      ${d.date} sep · ${d.city}
+    </button>`).join('');
+}
+
+window.selectJDay = function(idx){
+  jCurrentDay = idx;
+  renderJournalPicker();
+  const day = DAYS[idx];
+  const entry = document.getElementById('journal-entry');
+  entry.style.display = 'block';
+  document.getElementById('jentry-title').textContent = `${day.date} sep · ${day.weekday} · ${day.city} ${day.emoji}`;
+
+  const data = S.get('jday_'+idx) || {};
+  document.getElementById('jnotes').value = data.notes || '';
+  document.querySelectorAll('.mood-btn').forEach(b=>b.classList.toggle('active',b.dataset.mood===(data.mood||'')));
+  renderPhotoGrid(idx);
+  renderFileList(idx);
+};
+
+function autoSave(){
+  if(jCurrentDay===null) return;
+  clearTimeout(jSaveTimer);
+  jSaveTimer = setTimeout(()=>{
+    const data = S.get('jday_'+jCurrentDay)||{};
+    data.notes = document.getElementById('jnotes').value;
+    S.set('jday_'+jCurrentDay, data);
+    const badge = document.getElementById('autosave-badge');
+    badge.classList.add('show'); setTimeout(()=>badge.classList.remove('show'),1800);
+  },700);
+}
+document.getElementById('jnotes').addEventListener('input', autoSave);
+
+document.querySelectorAll('.mood-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    if(jCurrentDay===null) return;
+    document.querySelectorAll('.mood-btn').forEach(x=>x.classList.toggle('active',x===b));
+    const data = S.get('jday_'+jCurrentDay)||{};
+    data.mood = b.dataset.mood; S.set('jday_'+jCurrentDay, data);
+  });
+});
+
+// Photo upload
+async function resizeImg(file, maxW=900){
+  return new Promise(res=>{
+    const reader = new FileReader();
+    reader.onload = e=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const sc = Math.min(1, maxW/img.width);
+        const cv = document.createElement('canvas');
+        cv.width=img.width*sc; cv.height=img.height*sc;
+        cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+        res(cv.toDataURL('image/jpeg',.78));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+document.getElementById('photo-file').addEventListener('change', async e=>{
+  if(jCurrentDay===null) return;
+  for(const file of e.target.files){
+    if(!file.type.startsWith('image/')) continue;
+    try{
+      const dataUrl = await resizeImg(file);
+      addPhoto(jCurrentDay, dataUrl);
+    } catch(err){ alert('Error al procesar la foto: '+err.message); }
+  }
+  e.target.value='';
+});
+
+// Drag & drop
+const uz = document.getElementById('upload-zone');
+uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('drag');});
+uz.addEventListener('dragleave',()=>uz.classList.remove('drag'));
+uz.addEventListener('drop',async e=>{
+  e.preventDefault(); uz.classList.remove('drag');
+  if(jCurrentDay===null) return;
+  for(const file of e.dataTransfer.files){
+    if(!file.type.startsWith('image/')) continue;
+    const dataUrl = await resizeImg(file);
+    addPhoto(jCurrentDay, dataUrl);
+  }
+});
+
+function addPhoto(idx, src){
+  const data = S.get('jday_'+idx)||{};
+  data.photos = data.photos||[];
+  data.photos.push(src);
+  S.set('jday_'+idx, data);
+  renderPhotoGrid(idx);
+}
+
+function addPhotoUrl(){
+  if(jCurrentDay===null) return;
+  const url = document.getElementById('photo-url-inp').value.trim();
+  if(!url) return;
+  addPhoto(jCurrentDay, url);
+  document.getElementById('photo-url-inp').value='';
+}
+
+function deletePhoto(idx, pi){
+  const data = S.get('jday_'+idx)||{};
+  data.photos = (data.photos||[]).filter((_,i)=>i!==pi);
+  S.set('jday_'+idx, data); renderPhotoGrid(idx);
+}
+
+function renderPhotoGrid(idx){
+  const data = S.get('jday_'+idx)||{};
+  const photos = data.photos||[];
+  const grid = document.getElementById('photo-grid');
+  grid.innerHTML = photos.map((src,i)=>`
+    <div class="photo-thumb">
+      <img src="${src}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22/>'">
+      <button class="del-photo" onclick="deletePhoto(${idx},${i})">✕</button>
+    </div>`).join('');
+}
+
+function addFileRef(){
+  if(jCurrentDay===null) return;
+  const val = document.getElementById('file-ref-inp').value.trim();
+  if(!val) return;
+  const data = S.get('jday_'+jCurrentDay)||{};
+  data.files = data.files||[];
+  data.files.push(val);
+  S.set('jday_'+jCurrentDay, data);
+  document.getElementById('file-ref-inp').value='';
+  renderFileList(jCurrentDay);
+}
+
+function deleteFileRef(idx, fi){
+  const data = S.get('jday_'+idx)||{};
+  data.files=(data.files||[]).filter((_,i)=>i!==fi);
+  S.set('jday_'+idx, data); renderFileList(idx);
+}
+
+function renderFileList(idx){
+  const data = S.get('jday_'+idx)||{};
+  const files = data.files||[];
+  document.getElementById('file-list').innerHTML = files.map((f,i)=>`
+    <div class="file-item">
+      <span class="file-icon">📎</span>
+      <span style="flex:1">${f}</span>
+      <button class="btn btn-danger" onclick="deleteFileRef(${idx},${i})">✕</button>
+    </div>`).join('');
+}
+
+// Close modals on backdrop click
+document.querySelectorAll('.modal').forEach(m=>{
+  m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('open'); });
+});
+
+/* ═══ INIT ═══ */
+const cal = document.getElementById('calendar');
+DAYS.forEach((d,i)=>cal.appendChild(buildCard(d,i)));
+
+const h = window.location.hash.slice(1);
+if(h && ['calendar','map','reviews','expenses','journal'].includes(h)) switchTab(h);
 </script>
 </body>
 </html>
