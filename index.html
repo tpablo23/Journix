@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>China · Sep 2026 · Pablo & Aza</title>
+  <style>
+    /* ═══════════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --text: #e8e0d0;
+      --accent: #c8a96e;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Georgia', serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════
+       CITY THEMES
+    ═══════════════════════════════════════════ */
+    .theme-avion {
+      --city-primary: #1a1a3e; --city-accent: #7eb8f7; --city-text: #c5d8f5;
+      --city-glow: rgba(126,184,247,0.3); --city-gradient: linear-gradient(135deg, #050510 0%, #0d1b3e 50%, #1a1a3e 100%);
+      --city-border: #3a5a9e; --city-tag-bg: #0d1b3e; --city-section-bg: rgba(14,27,62,0.5);
+    }
+    .theme-beijing {
+      --city-primary: #8b0000; --city-accent: #d4a017; --city-text: #f5e6c8;
+      --city-glow: rgba(212,160,23,0.25); --city-gradient: linear-gradient(135deg, #1a0000 0%, #3d0000 50%, #5c0a0a 100%);
+      --city-border: #8b4513; --city-tag-bg: #3d0000; --city-section-bg: rgba(61,0,0,0.5);
+    }
+    .theme-chongqing {
+      --city-primary: #2d0a1e; --city-accent: #ff4d00; --city-text: #f0c0a0;
+      --city-glow: rgba(255,77,0,0.25); --city-gradient: linear-gradient(135deg, #0f0008 0%, #2d0a1e 50%, #3d1a0a 100%);
+      --city-border: #8b2200; --city-tag-bg: #2d0a1e; --city-section-bg: rgba(45,10,30,0.5);
+    }
+    .theme-zhangjiajie {
+      --city-primary: #0a1a0f; --city-accent: #5dba6e; --city-text: #c8f0d0;
+      --city-glow: rgba(93,186,110,0.25); --city-gradient: linear-gradient(135deg, #020a04 0%, #0a1a0f 50%, #0f2a18 100%);
+      --city-border: #2d6b3a; --city-tag-bg: #0a1a0f; --city-section-bg: rgba(10,26,15,0.5);
+    }
+    .theme-furong {
+      --city-primary: #2a1a0a; --city-accent: #e8945a; --city-text: #f5dcc8;
+      --city-glow: rgba(232,148,90,0.25); --city-gradient: linear-gradient(135deg, #120a02 0%, #2a1a0a 50%, #3d2415 100%);
+      --city-border: #8b5030; --city-tag-bg: #2a1a0a; --city-section-bg: rgba(42,26,10,0.5);
+    }
+    .theme-fenghuang {
+      --city-primary: #1a1a1a; --city-accent: #c0392b; --city-text: #f0ede8;
+      --city-glow: rgba(192,57,43,0.2); --city-gradient: linear-gradient(135deg, #080808 0%, #1a1a1a 50%, #252520 100%);
+      --city-border: #5a1a1a; --city-tag-bg: #1a1a1a; --city-section-bg: rgba(26,26,26,0.7);
+    }
+    .theme-shanghai {
+      --city-primary: #050515; --city-accent: #00ffcc; --city-text: #e0f0ff;
+      --city-glow: rgba(0,255,204,0.35); --city-gradient: linear-gradient(135deg, #000010 0%, #050525 50%, #0a0030 100%);
+      --city-border: #00ffcc; --city-tag-bg: #0a0030; --city-section-bg: rgba(5,5,37,0.7);
+    }
+    .theme-canton {
+      --city-primary: #1a0a2a; --city-accent: #ff6b35; --city-text: #ffe8d0;
+      --city-glow: rgba(255,107,53,0.25); --city-gradient: linear-gradient(135deg, #080010 0%, #1a0a2a 50%, #2d1020 100%);
+      --city-border: #8b3520; --city-tag-bg: #1a0a2a; --city-section-bg: rgba(26,10,42,0.5);
+    }
+
+    /* ═══════════════════════════════════════════
+       HEADER
+    ═══════════════════════════════════════════ */
+    header {
+      text-align: center;
+      padding: 60px 20px 40px;
+      position: relative;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(200,169,110,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-kana { font-size: 0.85rem; letter-spacing: 0.4em; color: var(--accent); opacity: 0.7; margin-bottom: 16px; text-transform: uppercase; }
+    .header-title { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: normal; letter-spacing: 0.05em; line-height: 1.1; }
+    .header-title span { color: var(--accent); }
+    .header-sub { margin-top: 12px; font-size: 1rem; color: rgba(232,224,208,0.5); letter-spacing: 0.2em; }
+    .header-line { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); margin: 24px auto 0; }
+
+    /* ═══════════════════════════════════════════
+       LEGEND
+    ═══════════════════════════════════════════ */
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+      padding: 0 20px 40px; max-width: 900px; margin: 0 auto;
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; letter-spacing: 0.08em; opacity: 0.6; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ═══════════════════════════════════════════
+       CALENDAR GRID
+    ═══════════════════════════════════════════ */
+    .calendar {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 20px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    /* ═══════════════════════════════════════════
+       DAY CARD
+    ═══════════════════════════════════════════ */
+    .day-card {
+      background: var(--city-gradient);
+      border: 1px solid var(--city-border);
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+    .day-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px var(--city-glow), 0 0 0 1px var(--city-border);
+    }
+    .day-card.open { grid-column: 1 / -1; cursor: default; }
+    .day-card.open:hover { transform: none; }
+
+    /* Shanghai scanline */
+    .theme-shanghai::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,255,204,0.04), transparent);
+      animation: scanline 4s infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes scanline { 0% { left: -100%; } 100% { left: 200%; } }
+
+    /* Beijing pattern */
+    .theme-beijing::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(45deg, rgba(212,160,23,0.02) 0px, rgba(212,160,23,0.02) 1px, transparent 1px, transparent 8px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card-header {
+      padding: 18px 20px 14px;
+      display: flex; align-items: flex-start; justify-content: space-between;
+      position: relative; z-index: 1;
+    }
+    .card-date-block { display: flex; flex-direction: column; }
+    .card-day-num { font-size: 2.8rem; font-weight: bold; line-height: 1; color: var(--city-accent); letter-spacing: -0.02em; }
+    .theme-shanghai .card-day-num { font-family: 'Courier New', monospace; text-shadow: 0 0 20px var(--city-accent), 0 0 40px rgba(0,255,204,0.5); }
+    .card-weekday { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--city-text); opacity: 0.5; margin-top: 2px; }
+    .card-city-badge { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    .city-name { font-size: 0.85rem; letter-spacing: 0.12em; color: var(--city-text); opacity: 0.9; text-transform: uppercase; }
+    .theme-shanghai .city-name { font-family: 'Courier New', monospace; color: var(--city-accent); text-shadow: 0 0 10px var(--city-accent); letter-spacing: 0.25em; }
+    .theme-fenghuang .city-name { font-style: italic; letter-spacing: 0.08em; }
+    .city-emoji-badge { font-size: 1.2rem; }
+    .card-night-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.3); border: 1px solid var(--city-border); border-radius: 20px; padding: 2px 8px; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--city-text); opacity: 0.7; margin-top: 4px; }
+    .card-divider { height: 1px; margin: 0 20px; background: linear-gradient(90deg, var(--city-border), transparent); opacity: 0.4; position: relative; z-index: 1; }
+    .card-preview { padding: 12px 20px 18px; position: relative; z-index: 1; }
+    .preview-item { font-size: 0.82rem; color: var(--city-text); opacity: 0.7; line-height: 1.5; display: flex; align-items: flex-start; gap: 6px; }
+    .preview-item + .preview-item { margin-top: 4px; }
+    .preview-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--city-accent); flex-shrink: 0; margin-top: 7px; }
+    .card-expand-hint { text-align: center; padding: 8px; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--city-accent); opacity: 0.4; text-transform: uppercase; position: relative; z-index: 1; }
+
+    /* ═══════════════════════════════════════════
+       EXPANDED PANEL
+    ═══════════════════════════════════════════ */
+    .day-expanded {
+      display: none;
+      animation: expandIn 0.3s ease;
+      position: relative; z-index: 1;
+    }
+    @keyframes expandIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .day-card.open .day-expanded { display: block; }
+
+    /* ── Hero Photo ── */
+    .expanded-photo {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      display: block;
+      border-top: 1px solid var(--city-border);
+      filter: saturate(0.85) brightness(0.9);
+    }
+    .photo-wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+    .photo-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 40px 28px 14px;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+    }
+    /* Shanghai: neon photo overlay */
+    .theme-shanghai .photo-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom right, rgba(0,255,204,0.07), rgba(255,0,204,0.05));
+      pointer-events: none;
+    }
+    /* Fenghuang: ink wash overlay */
+    .theme-fenghuang .photo-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.4));
+      pointer-events: none;
+    }
+
+    /* ── Body ── */
+    .expanded-body { padding: 28px 28px 0; }
+
+    .expanded-title {
+      font-size: 1.5rem;
+      color: var(--city-accent);
+      margin-bottom: 14px;
+      letter-spacing: 0.05em;
+      line-height: 1.2;
+    }
+    .theme-shanghai .expanded-title {
+      font-family: 'Courier New', monospace;
+      text-shadow: 0 0 20px var(--city-accent);
+      font-size: 1.3rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      position: relative;
+    }
+    .theme-shanghai .expanded-title::before {
+      content: attr(data-text);
+      position: absolute;
+      left: 2px; top: 0;
+      color: #ff00cc;
+      text-shadow: 0 0 8px #ff00cc;
+      clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+      animation: glitch 5s infinite;
+      opacity: 0.6;
+    }
+    @keyframes glitch { 0%,90%,100% { transform:translate(0); } 92% { transform:translate(-3px,0); } 94% { transform:translate(3px,0); } 96% { transform:translate(-1px,0); } }
+
+    .expanded-description { font-size: 0.95rem; line-height: 1.8; color: var(--city-text); opacity: 0.85; max-width: 900px; }
+    .theme-fenghuang .expanded-description { font-style: italic; line-height: 2; opacity: 0.9; }
+
+    /* ── Transport ── */
+    .expanded-transport { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .transport-tag {
+      background: var(--city-tag-bg);
+      border: 1px solid var(--city-border);
+      border-radius: 3px;
+      padding: 5px 12px;
+      font-size: 0.75rem;
+      color: var(--city-text);
+      opacity: 0.8;
+      letter-spacing: 0.06em;
+    }
+    .theme-shanghai .transport-tag { font-family: 'Courier New', monospace; border-color: var(--city-accent); color: var(--city-accent); text-shadow: 0 0 5px var(--city-accent); }
+
+    /* ── Two-column grid for hotel + weather ── */
+    .expanded-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    @media (max-width: 700px) { .expanded-grid { grid-template-columns: 1fr; } }
+
+    /* ── Hotel Card ── */
+    .hotel-card {
+      background: var(--city-section-bg);
+      border: 1px solid var(--city-border);
+      border-radius: 4px;
+      padding: 18px;
+    }
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--city-accent);
+      opacity: 0.7;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--city-border); opacity: 0.4; }
+    .hotel-name { font-size: 1rem; color: var(--city-text); margin-bottom: 4px; letter-spacing: 0.04em; }
+    .theme-shanghai .hotel-name { font-family: 'Courier New', monospace; color: var(--city-accent); }
+    .hotel-stars { color: var(--city-accent); font-size: 0.7rem; opacity: 0.8; margin-bottom: 12px; }
+    .hotel-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .hotel-key { font-size: 0.7rem; letter-spacing: 0.1em; color: var(--city-text); opacity: 0.5; text-transform: uppercase; }
+    .hotel-val { font-size: 0.82rem; color: var(--city-text); opacity: 0.85; }
+    .hotel-confirmation { margin-top: 12px; padding: 8px 10px; background: rgba(0,0,0,0.3); border-radius: 3px; font-size: 0.72rem; color: var(--city-text); opacity: 0.5; letter-spacing: 0.08em; font-family: monospace; }
+    .mock-badge { font-size: 0.55rem; letter-spacing: 0.12em; background: rgba(255,200,0,0.15); color: rgba(255,200,0,0.7); border: 1px solid rgba(255,200,0,0.2); border-radius: 10px; padding: 1px 6px; vertical-align: middle; margin-left: 6px; }
+
+    /* ── Weather Widget ── */
+    .weather-card {
+      background: var(--city-section-bg);
+      border: 1px solid var(--city-border);
+      border-radius: 4px;
+      padding: 18px;
+    }
+    .weather-main { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
+    .weather-icon { font-size: 2.8rem; line-height: 1; }
+    .weather-temp { font-size: 2.2rem; color: var(--city-accent); line-height: 1; }
+    .theme-shanghai .weather-temp { font-family: 'Courier New', monospace; text-shadow: 0 0 10px var(--city-accent); }
+    .weather-condition { font-size: 0.8rem; color: var(--city-text); opacity: 0.7; margin-top: 4px; letter-spacing: 0.06em; }
+    .weather-details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .weather-detail-item { background: rgba(0,0,0,0.2); border-radius: 3px; padding: 8px 10px; }
+    .weather-detail-key { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--city-text); opacity: 0.4; margin-bottom: 3px; }
+    .weather-detail-val { font-size: 0.82rem; color: var(--city-text); opacity: 0.8; }
+    .weather-note { margin-top: 10px; font-size: 0.65rem; color: var(--city-text); opacity: 0.35; letter-spacing: 0.06em; font-style: italic; }
+
+    /* ── Curiosities ── */
+    .curiosities-section { margin-top: 24px; }
+    .curiosities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin-top: 14px; }
+    .curiosity-item {
+      background: var(--city-section-bg);
+      border: 1px solid var(--city-border);
+      border-radius: 4px;
+      padding: 14px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: box-shadow 0.2s;
+    }
+    .curiosity-item:hover { box-shadow: 0 0 0 1px var(--city-border), 0 4px 20px var(--city-glow); }
+    .curiosity-num {
+      font-size: 1.6rem;
+      color: var(--city-accent);
+      opacity: 0.25;
+      font-weight: bold;
+      line-height: 1;
+      flex-shrink: 0;
+      font-family: Georgia, serif;
+    }
+    .theme-shanghai .curiosity-num { font-family: 'Courier New', monospace; }
+    .curiosity-body {}
+    .curiosity-title { font-size: 0.8rem; font-weight: bold; color: var(--city-accent); margin-bottom: 4px; letter-spacing: 0.04em; }
+    .theme-shanghai .curiosity-title { font-family: 'Courier New', monospace; }
+    .curiosity-text { font-size: 0.8rem; color: var(--city-text); opacity: 0.7; line-height: 1.55; }
+    .theme-fenghuang .curiosity-text { font-style: italic; }
+
+    /* ── Notes ── */
+    .expanded-notes {
+      margin-top: 24px;
+      padding: 16px 18px;
+      background: rgba(0,0,0,0.25);
+      border-left: 2px solid var(--city-accent);
+      border-radius: 0 4px 4px 0;
+    }
+    .expanded-notes-title { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--city-accent); opacity: 0.7; margin-bottom: 8px; }
+    .expanded-notes-body { font-size: 0.85rem; color: var(--city-text); opacity: 0.65; line-height: 1.6; }
+
+    .close-hint {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--city-accent);
+      opacity: 0.35;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    .close-hint:hover { opacity: 0.7; }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    footer { text-align: center; padding: 40px 20px; font-size: 0.75rem; letter-spacing: 0.15em; color: rgba(232,224,208,0.2); border-top: 1px solid rgba(200,169,110,0.1); }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: rgba(200,169,110,0.3); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-kana">中国 · Septiembre 2026</div>
+  <h1 class="header-title">China<span> ·</span> Pablo &amp; Aza</h1>
+  <p class="header-sub">5 sep — 20 sep · 16 días</p>
+  <div class="header-line"></div>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#7eb8f7"></div> Vuelo</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#d4a017"></div> Pekín</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ff4d00"></div> Chongqing</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#5dba6e"></div> Zhangjiajie</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#e8945a"></div> Furong</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div> Fenghuang</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#00ffcc"></div> Shanghái</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ff6b35"></div> Cantón</div>
+</div>
+
+<div class="calendar" id="calendar"></div>
+
+<footer>Pablo &amp; Aza · China 2026 · Hecho con ❤️ e IA</footer>
+
+<script>
+/* ═══════════════════════════════════════════
+   DATA
+   - photo: Unsplash query URL. Replace with real URLs when you have them.
+   - hotel: mock data. Replace with real bookings.
+   - weather: mock historical September data.
+     To connect to live data: fetch from https://api.openweathermap.org/data/2.5/weather?q={city}&appid={KEY}&units=metric
+═══════════════════════════════════════════ */
+const days = [
+  {
+    date: 5, month: "sep", weekday: "Sábado",
+    city: "Vuelo", theme: "avion", emoji: "✈️", night: "Avión",
+    preview: ["Madrid → Ámsterdam → Pekín", "Salida 15:55 · Llegada +1 a las 13:25"],
+    photo: { url: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80", caption: "Sobre las nubes · Ruta MAD–AMS–PEK" },
+    title: "Despegue · Madrid → Pekín",
+    description: "El viaje empieza. Vuelo Madrid–Ámsterdam a las 15:55 (llega 18:35), y conexión en Schiphol con el largo vuelo nocturno a Pekín (21:40 → 13:25+1). Casi diez horas sobre Asia Central — buena película, peor sueño.",
+    transport: ["MAD → AMS · 15:55–18:35", "AMS → PEK · 21:40–13:25+1"],
+    hotel: null,
+    weather: null,
+    curiosities: [
+      { title: "La ruta sobrevuela Mongolia", text: "Madrid–Pekín cubre ~9.200 km sobrevolando Francia, Rusia, Siberia y el desierto de Gobi." },
+      { title: "Schiphol como hub", text: "Amsterdam Schiphol es el 4.º aeropuerto más transitado de Europa y hub de KLM desde 1920." },
+      { title: "Diferencia horaria", text: "Pekín está a +6h de Madrid en verano. Habrá que armarse de paciencia el primer día." },
+      { title: "China tiene 240+ aeropuertos", text: "La segunda red aeroportuaria del mundo. El de Pekín PEK fue el más transitado del mundo en 2019." },
+      { title: "Sin jetlag total", text: "La ruta de ida es más amable que la de vuelta: viajas hacia el este y llegas de día, lo que ayuda a la adaptación." }
+    ],
+    notes: "Conexión de 3h en Ámsterdam. Buen momento para cenar tranquilo en el aeropuerto."
+  },
+  {
+    date: 6, month: "sep", weekday: "Domingo",
+    city: "Pekín", theme: "beijing", emoji: "🏯", night: "Pekín",
+    preview: ["Aterrizaje 13:25 en PEK", "Primeras horas en la capital"],
+    photo: { url: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=1200&q=80", caption: "Ciudad Prohibida · Pekín" },
+    title: "Bienvenidos a Pekín",
+    description: "Llegada a Capital International Airport a las 13:25 con el cuerpo aún en hora española. Hay que aguantar hasta la noche para adaptarse: un primer paseo por los hutongs del barrio, algo de comida callejera y dejarse envolver por el olor a especias y carbón de la primera tarde china.",
+    transport: ["Aterrizaje 13:25 · PEK"],
+    hotel: { name: "Red Wall Garden Hotel", stars: "★★★★", checkin: "6 sep", checkout: "8 sep", room: "Superior Courtyard Room", ref: "MOCK-BJG-001" },
+    weather: { icon: "⛅", temp: "27°C", condition: "Parcialmente nublado", humidity: "62%", wind: "14 km/h NE", rain: "20%", feels: "29°C" },
+    curiosities: [
+      { title: "9.999 habitaciones", text: "La Ciudad Prohibida tiene exactamente ese número según la leyenda — el 9 simboliza el cielo y la perfección imperial." },
+      { title: "Khanbaliq", text: "Pekín fue fundada como capital mongola con el nombre de Khanbaliq en el siglo XIII por Kublai Khan." },
+      { title: "Capital de seis dinastías", text: "Yuan, Ming, Qing y tres repúblicas distintas. Pocas ciudades han acumulado tanta historia política." },
+      { title: "Tiananmen, la más grande", text: "La Plaza de Tiananmen tiene 440.000 m² — la plaza pública más grande del mundo, capaz de albergar 600.000 personas." },
+      { title: "Los hutongs llevan 800 años", text: "Los callejones históricos de Pekín datan del s. XIII mongol. Quedan unos 1.000 hutongs intactos de los 7.000 originales." }
+    ],
+    notes: "Por completar — ¿primer plan al llegar? ¿Hutongs de Nanluoguxiang?"
+  },
+  {
+    date: 7, month: "sep", weekday: "Lunes",
+    city: "Pekín", theme: "beijing", emoji: "🏯", night: "Pekín",
+    preview: ["Día completo en Pekín", "Ciudad Prohibida · Gran Muralla"],
+    photo: { url: "https://images.unsplash.com/photo-1547981609-4b6bfe67ca0b?w=1200&q=80", caption: "Gran Muralla · Badaling o Mutianyu" },
+    title: "Pekín · Día Imperial",
+    description: "Día completo para la capital. La Ciudad Prohibida, Tiananmen, el Templo del Cielo, los mercados de Nanluoguxiang o la Gran Muralla en Mutianyu (la sección menos masificada). Pekín tiene capas de historia sobre capas de historia.",
+    transport: [],
+    hotel: { name: "Red Wall Garden Hotel", stars: "★★★★", checkin: "6 sep", checkout: "8 sep", room: "Superior Courtyard Room", ref: "MOCK-BJG-001" },
+    weather: { icon: "☀️", temp: "28°C", condition: "Soleado", humidity: "55%", wind: "10 km/h", rain: "5%", feels: "30°C" },
+    curiosities: [
+      { title: "El Templo del Cielo", text: "Construido en 1420, los emperadores Ming y Qing venían aquí cada solsticio de invierno a rogar por buenas cosechas." },
+      { title: "La Gran Muralla no es visible desde el espacio", text: "Es uno de los mitos más famosos de la historia: con un ancho máximo de 9m, es imposible distinguirla desde la ISS." },
+      { title: "Pato Pekín desde el s. XIV", text: "El pato laqueado de Pekín lleva cocinándose desde la dinastía Yuan — es uno de los platos más antiguos con receta documentada de China." },
+      { title: "El Parque Beihai", text: "Con más de 1.000 años de antigüedad, es uno de los parques imperiales más antiguos del mundo, construido sobre un lago artificial." },
+      { title: "Mutianyu vs Badaling", text: "Mutianyu está menos masificada que Badaling, restaurada de forma más auténtica y permite bajar en tobogán por la ladera." }
+    ],
+    notes: "Por completar — ¿Gran Muralla o Ciudad Prohibida primero?"
+  },
+  {
+    date: 8, month: "sep", weekday: "Martes",
+    city: "Vuelo", theme: "avion", emoji: "✈️", night: "Avión",
+    preview: ["Mañana libre en Pekín", "Vuelo nocturno 23:05 → Chongqing"],
+    photo: { url: "https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=1200&q=80", caption: "Pekín de noche · Salida hacia el oeste" },
+    title: "Pekín → Chongqing · Vuelo Nocturno",
+    description: "La mañana y tarde son libres para los últimos rincones de Pekín. A las 23:05 sale el vuelo hacia Chongqing, la megaciudad de las nieblas y el picante. Llegada a las 01:55.",
+    transport: ["PEK → CKG · 23:05–01:55+1"],
+    hotel: null,
+    weather: null,
+    curiosities: [
+      { title: "Vuelo doméstico de 3h", text: "La distancia Pekín–Chongqing es de ~1.450 km — similar a Madrid–Berlín, pero en territorio de un solo país." },
+      { title: "China tiene 6 zonas horarias geográficas", text: "Pero oficialmente solo una: la hora de Pekín. Salir de PEK a las 23h y llegar a las 2h es perfectamente normal." },
+      { title: "Chongqing, antigua capital de guerra", text: "Fue capital provisional de la República de China durante la Segunda Guerra Mundial, bombardeada por Japón." },
+      { title: "El Yangtze empieza aquí", text: "Las tres gargantas del Yangtze comienzan en Chongqing — era el puerto de embarque histórico para el interior del país." },
+      { title: "Conexión Chengdu–Chongqing", text: "Las dos ciudades rivales a 300 km son la mayor aglomeración urbana del mundo interior de China, con 100 millones de habitantes en la región." }
+    ],
+    notes: "Confirmar si el hotel de Chongqing hace check-in nocturno."
+  },
+  {
+    date: 9, month: "sep", weekday: "Miércoles",
+    city: "Chongqing", theme: "chongqing", emoji: "🌶️", night: "Chongqing",
+    preview: ["Llegada 01:55 de madrugada", "La ciudad más grande del mundo"],
+    photo: { url: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&q=80", caption: "Chongqing · Luces sobre el Yangtze" },
+    title: "Chongqing · La Ciudad de la Niebla",
+    description: "Chongqing: 30 millones de personas, niebla permanente, el picante más extremo de China y una topografía vertical que parece diseñada por un visionario. Llegada de madrugada — día para descansar, pasear por Jiefangbei y dejarse sorprender por la escala de la ciudad.",
+    transport: ["Llegada CKG · 01:55"],
+    hotel: { name: "Raffles Chongqing", stars: "★★★★★", checkin: "9 sep", checkout: "11 sep", room: "Deluxe River View", ref: "MOCK-CKG-002" },
+    weather: { icon: "🌫️", temp: "29°C", condition: "Nublado · Niebla matinal", humidity: "80%", wind: "8 km/h", rain: "35%", feels: "33°C" },
+    curiosities: [
+      { title: "La ciudad más grande del mundo", text: "Con 82.000 km², Chongqing es técnicamente el municipio más grande del mundo por área — más que Austria." },
+      { title: "300 días de niebla al año", text: "Su apodo es '雾都' (Ciudad de la Niebla). La cuenca rodeada de montañas atrapa la humedad del Yangtze." },
+      { title: "Capital de guerra", text: "Entre 1937 y 1945 fue capital provisional bajo Chiang Kai-shek, bombardeada por Japón en los ataques más intensos de la guerra." },
+      { title: "Metro-montaña-rusa", text: "El metro de Chongqing atraviesa edificios de apartamentos. La línea 2 pasa literalmente por los pisos 6 y 7 del edificio Liziba." },
+      { title: "Hotpot y numbing spice", text: "El 麻辣 (málà) mezcla pimienta de Sichuan con chile — la pimienta de Sichuan es única: entumece la boca en lugar de quemarla." }
+    ],
+    notes: "Por completar — ¿excursión a Wulong o Dazu?"
+  },
+  {
+    date: 10, month: "sep", weekday: "Jueves",
+    city: "Chongqing", theme: "chongqing", emoji: "🌶️", night: "Chongqing",
+    preview: ["Día completo en Chongqing", "Sabores extremos del Sichuan"],
+    photo: { url: "https://images.unsplash.com/photo-1544961371-516024cf8aec?w=1200&q=80", caption: "Ciqikou · El barrio antiguo" },
+    title: "Chongqing · Profundidades",
+    description: "Un día para perderse de verdad: los bunkers de la Segunda Guerra Mundial, el barrio antiguo de Ciqikou, el teleférico sobre el río. Por la noche, hotpot obligatorio — bienvenidos al límite del picante.",
+    transport: [],
+    hotel: { name: "Raffles Chongqing", stars: "★★★★★", checkin: "9 sep", checkout: "11 sep", room: "Deluxe River View", ref: "MOCK-CKG-002" },
+    weather: { icon: "🌧️", temp: "27°C", condition: "Lluvia intermitente", humidity: "85%", wind: "12 km/h", rain: "60%", feels: "30°C" },
+    curiosities: [
+      { title: "Los bunkers de la WWII", text: "Bajo la ciudad hay cientos de kilómetros de túneles excavados en los años 30 para protegerse de los bombardeos japoneses." },
+      { title: "Ciqikou, 1.000 años de historia", text: "Este barrio antiguo a orillas del Jialing fue un próspero puerto comercial durante las dinastías Tang y Song." },
+      { title: "El teleférico más largo sobre un río", text: "El teleférico sobre el Yangtze en Chongqing conecta dos distritos a 1.166 m de longitud y fue construido en 1987." },
+      { title: "Chongqing y la industria pesada", text: "Fue el centro industrial de China durante la guerra fría — aquí se fabricaron tanques, armas y munición para el ejército." },
+      { title: "El hotpot se come con palillos largos", text: "A diferencia del fondue europeo, el hotpot de Chongqing se come directamente del caldo hirviendo. El aceite de la olla puede alcanzar 130°C." }
+    ],
+    notes: "Por completar — ¿crucero nocturno por el Yangtze?"
+  },
+  {
+    date: 11, month: "sep", weekday: "Viernes",
+    city: "Zhangjiajie", theme: "zhangjiajie", emoji: "🏔️", night: "Zhangjiajie",
+    preview: ["Tren 07:00 → 09:40", "Montañas que inspiraron Avatar"],
+    photo: { url: "https://images.unsplash.com/photo-1537531443994-f03c15e77bbd?w=1200&q=80", caption: "Pilares de cuarzo · Zhangjiajie" },
+    title: "Zhangjiajie · Columnas del Cielo",
+    description: "Tren temprano desde Chongqing hacia Zhangjiajie, el parque que inspiró las montañas flotantes de Avatar. Pilares de arenisca que se elevan entre nubes, puentes de cristal y una naturaleza que parece generada por ordenador. Primera tarde en el parque.",
+    transport: ["CKG → ZJJ · Tren 07:00–09:40"],
+    hotel: { name: "Avatar Hotel Zhangjiajie", stars: "★★★★", checkin: "11 sep", checkout: "13 sep", room: "Mountain View Suite", ref: "MOCK-ZJJ-003" },
+    weather: { icon: "🌫️", temp: "23°C", condition: "Niebla matinal · Despeja a mediodía", humidity: "75%", wind: "6 km/h", rain: "25%", feels: "22°C" },
+    curiosities: [
+      { title: "El origen de Avatar", text: "James Cameron visitó Zhangjiajie antes de rodar Avatar. Los pilares de Hallelujah Mountain están modelados directamente sobre las formaciones del parque." },
+      { title: "Primer Parque Forestal Nacional de China", text: "Zhangjiajie fue declarado en 1982 como el primero de su categoría. Hoy hay más de 900 pilares de cuarzo en el parque." },
+      { title: "El ascensor más alto al aire libre", text: "El ascensor Bailong mide 326 m de altura — el doble del Big Ben — y fue el más alto del mundo en su exterior al inaugurarse en 2002." },
+      { title: "380 millones de años de historia geológica", text: "Los pilares de cuarzo se formaron durante el período Devónico, erosionados por agua y viento durante cientos de millones de años." },
+      { title: "Puente de vidrio récord", text: "El puente de cristal de Zhangjiajie (430m de longitud, 300m de altura) fue el más largo y alto del mundo al inaugurarse en 2016." }
+    ],
+    notes: "Por completar — ¿Tianmen Mountain o ruta dentro del parque?"
+  },
+  {
+    date: 12, month: "sep", weekday: "Sábado",
+    city: "Zhangjiajie", theme: "zhangjiajie", emoji: "🏔️", night: "Zhangjiajie",
+    preview: ["Día completo en el parque", "Niebla entre los pilares"],
+    photo: { url: "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=1200&q=80", caption: "Senderos entre nubes · Parque Nacional" },
+    title: "Zhangjiajie · Entre Nubes",
+    description: "Día completo para explorar el parque. El funicular de Bailong, los senderos entre pilares, el puente de vidrio. Si la niebla matinal cubre los picos, la experiencia es alucinante — los pilares flotan sobre un mar de nubes.",
+    transport: [],
+    hotel: { name: "Avatar Hotel Zhangjiajie", stars: "★★★★", checkin: "11 sep", checkout: "13 sep", room: "Mountain View Suite", ref: "MOCK-ZJJ-003" },
+    weather: { icon: "🌤️", temp: "24°C", condition: "Parcialmente nublado", humidity: "70%", wind: "8 km/h", rain: "15%", feels: "23°C" },
+    curiosities: [
+      { title: "La mina de oro del turismo chino", text: "Zhangjiajie recibe más de 50 millones de turistas al año — más que Alemania entera." },
+      { title: "El bosque de cuarzo más denso", text: "La concentración de pilares de arenisca es única en el mundo. La roca principal es casi puro cuarzo silíceo." },
+      { title: "Los monos macacos", text: "El parque alberga la mayor colonia de macacos rhesus del sur de China. Son tan audaces que roban comida a los turistas." },
+      { title: "La flora única del parque", text: "Más de 3.000 especies vegetales distintas, incluyendo ginkgo y cycas que llevan sin cambiar 200 millones de años." },
+      { title: "Sin coches en el parque", text: "El tráfico rodado está prohibido dentro del parque. Solo funiculares, ascensores y pies." }
+    ],
+    notes: "Buscar el sendero del Golden Whip Stream — 7,5 km entre pilares, sin multitudes si se va temprano."
+  },
+  {
+    date: 13, month: "sep", weekday: "Domingo",
+    city: "Furong", theme: "furong", emoji: "🌿", night: "Furong",
+    preview: ["Autobús mediodía (~3h)", "Pueblo Tujia suspendido en el tiempo"],
+    photo: { url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80", caption: "Pueblo Tujia · Diaojiaolou" },
+    title: "Furong · El Pueblo Suspendido",
+    description: "Autobús a mediodía hacia Furong, un pueblo Tujia literalmente colgado sobre un precipicio. Casas de madera antiquísimas, ambiente tranquilo y la sensación de haber encontrado algo que la mayoría de turistas se salta.",
+    transport: ["ZJJ → Furong · Autobús mediodía ~3h"],
+    hotel: { name: "Furong Cliff House", stars: "★★★", checkin: "13 sep", checkout: "14 sep", room: "Casa tradicional Tujia", ref: "MOCK-FRG-004" },
+    weather: { icon: "🌤️", temp: "25°C", condition: "Soleado con brisa", humidity: "65%", wind: "10 km/h", rain: "10%", feels: "24°C" },
+    curiosities: [
+      { title: "Los Tujia, minoría étnica ancestral", text: "Los Tujia son una de las 55 minorías étnicas reconocidas en China, con lengua propia no relacionada con el chino mandarín." },
+      { title: "Diaojiaolou · Casas sobre pilotes", text: "El diseño típico Tujia construye las casas sobre pilotes en el borde del precipicio para aprovechar el terreno sin talar árboles." },
+      { title: "Sin clavos metálicos", text: "Las casas tradicionales Tujia se construyen íntegramente con madera ensamblada sin ningún clavo metálico — solo mortajas y espigas." },
+      { title: "Redescubierto en los 90", text: "Furong era prácticamente inaccesible hasta que se construyó la carretera en los años 90. Antes solo se llegaba a pie o por río." },
+      { title: "El río Youshui como frontera", text: "El río que rodea el pueblo fue durante siglos la frontera entre territorios del Imperio y zonas autónomas de las minorías del sur." }
+    ],
+    notes: "Pueblo pequeño — confirmar alojamiento con antelación. Llevar efectivo."
+  },
+  {
+    date: 14, month: "sep", weekday: "Lunes",
+    city: "Fenghuang", theme: "fenghuang", emoji: "🏮", night: "Fenghuang",
+    preview: ["Autobús desde Furong (~2h)", "La Ciudad Fénix"],
+    photo: { url: "https://images.unsplash.com/photo-1598256024095-42fa0cd0dad9?w=1200&q=80", caption: "Río Tuojiang · Fenghuang al atardecer" },
+    title: "Fenghuang · Ciudad Fénix",
+    description: "Fenghuang — la Ciudad Fénix. Casas de madera sobre pilotes en el río Tuojiang, puentes de piedra, faroles rojos reflejados en el agua al atardecer. Una ciudad antigua conservada como si el tiempo se hubiera detenido en la dinastía Ming. Uno de los paisajes más fotografiados de China.",
+    transport: ["Furong → Fenghuang · Autobús ~2h"],
+    hotel: { name: "Tuojiang Riverside Inn", stars: "★★★", checkin: "14 sep", checkout: "15 sep", room: "Habitación con vista al río", ref: "MOCK-FHG-005" },
+    weather: { icon: "🌅", temp: "25°C", condition: "Soleado · Perfecto para fotos", humidity: "60%", wind: "8 km/h", rain: "5%", feels: "24°C" },
+    curiosities: [
+      { title: "El nombre", text: "Fenghuang significa 'Fénix' en chino. La ciudad recibe el nombre de dos colinas que, vistas desde el aire, recuerdan las alas del ave mítica." },
+      { title: "Shen Congwen", text: "El escritor Shen Congwen nació aquí en 1902 y fue nominado al Nobel de Literatura. Su novela 'La ciudad fronteriza' transcurre en este río." },
+      { title: "La muralla de 1704", text: "La muralla que rodea el casco histórico fue construida durante la dinastía Qing en 1704, hace más de 320 años, y sigue en pie." },
+      { title: "Los puentes de salto", text: "Los puentes de piedra irregulares sobre el Tuojiang (con piedras separadas por las que hay que saltar) son únicos en su tipo en China." },
+      { title: "Última ciudad del Imperio", text: "Fenghuang fue durante siglos el último puesto del Imperio chino antes de los territorios no sometidos al sur, con guarnición militar permanente." }
+    ],
+    notes: "Atardecer junto al río es el momento más especial. Llegar a hora de luz."
+  },
+  {
+    date: 15, month: "sep", weekday: "Martes",
+    city: "Shanghái", theme: "shanghai", emoji: "🌃", night: "Shanghái",
+    preview: ["Tren 08:39 → 15:09 vía Huaihua", "Bienvenidos al futuro"],
+    photo: { url: "https://images.unsplash.com/photo-1474487548417-781cb6d646b4?w=1200&q=80", caption: "El Bund · Shanghái de noche" },
+    title: "SHANGHÁI · SISTEMA INICIADO",
+    description: "De la China milenaria al siglo XXII en un tren. Salida 08:39 desde Fenghuang, llegada 15:09 a Shanghái. El skyline del Bund y Pudong aparece como una alucinación después de días en pueblos de madera. La ciudad más densa, más rápida y más eléctrica del viaje.",
+    transport: ["Fenghuang → SHA · Tren 08:39–15:09 (vía Huaihua)"],
+    hotel: { name: "The Peninsula Shanghai", stars: "★★★★★", checkin: "15 sep", checkout: "19 sep", room: "Deluxe Bund View Room", ref: "MOCK-SHA-006" },
+    weather: { icon: "🌆", temp: "28°C", condition: "Cálido · Algo brumoso", humidity: "72%", wind: "15 km/h SE", rain: "20%", feels: "31°C" },
+    curiosities: [
+      { title: "El metro más largo del mundo", text: "El metro de Shanghái tiene 831 km de red con 508 estaciones — el más extenso del planeta por delante de Pekín y Londres." },
+      { title: "Capital del jazz en Asia", text: "En los años 30, Shanghái tenía más salas de jazz que Nueva York. El French Concession era el epicentro de la vida nocturna asiática." },
+      { title: "La comunidad judía de la guerra", text: "Entre 1937 y 1941, Shanghái acogió a 25.000 refugiados judíos huyendo del nazismo — la mayor comunidad judía de Asia." },
+      { title: "El Bund fue territorio extranjero", text: "Los edificios del Bund fueron construidos íntegramente por empresas británicas, francesas y americanas entre 1860 y 1940." },
+      { title: "La mayor ciudad del mundo en 1930", text: "Shanghái era la quinta ciudad más grande del mundo en 1930 y la más cosmopolita: 52 nacionalidades distintas con consulado." }
+    ],
+    notes: "Primera tarde: orientarse en el Bund. Reservar cena en el French Concession."
+  },
+  {
+    date: 16, month: "sep", weekday: "Miércoles",
+    city: "Shanghái", theme: "shanghai", emoji: "🌃", night: "Shanghái",
+    preview: ["Día completo · Shanghai", "Bund · Pudong · French Concession"],
+    photo: { url: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=1200&q=80", caption: "Pudong · Skyline del futuro" },
+    title: "SHANGHÁI · EXPLORACIÓN",
+    description: "Shanghái tiene capas: la arquitectura colonial del Bund, los rascacielos imposibles de Pudong, los callejones art-déco del French Concession, los jardines de Yu Garden. Cada barrio es un mundo, cada cuadra una sorpresa.",
+    transport: [],
+    hotel: { name: "The Peninsula Shanghai", stars: "★★★★★", checkin: "15 sep", checkout: "19 sep", room: "Deluxe Bund View Room", ref: "MOCK-SHA-006" },
+    weather: { icon: "☀️", temp: "29°C", condition: "Soleado", humidity: "68%", wind: "12 km/h", rain: "8%", feels: "32°C" },
+    curiosities: [
+      { title: "El Tower Oriental Pearl", text: "La Torre de Televisión Oriental (468m), inaugurada en 1994, fue el edificio más alto de China durante una década. Hoy es el 9.º." },
+      { title: "Xintiandi", text: "El barrio de Xintiandi fue una favela hasta 2001. Hoy es el barrio más caro de Shanghái, rehabilitado con arquitectura shikumen tradicional." },
+      { title: "El precio del metro cuadrado", text: "El French Concession es uno de los cinco barrios más caros del mundo en precio por metro cuadrado, por encima de Mayfair o Monaco." },
+      { title: "Yu Garden, el jardín del placer", text: "El Jardín Yu fue construido en 1559 por un funcionario Ming como regalo a sus padres ancianos. Tardó 18 años en completarse." },
+      { title: "Shanghái tiene 24 millones de habitantes", text: "Si fuese un país, sería el 48.º más poblado del mundo, por delante de Australia, Rumania o Países Bajos." }
+    ],
+    notes: "Por completar — ¿Museo de Arte Moderno? ¿Tianzifang? ¿Xintiandi?"
+  },
+  {
+    date: 17, month: "sep", weekday: "Jueves",
+    city: "Shanghái", theme: "shanghai", emoji: "🌃", night: "Shanghái",
+    preview: ["Shanghái · Día 3", "La ciudad que no duerme"],
+    photo: { url: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&q=80&sig=sha17", caption: "French Concession · Luces nocturnas" },
+    title: "SHANGHÁI · PROFUNDIDAD",
+    description: "Con dos días encima, Shanghái empieza a revelar sus capas más interesantes: barrios que no salen en las guías, restaurantes donde el menú es solo en chino, la vida del río Huangpu por la noche. La ciudad que siempre tiene otra capa.",
+    transport: [],
+    hotel: { name: "The Peninsula Shanghai", stars: "★★★★★", checkin: "15 sep", checkout: "19 sep", room: "Deluxe Bund View Room", ref: "MOCK-SHA-006" },
+    weather: { icon: "⛅", temp: "27°C", condition: "Parcialmente nublado", humidity: "70%", wind: "18 km/h SE", rain: "25%", feels: "29°C" },
+    curiosities: [
+      { title: "La gastronomía de Shanghái", text: "La cocina shanghainesa es la más dulce de China — el azúcar se añade incluso a platos salados como el cerdo rojo estofado (红烧肉)." },
+      { title: "Longhua, el templo budista vivo", text: "El Templo Longhua data del año 977 d.C. y sigue siendo un lugar de culto activo con más de 100 monjes residentes." },
+      { title: "El Barrio Tilanqiao", text: "El Barrio Judío (Tilanqiao) en Hongkou fue el mayor gueto voluntario de la historia: 25.000 personas en 1 km²." },
+      { title: "Shanghái en la ciencia ficción", text: "La ciudad aparece en más de 50 películas de ciencia ficción como símbolo del futuro: Her, Gravity, Her, Blade Runner 2049." },
+      { title: "El tren maglev más rápido del mundo", text: "El Transrapid de Shanghái, operativo desde 2004, alcanza 431 km/h y conecta el aeropuerto Pudong con la ciudad en 7 minutos." }
+    ],
+    notes: "Por completar — ¿excursión a Suzhou o Hangzhou en un día?"
+  },
+  {
+    date: 18, month: "sep", weekday: "Viernes",
+    city: "Shanghái", theme: "shanghai", emoji: "🌃", night: "Shanghái",
+    preview: ["Último día en Shanghái", "Vuelo mañana muy temprano"],
+    photo: { url: "https://images.unsplash.com/photo-1508804052814-cd3ba865a116?w=1200&q=80", caption: "Shanghái · Última noche en el Bund" },
+    title: "SHANGHÁI · ÚLTIMA NOCHE",
+    description: "Último día en Shanghái. Compras pendientes, sitios que quedaron en el tintero, o simplemente sentarse en un café del French Concession a ver pasar la vida. Mañana vuelo muy temprano — hacer maletas antes de la noche.",
+    transport: ["Vuelo mañana: SHA → CAN · 08:50"],
+    hotel: { name: "The Peninsula Shanghai", stars: "★★★★★", checkin: "15 sep", checkout: "19 sep", room: "Deluxe Bund View Room", ref: "MOCK-SHA-006" },
+    weather: { icon: "🌤️", temp: "28°C", condition: "Buena tarde", humidity: "65%", wind: "10 km/h", rain: "10%", feels: "30°C" },
+    curiosities: [
+      { title: "El Huaihai Lu", text: "La calle comercial Huaihai Road tiene más de 6 km de boutiques, cafés y restaurantes — la 5.ª Avenida de Asia." },
+      { title: "El mercado de antigüedades", text: "El Mercado de Fuyou tiene 4 pisos de antigüedades, desde porcelana Ming hasta propaganda maoísta. Regatear es obligatorio." },
+      { title: "El cielo de Shanghái", text: "Shanghái tiene más rascacielos de más de 150m que cualquier otra ciudad del mundo excepto Hong Kong." },
+      { title: "La vida nocturna de Shanghái", text: "Los clubs del Bund y de Xintiandi cierran a las 6am. Shanghái tiene una de las escenas de música electrónica más activas de Asia." },
+      { title: "La pelea del taxi", text: "Los taxis de Shanghái usan taxímetro pero hay que acordar el destino antes — si no hablas chino, muéstrales la dirección escrita." }
+    ],
+    notes: "Despertador muy temprano. Preparar transfer al aeropuerto la noche anterior."
+  },
+  {
+    date: 19, month: "sep", weekday: "Sábado",
+    city: "Cantón", theme: "canton", emoji: "🌺", night: "Cantón",
+    preview: ["Vuelo 08:50 → llega 11:15", "Guangzhou · Capital gastronómica"],
+    photo: { url: "https://images.unsplash.com/photo-1529824604608-c4bab6870d54?w=1200&q=80", caption: "Guangzhou · Templo de los Seis Banyans" },
+    title: "Cantón · Guangzhou",
+    description: "Vuelo matutino a Cantón (Guangzhou), la capital gastronómica de China. La cocina cantonesa es la más refinada del país: dim sum de calidad imposible, mariscos, pato al horno. Un día y noche para disfrutar antes del gran vuelo de vuelta.",
+    transport: ["SHA → CAN · 08:50–11:15"],
+    hotel: { name: "Four Points by Sheraton Guangzhou", stars: "★★★★", checkin: "19 sep", checkout: "20 sep", room: "Superior Room", ref: "MOCK-CAN-007" },
+    weather: { icon: "☀️", temp: "31°C", condition: "Cálido y húmedo", humidity: "78%", wind: "12 km/h S", rain: "15%", feels: "35°C" },
+    curiosities: [
+      { title: "El único puerto abierto al mundo", text: "Durante más de 1.000 años, Cantón fue el único puerto de China autorizado para comerciar con el exterior — el Sistema Cantón." },
+      { title: "El origen del dim sum", text: "El dim sum nació en las teahouses cantonesas hace más de 2.000 años como pequeños bocados para acompañar el té de la mañana." },
+      { title: "La diáspora cantonesa", text: "Más de 30 millones de cantoneses viven fuera de China. La mayoría de chinos en Europa, América y Australia descienden de esta región." },
+      { title: "La Feria de Cantón", text: "La Canton Trade Fair es la mayor feria de exportación del mundo, celebrada dos veces al año desde 1957 sin interrupciones." },
+      { title: "Guangzhou, ciudad eterna del comercio", text: "El primer contacto árabe con China fue en Cantón en el siglo VII. La mezquita de Huaisheng, construida en 627 d.C., es una de las más antiguas del mundo." }
+    ],
+    notes: "Por completar — dim sum imprescindible. ¿Templo de los Seis Banyan? ¿Shamian Island?"
+  },
+  {
+    date: 20, month: "sep", weekday: "Domingo",
+    city: "Vuelo", theme: "avion", emoji: "✈️", night: "Madrid",
+    preview: ["Vuelo 09:45 → Madrid 18:15", "Fin del viaje"],
+    photo: { url: "https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=1200&q=80", caption: "Volviendo a casa · Hasta la próxima" },
+    title: "Vuelta a Casa",
+    description: "El último amanecer en China. Vuelo a las 09:45 desde Cantón hacia Madrid, aterrizando a las 18:15. El tiempo en el avión para procesar 16 días de China: emperadores, montañas imposibles, niebla de Chongqing, neon de Shanghái, faroles en el agua. Y ya estar pensando en la próxima.",
+    transport: ["CAN → MAD · 09:45–18:15"],
+    hotel: null,
+    weather: null,
+    curiosities: [
+      { title: "16 días, 8 destinos", text: "Del Imperio a la modernidad, de la niebla al neon. Un itinerario que cruza 3.000 años de historia china." },
+      { title: "Distancia total recorrida", text: "Madrid→Pekín→Chongqing→Zhangjiajie→Fenghuang→Shanghái→Cantón→Madrid: aproximadamente 25.000 km." },
+      { title: "El jetlag de vuelta", text: "La ruta de vuelta hacia el oeste es la peor para el jetlag: llegaréis a casa con 6 horas de diferencia y el cuerpo confundido." },
+      { title: "La regla de las 3 semanas", text: "Los expertos en viajes dicen que los mejores recuerdos cristalizan a las tres semanas de volver. Preparad el álbum de fotos." },
+      { title: "Ya hay que volver", text: "China tiene 34 provincias, 55 minorías étnicas y 5.000 años de historia. Quedan por ver: Yunnan, Tibet, Guilin, Chengdu..." }
+    ],
+    notes: "Transfer al aeropuerto a primera hora. Guardar la última moneda de yuan como recuerdo."
+  }
+];
+
+/* ═══════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════ */
+function buildCard(day) {
+  const card = document.createElement('div');
+  card.className = `day-card theme-${day.theme}`;
+
+  const previewItems = day.preview.map(p =>
+    `<div class="preview-item"><div class="preview-dot"></div><span>${p}</span></div>`
+  ).join('');
+
+  // Transport
+  const transportHTML = day.transport.length
+    ? `<div class="expanded-transport">${day.transport.map(t => `<span class="transport-tag">⬡ ${t}</span>`).join('')}</div>`
+    : '';
+
+  // Hotel
+  const hotelHTML = day.hotel ? `
+    <div class="hotel-card">
+      <div class="section-label">🏨 Hotel <span class="mock-badge">MOCK</span></div>
+      <div class="hotel-name">${day.hotel.name}</div>
+      <div class="hotel-stars">${day.hotel.stars}</div>
+      <div class="hotel-row"><span class="hotel-key">Check-in</span><span class="hotel-val">${day.hotel.checkin}</span></div>
+      <div class="hotel-row"><span class="hotel-key">Check-out</span><span class="hotel-val">${day.hotel.checkout}</span></div>
+      <div class="hotel-row"><span class="hotel-key">Habitación</span><span class="hotel-val">${day.hotel.room}</span></div>
+      <div class="hotel-confirmation">REF: ${day.hotel.ref}</div>
+    </div>` : '';
+
+  // Weather
+  const weatherHTML = day.weather ? `
+    <div class="weather-card">
+      <div class="section-label">🌤 Tiempo en Septiembre <span class="mock-badge">MOCK</span></div>
+      <div class="weather-main">
+        <div class="weather-icon">${day.weather.icon}</div>
+        <div>
+          <div class="weather-temp">${day.weather.temp}</div>
+          <div class="weather-condition">${day.weather.condition}</div>
+        </div>
+      </div>
+      <div class="weather-details">
+        <div class="weather-detail-item"><div class="weather-detail-key">Humedad</div><div class="weather-detail-val">${day.weather.humidity}</div></div>
+        <div class="weather-detail-item"><div class="weather-detail-key">Viento</div><div class="weather-detail-val">${day.weather.wind}</div></div>
+        <div class="weather-detail-item"><div class="weather-detail-key">Lluvia</div><div class="weather-detail-val">${day.weather.rain}</div></div>
+        <div class="weather-detail-item"><div class="weather-detail-key">Sensación</div><div class="weather-detail-val">${day.weather.feels}</div></div>
+      </div>
+      <div class="weather-note">Datos históricos de septiembre. Conexión a API en desarrollo.</div>
+    </div>` : '';
+
+  // Grid (hotel + weather)
+  const gridHTML = (hotelHTML || weatherHTML)
+    ? `<div class="expanded-grid">${hotelHTML}${weatherHTML}</div>` : '';
+
+  // Curiosities
+  const curiositiesHTML = day.curiosities.map((c, i) => `
+    <div class="curiosity-item">
+      <div class="curiosity-num">${i + 1}</div>
+      <div class="curiosity-body">
+        <div class="curiosity-title">${c.title}</div>
+        <div class="curiosity-text">${c.text}</div>
+      </div>
+    </div>`).join('');
+
+  // Notes
+  const notesHTML = day.notes ? `
+    <div class="expanded-notes">
+      <div class="expanded-notes-title">Notas</div>
+      <div class="expanded-notes-body">${day.notes}</div>
+    </div>` : '';
+
+  card.innerHTML = `
+    <div class="card-header">
+      <div class="card-date-block">
+        <div class="card-day-num">${day.date}</div>
+        <div class="card-weekday">${day.weekday} ${day.month}</div>
+      </div>
+      <div class="card-city-badge">
+        <span class="city-emoji-badge">${day.emoji}</span>
+        <span class="city-name">${day.city}</span>
+        <span class="card-night-badge">🌙 ${day.night}</span>
+      </div>
+    </div>
+    <div class="card-divider"></div>
+    <div class="card-preview">${previewItems}</div>
+    <div class="card-expand-hint">· click para expandir ·</div>
+
+    <div class="day-expanded">
+      <div class="photo-wrapper">
+        <img class="expanded-photo" src="${day.photo.url}" alt="${day.city}" loading="lazy" onerror="this.style.display='none'">
+        <div class="photo-caption">${day.photo.caption}</div>
+      </div>
+      <div class="expanded-body">
+        <div class="expanded-title" data-text="${day.title}">${day.title}</div>
+        <div class="expanded-description">${day.description}</div>
+        ${transportHTML}
+        ${gridHTML}
+        <div class="curiosities-section">
+          <div class="section-label">📜 Curiosidades históricas</div>
+          <div class="curiosities-grid">${curiositiesHTML}</div>
+        </div>
+        ${notesHTML}
+        <div class="close-hint" onclick="closeCard(this)">▲ cerrar</div>
+      </div>
+    </div>
+  `;
+
+  card.querySelector('.card-header').addEventListener('click', () => toggleCard(card));
+  card.querySelector('.card-preview').addEventListener('click', () => toggleCard(card));
+  card.querySelector('.card-expand-hint').addEventListener('click', () => toggleCard(card));
+
+  return card;
+}
+
+function toggleCard(card) {
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.day-card.open').forEach(c => c.classList.remove('open'));
+  if (!isOpen) {
+    card.classList.add('open');
+    setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  }
+}
+
+function closeCard(btn) {
+  btn.closest('.day-card').classList.remove('open');
+}
+
+const calendar = document.getElementById('calendar');
+days.forEach(day => calendar.appendChild(buildCard(day)));
+</script>
+</body>
+</html>
