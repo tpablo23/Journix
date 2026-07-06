@@ -281,6 +281,14 @@ header::before{content:'';position:absolute;top:0;left:50%;transform:translateX(
 .tl-stop.below .tl-label-emoji{position:absolute;top:55px;left:0;transform:translateX(-50%);font-size:.8rem;line-height:1;white-space:nowrap}
 .tl-stop.below .tl-label-city{position:absolute;top:70px;left:0;transform:translateX(-50%);font-size:.46rem;letter-spacing:.08em;color:var(--text2);white-space:nowrap;opacity:.6;text-align:center}
 
+/* ═══ MODO HOY ═══ */
+.today-bar{max-width:1200px;margin:20px auto 0;padding:0 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.today-label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);opacity:.7}
+.day-card.open .card-hint{display:none}
+.day-card.is-today{border-color:var(--accent);box-shadow:0 0 0 1px rgba(200,169,110,.5),0 0 26px rgba(200,169,110,.18)}
+.today-badge{position:absolute;top:0;left:50%;transform:translateX(-50%);background:var(--accent);color:#0a0a0f;font-size:.58rem;font-weight:bold;letter-spacing:.2em;padding:3px 10px 2px;border-radius:0 0 4px 4px;z-index:5}
+.autosave-badge.err{color:var(--danger)}
+
 /* FOOTER */
 footer{text-align:center;padding:36px 20px;font-size:.72rem;letter-spacing:.15em;color:rgba(232,224,208,.15);border-top:1px solid rgba(200,169,110,.08)}
 ::-webkit-scrollbar{width:5px}
@@ -336,6 +344,11 @@ footer{text-align:center;padding:36px 20px;font-size:.72rem;letter-spacing:.15em
 
 <!-- ══════ CALENDARIO ══════ -->
 <div id="tab-calendar" class="tab-panel active">
+  <div class="today-bar">
+    <span class="today-label">📍 Modo hoy</span>
+    <select class="form-select" id="today-select" style="width:auto;padding:6px 10px"></select>
+    <button class="btn btn-ghost" id="today-btn">Ir a hoy</button>
+  </div>
   <div class="calendar" id="calendar"></div>
 </div>
 
@@ -583,7 +596,7 @@ const DAYS = [
   {
     date:5,month:'sep',weekday:'Sábado',city:'Vuelo',theme:'avion',emoji:'✈️',night:'Avión',
     preview:['Madrid → Ámsterdam → Pekín','Salida 15:55 · Llega +1 a las 13:25'],
-    photo:{url:'https://source.unsplash.com/1200x600/?airplane,flight,clouds,wing,sky&sig=1',cap:'Ruta MAD–AMS–PEK · Sobre las nubes'},
+    photo:{url:'https://loremflickr.com/1200/600/airplane,clouds?lock=1',cap:'Ruta MAD–AMS–PEK · Sobre las nubes'},
     title:'Despegue · Madrid → Pekín',
     description:'El viaje empieza. Vuelo Madrid–Ámsterdam a las 15:55, y conexión en Schiphol con el largo vuelo nocturno a Pekín (21:40 → 13:25+1). Casi diez horas sobre Asia Central.',
     transport:['MAD → AMS · 15:55–18:35','AMS → PEK · 21:40–13:25+1'],
@@ -599,11 +612,11 @@ const DAYS = [
   {
     date:6,month:'sep',weekday:'Domingo',city:'Pekín',theme:'beijing',emoji:'🏯',night:'Pekín',
     preview:['Aterrizaje 13:25 en PEK','Primeras horas en la capital imperial'],
-    photo:{url:'https://source.unsplash.com/1200x600/?forbidden+city,beijing,china,imperial,palace&sig=2',cap:'Ciudad Prohibida · Pekín'},
+    photo:{url:'https://loremflickr.com/1200/600/beijing,palace?lock=2',cap:'Ciudad Prohibida · Pekín'},
     title:'Bienvenidos a Pekín',
     description:'Llegada a Capital International Airport con el cuerpo aún en hora española. Hay que aguantar hasta la noche: primer paseo por los hutongs del barrio, comida callejera y dejarse envolver por el olor a especias y carbón.',
     transport:['Aterrizaje 13:25 · PEK'],
-    hotel:{name:'Red Wall Garden Hotel',stars:'★★★★',ci:'6 sep',co:'8 sep',room:'Superior Courtyard Room',ref:'MOCK-BJG-001'},
+    hotel:{name:'Manxin Mansion Beijing Shichahai',stars:'★★★★',ci:'6 sep',co:'9 sep',room:'Habitación estándar',ref:'北京南锣鼓巷什刹海公园漫心府'},
     weather:{icon:'⛅',temp:'27°C',cond:'Parcialmente nublado',hum:'62%',wind:'14 km/h NE',rain:'20%',feels:'29°C'},
     curiosities:[
       {t:'9.999 habitaciones',x:'La Ciudad Prohibida tiene exactamente ese número según la leyenda — el 9 simboliza el cielo imperial.'},
@@ -616,11 +629,11 @@ const DAYS = [
   {
     date:7,month:'sep',weekday:'Lunes',city:'Pekín',theme:'beijing',emoji:'🏯',night:'Pekín',
     preview:['Día completo en Pekín','Ciudad Prohibida · Gran Muralla'],
-    photo:{url:'https://source.unsplash.com/1200x600/?great+wall,china,beijing,mutianyu,wall&sig=3',cap:'Gran Muralla · Mutianyu'},
+    photo:{url:'https://loremflickr.com/1200/600/greatwall,china?lock=3',cap:'Gran Muralla · Mutianyu'},
     title:'Pekín · Día Imperial',
     description:'Día completo para la capital. La Ciudad Prohibida, Tiananmen, el Templo del Cielo o la Gran Muralla en Mutianyu. Pekín tiene capas de historia sobre capas de historia.',
     transport:[],
-    hotel:{name:'Red Wall Garden Hotel',stars:'★★★★',ci:'6 sep',co:'8 sep',room:'Superior Courtyard Room',ref:'MOCK-BJG-001'},
+    hotel:{name:'Manxin Mansion Beijing Shichahai',stars:'★★★★',ci:'6 sep',co:'9 sep',room:'Habitación estándar',ref:'北京南锣鼓巷什刹海公园漫心府'},
     weather:{icon:'☀️',temp:'28°C',cond:'Soleado',hum:'55%',wind:'10 km/h',rain:'5%',feels:'30°C'},
     curiosities:[
       {t:'El Templo del Cielo',x:'Construido en 1420, los emperadores venían aquí cada solsticio a rogar por buenas cosechas.'},
@@ -631,13 +644,14 @@ const DAYS = [
     ],notes:'Por completar — ¿Gran Muralla o Ciudad Prohibida primero?'
   },
   {
-    date:8,month:'sep',weekday:'Martes',city:'Vuelo',theme:'avion',emoji:'✈️',night:'Avión',
-    preview:['Mañana libre en Pekín','Vuelo nocturno 23:05 → Chongqing'],
-    photo:{url:'https://source.unsplash.com/1200x600/?beijing,china,night,city,lights&sig=4',cap:'Pekín de noche · Rumbo al sur'},
-    title:'Pekín → Chongqing · Nocturno',
-    description:'Mañana y tarde libres para los últimos rincones de Pekín. A las 23:05 sale el vuelo hacia Chongqing, la megaciudad de las nieblas y el picante.',
-    transport:['PEK → CKG · 23:05–01:55+1'],
-    hotel:null,weather:null,
+    date:8,month:'sep',weekday:'Martes',city:'Pekín',theme:'beijing',emoji:'🏯',night:'Pekín',
+    preview:['Último día completo en Pekín','Vuelo mañana temprano a Chongqing'],
+    photo:{url:'https://loremflickr.com/1200/600/beijing,night?lock=4',cap:'Pekín de noche · Último día en la capital'},
+    title:'Pekín · Última noche',
+    description:'Último día completo en la capital. Tiempo libre para los rincones que quedaron pendientes — los hutongs de Nanluoguxiang, el lago Houhai, el Parque Beihai. Mañana vuelo temprano a Chongqing (07:15 desde Daxing), así que preparar maletas esta noche.',
+    transport:[],
+    hotel:{name:'Manxin Mansion Beijing Shichahai',stars:'★★★★',ci:'6 sep',co:'9 sep',room:'Habitación estándar',ref:'北京南锣鼓巷什刹海公园漫心府'},
+    weather:{icon:'🌆',temp:'27°C',cond:'Noche cálida en Pekín',hum:'60%',wind:'10 km/h',rain:'10%',feels:'28°C'},
     curiosities:[
       {t:'Vuelo doméstico de 3h',x:'La distancia Pekín–Chongqing es de ~1.450 km, similar a Madrid–Berlín, pero en un solo país.'},
       {t:'Solo una zona horaria',x:'China tiene 6 zonas geográficas pero oficialmente una sola: la hora de Pekín.'},
@@ -648,12 +662,12 @@ const DAYS = [
   },
   {
     date:9,month:'sep',weekday:'Miércoles',city:'Chongqing',theme:'chongqing',emoji:'🌶️',night:'Chongqing',
-    preview:['Llegada 01:55 de madrugada','La ciudad de la niebla y el picante'],
-    photo:{url:'https://source.unsplash.com/1200x600/?chongqing,china,yangtze,night,skyline&sig=5',cap:'Chongqing · Luces sobre el Yangtze'},
+    preview:['Vuelo MU6681 · 07:15 PKX → 10:00 CKG','La ciudad de la niebla y el picante'],
+    photo:{url:'https://loremflickr.com/1200/600/chongqing,skyline?lock=5',cap:'Chongqing · Luces sobre el Yangtze'},
     title:'Chongqing · La Ciudad de la Niebla',
-    description:'Chongqing: 30 millones de personas, niebla permanente, el picante más brutal de China y una topografía vertical que parece de ciencia ficción. Llegada de madrugada — día para descansar y explorar Jiefangbei.',
-    transport:['Llegada CKG · 01:55'],
-    hotel:{name:'Raffles Chongqing',stars:'★★★★★',ci:'9 sep',co:'11 sep',room:'Deluxe River View',ref:'MOCK-CKG-002'},
+    description:'Vuelo matutino desde el aeropuerto de Daxing (PKX) — salida 07:15, llegada 10:00. China Eastern MU6681 en Airbus A321-200. Chongqing: 30 millones de personas, niebla permanente, el picante más brutal de China y una topografía vertical que parece de ciencia ficción. Check-in en el hotel a partir de las 14:00 — tiempo para explorar Jiefangbei y Hongyadong.',
+    transport:['PKX → CKG · MU6681 · 07:15–10:00','China Eastern · Airbus A321-200 · Comida incluida'],
+    hotel:{name:'Maiyue Hotel · 麦悦空中酒店',stars:'★★★★',ci:'9 sep',co:'11 sep',room:'Habitación estándar',ref:'重庆解放碑洪崖洞 · Pago al llegar'},
     weather:{icon:'🌫️',temp:'29°C',cond:'Nublado · Niebla matinal',hum:'80%',wind:'8 km/h',rain:'35%',feels:'33°C'},
     curiosities:[
       {t:'La ciudad más grande del mundo',x:'Con 82.000 km², Chongqing es el municipio más grande del mundo por área — más que Austria.'},
@@ -666,11 +680,11 @@ const DAYS = [
   {
     date:10,month:'sep',weekday:'Jueves',city:'Chongqing',theme:'chongqing',emoji:'🌶️',night:'Chongqing',
     preview:['Día completo en Chongqing','Hotpot obligatorio · Ciqikou'],
-    photo:{url:'https://source.unsplash.com/1200x600/?chongqing,china,hongyadong,river,old+town&sig=6',cap:'Hongya Cave · Chongqing'},
+    photo:{url:'https://loremflickr.com/1200/600/chongqing,night?lock=6',cap:'Hongya Cave · Chongqing'},
     title:'Chongqing · Profundidades',
     description:'Un día para perderse de verdad: los bunkers de la Segunda Guerra Mundial, el barrio antiguo de Ciqikou, el teleférico sobre el río. Por la noche, hotpot obligatorio.',
     transport:[],
-    hotel:{name:'Raffles Chongqing',stars:'★★★★★',ci:'9 sep',co:'11 sep',room:'Deluxe River View',ref:'MOCK-CKG-002'},
+    hotel:{name:'Maiyue Hotel · 麦悦空中酒店',stars:'★★★★',ci:'9 sep',co:'11 sep',room:'Habitación estándar',ref:'重庆解放碑洪崖洞 · Pago al llegar'},
     weather:{icon:'🌧️',temp:'27°C',cond:'Lluvia intermitente',hum:'85%',wind:'12 km/h',rain:'60%',feels:'30°C'},
     curiosities:[
       {t:'Km de bunkers bajo la ciudad',x:'Cientos de km de túneles excavados en los años 30 para protegerse de los bombardeos japoneses.'},
@@ -683,7 +697,7 @@ const DAYS = [
   {
     date:11,month:'sep',weekday:'Viernes',city:'Zhangjiajie',theme:'zhangjiajie',emoji:'🏔️',night:'Zhangjiajie',
     preview:['Tren 07:00 → 09:40','Montañas que inspiraron Avatar'],
-    photo:{url:'https://source.unsplash.com/1200x600/?zhangjiajie,china,mountains,pillars,mist&sig=7',cap:'Pilares de cuarzo · Zhangjiajie'},
+    photo:{url:'https://loremflickr.com/1200/600/zhangjiajie,mountains?lock=7',cap:'Pilares de cuarzo · Zhangjiajie'},
     title:'Zhangjiajie · Columnas del Cielo',
     description:'Tren temprano desde Chongqing. Zhangjiajie: el parque que inspiró las montañas flotantes de Avatar. Pilares de arenisca que emergen entre nubes, una naturaleza que parece generada por ordenador.',
     transport:['CKG → ZJJ · Tren 07:00–09:40'],
@@ -700,7 +714,7 @@ const DAYS = [
   {
     date:12,month:'sep',weekday:'Sábado',city:'Zhangjiajie',theme:'zhangjiajie',emoji:'🏔️',night:'Zhangjiajie',
     preview:['Día completo en el parque','Niebla entre los pilares'],
-    photo:{url:'https://source.unsplash.com/1200x600/?zhangjiajie,avatar,china,peaks,clouds,forest&sig=8',cap:'Mar de nubes · Parque Nacional'},
+    photo:{url:'https://loremflickr.com/1200/600/zhangjiajie,china?lock=8',cap:'Mar de nubes · Parque Nacional'},
     title:'Zhangjiajie · Entre Nubes',
     description:'Día completo para explorar. El funicular de Bailong, los senderos entre pilares, el puente de vidrio. Si la niebla matinal cubre los picos, los pilares flotan sobre un mar de nubes.',
     transport:[],
@@ -717,10 +731,10 @@ const DAYS = [
   {
     date:13,month:'sep',weekday:'Domingo',city:'Furong',theme:'furong',emoji:'🌿',night:'Furong',
     preview:['Autobús mediodía (~3h)','Pueblo Tujia suspendido en el tiempo'],
-    photo:{url:'https://source.unsplash.com/1200x600/?hunan,china,tujia,stilts,village,ancient&sig=9',cap:'Diaojiaolou · Pueblo Tujia'},
+    photo:{url:'https://loremflickr.com/1200/600/hunan,village,china?lock=9',cap:'Diaojiaolou · Pueblo Tujia'},
     title:'Furong · El Pueblo Suspendido',
-    description:'Tren desde Zhangjiajie hacia Furong, un pueblo Tujia colgado sobre un precipicio. Casas de madera antiquísimas, ambiente tranquilo y la sensación de haber encontrado algo que la mayoría de turistas se salta.',
-    transport:['ZJJ → Furong · Tren ~3h'],
+    description:'Autobús desde Zhangjiajie hacia Furong, un pueblo Tujia colgado sobre un precipicio. Casas de madera antiquísimas, ambiente tranquilo y la sensación de haber encontrado algo que la mayoría de turistas se salta.',
+    transport:['ZJJ → Furong · Autobús ~3h'],
     hotel:{name:'Furong Cliff House',stars:'★★★',ci:'13 sep',co:'14 sep',room:'Casa tradicional Tujia',ref:'MOCK-FRG-004'},
     weather:{icon:'🌤️',temp:'25°C',cond:'Soleado con brisa',hum:'65%',wind:'10 km/h',rain:'10%',feels:'24°C'},
     curiosities:[
@@ -734,10 +748,10 @@ const DAYS = [
   {
     date:14,month:'sep',weekday:'Lunes',city:'Fenghuang',theme:'fenghuang',emoji:'🏮',night:'Fenghuang',
     preview:['Autobús desde Furong (~2h)','La Ciudad Fénix'],
-    photo:{url:'https://source.unsplash.com/1200x600/?fenghuang,china,ancient+town,river,lanterns,bridge&sig=10',cap:'Río Tuojiang · Fenghuang al atardecer'},
+    photo:{url:'https://loremflickr.com/1200/600/fenghuang,china?lock=10',cap:'Río Tuojiang · Fenghuang al atardecer'},
     title:'Fenghuang · Ciudad Fénix',
     description:'Fenghuang. Casas de madera sobre pilotes en el río Tuojiang, puentes de piedra, faroles rojos al atardecer. Una ciudad antigua conservada como si el tiempo se hubiera detenido en la dinastía Ming.',
-    transport:['Furong → Fenghuang · Tren ~2h'],
+    transport:['Furong → Fenghuang · Autobús ~2h'],
     hotel:{name:'Tuojiang Riverside Inn',stars:'★★★',ci:'14 sep',co:'15 sep',room:'Vista al río',ref:'MOCK-FHG-005'},
     weather:{icon:'🌅',temp:'25°C',cond:'Soleado · Perfecto para fotos',hum:'60%',wind:'8 km/h',rain:'5%',feels:'24°C'},
     curiosities:[
@@ -751,7 +765,7 @@ const DAYS = [
   {
     date:15,month:'sep',weekday:'Martes',city:'Shanghái',theme:'shanghai',emoji:'🌃',night:'Shanghái',
     preview:['Tren 08:39 → 15:09 vía Huaihua','Bienvenidos al futuro'],
-    photo:{url:'https://source.unsplash.com/1200x600/?shanghai,bund,night,skyline,china,river&sig=11',cap:'El Bund · Shanghái de noche'},
+    photo:{url:'https://loremflickr.com/1200/600/shanghai,bund,night?lock=11',cap:'El Bund · Shanghái de noche'},
     title:'SHANGHÁI · SISTEMA INICIADO',
     description:'De la China milenaria al siglo XXII en un tren. El skyline del Bund aparece como una alucinación después de días en pueblos de madera. La ciudad más densa, más rápida y más eléctrica del viaje.',
     transport:['Fenghuang → SHA · Tren 08:39–15:09 (vía Huaihua)'],
@@ -768,7 +782,7 @@ const DAYS = [
   {
     date:16,month:'sep',weekday:'Miércoles',city:'Shanghái',theme:'shanghai',emoji:'🌃',night:'Shanghái',
     preview:['Día completo · Shanghái','Bund · Pudong · French Concession'],
-    photo:{url:'https://source.unsplash.com/1200x600/?shanghai,pudong,tower,skyscraper,china&sig=12',cap:'Pudong · Skyline del futuro'},
+    photo:{url:'https://loremflickr.com/1200/600/shanghai,pudong,skyline?lock=12',cap:'Pudong · Skyline del futuro'},
     title:'SHANGHÁI · EXPLORACIÓN',
     description:'Shanghái tiene capas: la arquitectura colonial del Bund, los rascacielos imposibles de Pudong, los callejones art-déco del French Concession, los jardines de Yu Garden.',
     transport:[],
@@ -785,7 +799,7 @@ const DAYS = [
   {
     date:17,month:'sep',weekday:'Jueves',city:'Shanghái',theme:'shanghai',emoji:'🌃',night:'Shanghái',
     preview:['Shanghái · Día 3','La ciudad que siempre tiene otra capa'],
-    photo:{url:'https://source.unsplash.com/1200x600/?shanghai,french+concession,street,china,urban&sig=13',cap:'French Concession · Shanghái'},
+    photo:{url:'https://loremflickr.com/1200/600/shanghai,street?lock=13',cap:'French Concession · Shanghái'},
     title:'SHANGHÁI · PROFUNDIDAD',
     description:'Con dos días encima, Shanghái empieza a revelar sus capas más interesantes: barrios que no salen en las guías, restaurantes con menú solo en chino, la vida del río Huangpu por la noche.',
     transport:[],
@@ -802,7 +816,7 @@ const DAYS = [
   {
     date:18,month:'sep',weekday:'Viernes',city:'Shanghái',theme:'shanghai',emoji:'🌃',night:'Shanghái',
     preview:['Último día en Shanghái','Vuelo mañana muy temprano'],
-    photo:{url:'https://source.unsplash.com/1200x600/?shanghai,bund,night,reflection,china,lights&sig=14',cap:'Shanghái · Última noche en el Bund'},
+    photo:{url:'https://loremflickr.com/1200/600/shanghai,night,lights?lock=14',cap:'Shanghái · Última noche en el Bund'},
     title:'SHANGHÁI · ÚLTIMA NOCHE',
     description:'Último día. Compras pendientes, sitios que quedaron en el tintero, o simplemente sentarse en un café del French Concession a ver pasar la vida. Mañana vuelo muy temprano.',
     transport:['Vuelo mañana: SHA → CAN · 08:50'],
@@ -819,7 +833,7 @@ const DAYS = [
   {
     date:19,month:'sep',weekday:'Sábado',city:'Cantón',theme:'canton',emoji:'🌺',night:'Cantón',
     preview:['Vuelo 08:50 → llega 11:15','Guangzhou · Capital gastronómica'],
-    photo:{url:'https://source.unsplash.com/1200x600/?guangzhou,canton,china,temple,city&sig=15',cap:'Guangzhou · Templo de los Seis Banyans'},
+    photo:{url:'https://loremflickr.com/1200/600/guangzhou,china?lock=15',cap:'Guangzhou · Templo de los Seis Banyans'},
     title:'Cantón · Guangzhou',
     description:'Vuelo matutino a Cantón, la capital gastronómica de China. La cocina cantonesa es la más refinada: dim sum de calidad imposible, mariscos, pato al horno. Un día y noche para disfrutar antes del vuelo de vuelta.',
     transport:['SHA → CAN · 08:50–11:15'],
@@ -836,7 +850,7 @@ const DAYS = [
   {
     date:20,month:'sep',weekday:'Domingo',city:'Vuelo',theme:'avion',emoji:'✈️',night:'Madrid',
     preview:['Vuelo 09:45 → Madrid 18:15','Fin del viaje · Hasta la próxima'],
-    photo:{url:'https://source.unsplash.com/1200x600/?sunset,journey,travel,road,horizon&sig=16',cap:'Volviendo a casa'},
+    photo:{url:'https://loremflickr.com/1200/600/sunset,airplane?lock=16',cap:'Volviendo a casa'},
     title:'Vuelta a Casa',
     description:'El último amanecer en China. Vuelo a las 09:45 hacia Madrid, llegando a las 18:15. El tiempo en el avión para procesar 16 días: emperadores, montañas imposibles, niebla de Chongqing, neon de Shanghái, faroles en el agua.',
     transport:['CAN → MAD · 09:45–18:15'],
@@ -853,33 +867,46 @@ const DAYS = [
 
 const CITIES = [
   {id:'beijing',name:'Pekín',theme:'beijing',emoji:'🏯',coords:[39.9042,116.4074],color:'#d4a017',
-   dayIndices:[1,2],transport:'2 noches · Vuelo MAD→PEK',
-   photo:'https://source.unsplash.com/300x180/?forbidden+city,beijing,china&sig=21'},
+   dayIndices:[1,2,3],transport:'3 noches · Vuelo MAD→PEK',
+   photo:'https://loremflickr.com/300/180/beijing,china?lock=21'},
   {id:'chongqing',name:'Chongqing',theme:'chongqing',emoji:'🌶️',coords:[29.5630,106.5516],color:'#ff4d00',
    dayIndices:[4,5],transport:'2 noches · Vuelo PEK→CKG',
-   photo:'https://source.unsplash.com/300x180/?chongqing,china,yangtze&sig=22'},
+   photo:'https://loremflickr.com/300/180/chongqing,china?lock=22'},
   {id:'zhangjiajie',name:'Zhangjiajie',theme:'zhangjiajie',emoji:'🏔️',coords:[29.1252,110.4791],color:'#5dba6e',
    dayIndices:[6,7],transport:'2 noches · Tren desde Chongqing',
-   photo:'https://source.unsplash.com/300x180/?zhangjiajie,china,mountains&sig=23'},
+   photo:'https://loremflickr.com/300/180/zhangjiajie,china?lock=23'},
   {id:'furong',name:'Furong',theme:'furong',emoji:'🌿',coords:[28.9184,110.0158],color:'#e8945a',
    dayIndices:[8],transport:'1 noche · Autobús desde Zhangjiajie',
-   photo:'https://source.unsplash.com/300x180/?hunan,china,tujia,village&sig=24'},
+   photo:'https://loremflickr.com/300/180/hunan,village,china?lock=24'},
   {id:'fenghuang',name:'Fenghuang',theme:'fenghuang',emoji:'🏮',coords:[27.9487,109.5988],color:'#c0392b',
    dayIndices:[9],transport:'1 noche · Autobús desde Furong',
-   photo:'https://source.unsplash.com/300x180/?fenghuang,china,ancient+town&sig=25'},
+   photo:'https://loremflickr.com/300/180/fenghuang,china?lock=25'},
   {id:'shanghai',name:'Shanghái',theme:'shanghai',emoji:'🌃',coords:[31.2304,121.4737],color:'#00ffcc',
    dayIndices:[10,11,12,13],transport:'4 noches · Tren desde Fenghuang',
-   photo:'https://source.unsplash.com/300x180/?shanghai,bund,night&sig=26'},
+   photo:'https://loremflickr.com/300/180/shanghai,night?lock=26'},
   {id:'canton',name:'Cantón',theme:'canton',emoji:'🌺',coords:[23.1291,113.2644],color:'#ff6b35',
    dayIndices:[14],transport:'1 noche · Vuelo SHA→CAN',
-   photo:'https://source.unsplash.com/300x180/?guangzhou,canton,china&sig=27'},
+   photo:'https://loremflickr.com/300/180/guangzhou,china?lock=27'},
 ];
 
 /* ═══ STORAGE ═══ */
 const S = {
   get:(k)=>{ try{return JSON.parse(localStorage.getItem('china26_'+k))||null}catch{return null} },
-  set:(k,v)=>{ try{localStorage.setItem('china26_'+k,JSON.stringify(v))}catch(e){console.warn('Storage full',e)} },
+  set:(k,v)=>{ try{localStorage.setItem('china26_'+k,JSON.stringify(v)); return true}catch(e){console.warn('Storage full',e); return false} },
 };
+
+/* ═══ HELPERS ═══ */
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
+/* Fallback de fotos: si la imagen remota falla, se genera un placeholder SVG temático */
+window.phFail = function(img){
+  img.onerror = null;
+  const c=img.dataset.phc||'#c8a96e', e=img.dataset.phe||'🇨🇳', l=img.dataset.phl||'';
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d0d16"/><stop offset="1" stop-color="${c}"/></linearGradient></defs><rect width="1200" height="600" fill="url(#g)" opacity=".85"/><text x="600" y="330" font-size="150" text-anchor="middle">${e}</text><text x="600" y="440" font-size="36" text-anchor="middle" fill="rgba(255,255,255,.6)" font-family="Georgia,serif" letter-spacing="6">${l}</text></svg>`;
+  img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+};
+const THEME_COLORS={avion:'#7eb8f7',beijing:'#d4a017',chongqing:'#ff4d00',zhangjiajie:'#5dba6e',furong:'#e8945a',fenghuang:'#c0392b',shanghai:'#00ffcc',canton:'#ff6b35'};
 
 /* ═══ TABS ═══ */
 let mapInited = false;
@@ -955,7 +982,7 @@ function buildCard(day, idx) {
     <div class="card-hint">· click para expandir ·</div>
     <div class="day-exp">
       <div class="exp-photo-wrap">
-        <img class="exp-photo" src="${day.photo.url}" loading="lazy" onerror="this.style.display='none'" alt="${day.city}">
+        <img class="exp-photo" src="${day.photo.url}" loading="lazy" data-phc="${THEME_COLORS[day.theme]||'#c8a96e'}" data-phe="${day.emoji}" data-phl="${day.city}" onerror="phFail(this)" alt="${day.city}">
         <div class="exp-photo-cap">${day.photo.cap}</div>
       </div>
       <div class="exp-body">
@@ -1097,11 +1124,12 @@ function initMap(){
   // Route lines
   const flightStyle = {color:'#7eb8f7',weight:1.5,dashArray:'8,6',opacity:.55};
   const trainStyle  = {color:'rgba(200,169,110,.55)',weight:1.8,opacity:.8};
+  const busStyle    = {color:'#e8945a',weight:1.8,dashArray:'2,7',opacity:.85};
 
   L.polyline([[39.9042,116.4074],[29.5630,106.5516]],flightStyle).addTo(map); // BJS→CKG flight
   L.polyline([[29.5630,106.5516],[29.1252,110.4791]],trainStyle).addTo(map);  // CKG→ZJJ train
-  L.polyline([[29.1252,110.4791],[28.9184,110.0158]],trainStyle).addTo(map);  // ZJJ→Furong tren
-  L.polyline([[28.9184,110.0158],[27.9487,109.5988]],trainStyle).addTo(map);  // Furong→FHG tren
+  L.polyline([[29.1252,110.4791],[28.9184,110.0158]],busStyle).addTo(map);    // ZJJ→Furong bus
+  L.polyline([[28.9184,110.0158],[27.9487,109.5988]],busStyle).addTo(map);    // Furong→FHG bus
   L.polyline([[27.9487,109.5988],[31.2304,121.4737]],trainStyle).addTo(map);  // FHG→SHA train
   L.polyline([[31.2304,121.4737],[23.1291,113.2644]],flightStyle).addTo(map); // SHA→CAN flight
 
@@ -1116,8 +1144,8 @@ function initMap(){
     canton:     ['canton+tower+guangzhou+night','shamian+island+guangzhou+colonial','six+banyan+trees+temple+guangzhou','chen+clan+academy+guangzhou+ornate','yuexiu+park+five+rams+guangzhou','xiguan+qilou+guangzhou','dim+sum+guangzhou+teahouse+traditional','beijing+road+guangzhou+archaeological','baiyun+mountain+guangzhou+peak','qingping+market+guangzhou+herbs'],
   };
   function poiPhotoUrl(cityId, idx) {
-    const kw = (POI_KW[cityId]||[])[idx] || cityId+'+china+landmark';
-    return `https://source.unsplash.com/260x130/?${kw}&sig=${(idx+1)*17}`;
+    const kw = ((POI_KW[cityId]||[])[idx] || cityId+'+china').split('+').slice(0,3).join(',');
+    return `https://loremflickr.com/260/130/${kw}?lock=${(idx+1)*17}`;
   }
 
   // POI layer management
@@ -1170,7 +1198,7 @@ function initMap(){
       const imgUrl = poiPhotoUrl(cityId, idx);
       L.marker(poi.c,{icon:poiIcon})
         .bindPopup(`<div style="width:210px">
-          <img src="${imgUrl}" onerror="this.style.display='none'" style="width:100%;height:115px;object-fit:cover;border-radius:3px;margin-bottom:8px;filter:saturate(.85)">
+          <img src="${imgUrl}" data-phc="${city.color}" data-phe="${poi.e}" data-phl="" onerror="phFail(this)" style="width:100%;height:115px;object-fit:cover;border-radius:3px;margin-bottom:8px;filter:saturate(.85)">
           <div style="font-size:.92rem;font-weight:700;margin-bottom:5px">${num}. ${poi.e} ${poi.n}</div>
           <div style="font-size:.78rem;line-height:1.45;color:#bbb">${poi.d}</div>
         </div>`,{maxWidth:220,className:'dark-popup'})
@@ -1205,7 +1233,7 @@ function initMap(){
 
     const popupContent = `
       <div style="width:220px">
-        <img class="pop-photo" src="${city.photo}" onerror="this.style.display='none'" alt="${city.name}">
+        <img class="pop-photo" src="${city.photo}" data-phc="${city.color}" data-phe="${city.emoji}" data-phl="${city.name}" onerror="phFail(this)" alt="${city.name}">
         <div class="pop-city">${city.emoji} ${city.name}</div>
         <div class="pop-sub">${city.transport}</div>
         <div class="pop-days">${dayLinks}</div>
@@ -1239,7 +1267,7 @@ function renderReviews(){
     <div class="review-card">
       <div class="rev-head">
         <div>
-          <div class="rev-name">${r.name}</div>
+          <div class="rev-name">${esc(r.name)}</div>
           <div class="rev-meta">
             <span>${r.date||''}</span>
             ${r.price?`<span>${r.price}</span>`:''}
@@ -1250,7 +1278,7 @@ function renderReviews(){
           <button class="btn btn-danger" onclick="deleteReview('${r.id}')">✕</button>
         </div>
       </div>
-      ${r.text?`<div class="rev-text">${r.text}</div>`:''}
+      ${r.text?`<div class="rev-text">${esc(r.text)}</div>`:''}
       <div class="rev-badges">
         <span class="badge badge-city">${CITY_LABELS[r.city]||r.city}</span>
         <span class="badge badge-type">${TYPE_LABELS[r.type]||r.type}</span>
@@ -1265,17 +1293,16 @@ function deleteReview(id){
   S.set('reviews',all); renderReviews();
 }
 
-let rvEditId = null;
 function openModal(type){
   if(type==='review'){
-    rvStars=0; rvEditId=null;
+    rvStars=0;
     document.getElementById('rv-name').value='';
     document.getElementById('rv-text').value='';
     document.getElementById('rv-price').value='';
-    document.getElementById('rv-date').value=new Date().toISOString().slice(0,10);
+    document.getElementById('rv-date').value=todayISO();
     document.querySelectorAll('#rv-stars span').forEach(s=>s.classList.remove('on'));
   } else {
-    document.getElementById('ex-date').value=new Date().toISOString().slice(0,10);
+    document.getElementById('ex-date').value=todayISO();
     document.getElementById('ex-cny').value='';
     document.getElementById('ex-desc').value='';
     document.getElementById('ex-note').value='';
@@ -1299,7 +1326,8 @@ function saveReview(){
     type:document.getElementById('rv-type').value,name,rating:rvStars,
     price:document.getElementById('rv-price').value,date:document.getElementById('rv-date').value,
     text:document.getElementById('rv-text').value.trim()});
-  S.set('reviews',all); closeModal('review'); renderReviews();
+  if(!S.set('reviews',all)) alert('⚠️ Almacenamiento del navegador lleno: la reseña NO se ha guardado. Borra fotos del cuaderno para liberar espacio.');
+  closeModal('review'); renderReviews();
 }
 
 /* ═══ EXPENSES ═══ */
@@ -1351,7 +1379,7 @@ function renderExpenses(){
       <td style="color:var(--text2)">${e.date||''}</td>
       <td style="color:var(--text2)">${CITY_LABELS[e.city]||e.city||''}</td>
       <td>${(CAT[e.cat]||{label:e.cat}).label}</td>
-      <td>${e.desc||''}${e.note?`<br><span style="font-size:.72rem;color:var(--text2)">${e.note}</span>`:''}</td>
+      <td>${esc(e.desc||'')}${e.note?`<br><span style="font-size:.72rem;color:var(--text2)">${esc(e.note)}</span>`:''}</td>
       <td style="text-align:right;color:var(--accent)">${parseFloat(e.cny||0).toFixed(0)} ¥</td>
       <td style="text-align:right;color:var(--text2)">${(parseFloat(e.cny||0)/rate).toFixed(0)}€</td>
       <td><button class="btn btn-danger" onclick="deleteExpense('${e.id}')">✕</button></td>
@@ -1365,7 +1393,8 @@ function saveExpense(){
   all.push({id:Date.now().toString(36),date:document.getElementById('ex-date').value,
     city:document.getElementById('ex-city').value,cat:document.getElementById('ex-cat').value,
     cny,desc:document.getElementById('ex-desc').value.trim(),note:document.getElementById('ex-note').value.trim()});
-  S.set('expenses',all); closeModal('expense'); renderExpenses();
+  if(!S.set('expenses',all)) alert('⚠️ Almacenamiento del navegador lleno: el gasto NO se ha guardado. Borra fotos del cuaderno para liberar espacio.');
+  closeModal('expense'); renderExpenses();
 }
 
 function deleteExpense(id){
@@ -1406,8 +1435,10 @@ function autoSave(){
   jSaveTimer = setTimeout(()=>{
     const data = S.get('jday_'+jCurrentDay)||{};
     data.notes = document.getElementById('jnotes').value;
-    S.set('jday_'+jCurrentDay, data);
+    const ok = S.set('jday_'+jCurrentDay, data);
     const badge = document.getElementById('autosave-badge');
+    badge.textContent = ok ? '✓ Guardado' : '⚠️ Sin espacio · NO guardado';
+    badge.classList.toggle('err', !ok);
     badge.classList.add('show'); setTimeout(()=>badge.classList.remove('show'),1800);
   },700);
 }
@@ -1471,7 +1502,10 @@ function addPhoto(idx, src){
   const data = S.get('jday_'+idx)||{};
   data.photos = data.photos||[];
   data.photos.push(src);
-  S.set('jday_'+idx, data);
+  if(!S.set('jday_'+idx, data)){
+    alert('⚠️ El almacenamiento del navegador está lleno: la foto NO se ha guardado.\nBorra alguna foto antigua del cuaderno para liberar espacio.');
+    return;
+  }
   renderPhotoGrid(idx);
 }
 
@@ -1524,7 +1558,7 @@ function renderFileList(idx){
   document.getElementById('file-list').innerHTML = files.map((f,i)=>`
     <div class="file-item">
       <span class="file-icon">📎</span>
-      <span style="flex:1">${f}</span>
+      <span style="flex:1">${esc(f)}</span>
       <button class="btn btn-danger" onclick="deleteFileRef(${idx},${i})">✕</button>
     </div>`).join('');
 }
@@ -1537,6 +1571,34 @@ document.querySelectorAll('.modal').forEach(m=>{
 /* ═══ INIT ═══ */
 const cal = document.getElementById('calendar');
 DAYS.forEach((d,i)=>cal.appendChild(buildCard(d,i)));
+
+/* ═══ MODO HOY ═══ */
+function todayIdx(){
+  const start = new Date(2026,8,5); // 5 sep 2026, hora local
+  const n = new Date();
+  const diff = Math.floor((new Date(n.getFullYear(),n.getMonth(),n.getDate()) - start)/864e5);
+  return (diff>=0 && diff<DAYS.length) ? diff : null;
+}
+(function(){
+  const sel = document.getElementById('today-select');
+  sel.innerHTML = '<option value="">— Elegir día —</option>' +
+    DAYS.map((d,i)=>`<option value="${i}">${d.date} ${d.month} · ${d.weekday} · ${d.city}</option>`).join('');
+  sel.addEventListener('change',()=>{ if(sel.value!=='') window.goToDay(+sel.value); });
+  document.getElementById('today-btn').addEventListener('click',()=>{
+    const i = todayIdx();
+    if(i===null){ alert('El viaje es del 5 al 20 de septiembre de 2026 — todavía no toca 😉'); return; }
+    sel.value = i; window.goToDay(i);
+  });
+  const i = todayIdx();
+  if(i!==null){
+    const card = document.querySelectorAll('.day-card')[i];
+    if(card) card.insertAdjacentHTML('afterbegin','<div class="today-badge">HOY</div>');
+    if(card) card.classList.add('is-today');
+    sel.value = i;
+    // Durante el viaje, la app abre directamente en el día actual
+    if(!window.location.hash) setTimeout(()=>window.goToDay(i),400);
+  }
+})();
 
 // Countdown
 (function(){
@@ -1593,7 +1655,8 @@ DAYS.forEach((d,i)=>cal.appendChild(buildCard(d,i)));
   TL_STOPS.forEach((s, i) => {
     const el = document.createElement('div');
     el.className = 'tl-stop ' + (s.above ? 'above' : 'below');
-    el.style.left = s.vpct + '%';
+    // Alineado con el track (que tiene 20px de margen a cada lado), igual que el dot viajero
+    el.style.left = `calc(20px + (100% - 40px) * ${s.vpct/100})`;
     el.innerHTML = `<div class="tl-dot" id="tl-dot-${i}"></div>
       <div class="tl-label-emoji">${s.e}</div>
       <div class="tl-label-city">${s.n}</div>`;
