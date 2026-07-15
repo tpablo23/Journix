@@ -30,6 +30,8 @@ body{background:var(--bg);color:var(--text);font-family:'Georgia',serif;min-heig
 .t-fenghuang{--ca:#c0392b;--cb:#1a1a1a;--cg:linear-gradient(135deg,#080808,#1a1a1a,#252520);--cglow:rgba(192,57,43,.2)}
 .t-shanghai{--ca:#00ffcc;--cb:#050525;--cg:linear-gradient(135deg,#000010,#050525,#0a0030);--cglow:rgba(0,255,204,.35)}
 .t-canton{--ca:#ff6b35;--cb:#1a0a2a;--cg:linear-gradient(135deg,#080010,#1a0a2a,#2d1020);--cglow:rgba(255,107,53,.25)}
+.t-suzhou{--ca:#e8a0c8;--cb:#2a0a1e;--cg:linear-gradient(135deg,#140510,#2a0a20,#3d1030);--cglow:rgba(232,160,200,.28)}
+.t-nanjing{--ca:#9b7ede;--cb:#1a0a2e;--cg:linear-gradient(135deg,#0a0518,#1a0a2e,#2a1545);--cglow:rgba(155,126,222,.25)}
 
 /* HEADER */
 header{text-align:center;padding:48px 20px 28px;position:relative}
@@ -264,7 +266,7 @@ header::before{content:'';position:absolute;top:0;left:50%;transform:translateX(
 .tl-km-unit{font-size:.72rem;color:var(--text2);font-family:'Courier New',monospace;letter-spacing:.04em}
 .tl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
 .tl-scroll::-webkit-scrollbar{display:none}
-.tl-stage{position:relative;min-width:540px;height:88px}
+.tl-stage{position:relative;min-width:680px;height:88px}
 /* Track at y=44 */
 .tl-track-line{position:absolute;top:44px;left:20px;right:20px;height:2px;background:rgba(255,255,255,.07);border-radius:2px}
 .tl-track-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent) 0%,rgba(200,169,110,.4) 100%);border-radius:2px;box-shadow:0 0 10px rgba(200,169,110,.3);transition:width .2s linear}
@@ -301,7 +303,7 @@ footer{text-align:center;padding:36px 20px;font-size:.72rem;letter-spacing:.15em
 <header>
   <div class="hk">中国 · Septiembre 2026</div>
   <h1 class="ht">China<span> ·</span> Pablo &amp; Aza</h1>
-  <p class="hs">5 sep — 20 sep · 16 días</p>
+  <p class="hs">4 sep — 20 sep · 17 días</p>
   <div id="countdown" class="countdown">
     <div class="cd-unit"><div class="cd-num" id="cd-days">--</div><div class="cd-label">Días</div></div>
     <div class="cd-sep">:</div>
@@ -318,10 +320,10 @@ footer{text-align:center;padding:36px 20px;font-size:.72rem;letter-spacing:.15em
 <section class="tl-section">
   <div class="tl-inner">
     <div class="tl-topbar">
-      <span class="tl-title-txt">🗺️ Ruta · Madrid → China → Madrid</span>
+      <span class="tl-title-txt">🗺️ Ruta · A Coruña → China → A Coruña</span>
       <div class="tl-km-block">
         <span class="tl-km-num" id="tl-km">0</span>
-        <span class="tl-km-unit">/ 24.762 km</span>
+        <span class="tl-km-unit">/ 26.215 km</span>
       </div>
     </div>
     <div class="tl-scroll">
@@ -376,6 +378,8 @@ footer{text-align:center;padding:36px 20px;font-size:.72rem;letter-spacing:.15em
           <option value="zhangjiajie">Zhangjiajie</option>
           <option value="furong">Furong</option>
           <option value="fenghuang">Fenghuang</option>
+          <option value="suzhou">Suzhou</option>
+          <option value="nanjing">Nanjing</option>
           <option value="shanghai">Shanghái</option>
           <option value="canton">Cantón</option>
         </select>
@@ -497,7 +501,8 @@ footer{text-align:center;padding:36px 20px;font-size:.72rem;letter-spacing:.15em
         <select class="form-select" id="rv-city">
           <option value="beijing">Pekín</option><option value="chongqing">Chongqing</option>
           <option value="zhangjiajie">Zhangjiajie</option><option value="furong">Furong</option>
-          <option value="fenghuang">Fenghuang</option><option value="shanghai">Shanghái</option>
+          <option value="fenghuang">Fenghuang</option><option value="suzhou">Suzhou</option>
+          <option value="nanjing">Nanjing</option><option value="shanghai">Shanghái</option>
           <option value="canton">Cantón</option>
         </select></div>
       <div><label class="form-label">Tipo</label>
@@ -551,7 +556,8 @@ footer{text-align:center;padding:36px 20px;font-size:.72rem;letter-spacing:.15em
           <option value="vuelo">✈️ Vuelo/Tránsito</option>
           <option value="beijing">Pekín</option><option value="chongqing">Chongqing</option>
           <option value="zhangjiajie">Zhangjiajie</option><option value="furong">Furong</option>
-          <option value="fenghuang">Fenghuang</option><option value="shanghai">Shanghái</option>
+          <option value="fenghuang">Fenghuang</option><option value="suzhou">Suzhou</option>
+          <option value="nanjing">Nanjing</option><option value="shanghai">Shanghái</option>
           <option value="canton">Cantón</option>
         </select></div>
     </div>
@@ -594,12 +600,29 @@ footer{text-align:center;padding:36px 20px;font-size:.72rem;letter-spacing:.15em
 ═══════════════════════════════════════════════════════════ */
 const DAYS = [
   {
+    date:4,month:'sep',weekday:'Viernes',city:'A Coruña',theme:'avion',emoji:'🧳',night:'Madrid',
+    preview:['A Coruña → Madrid · UX7238 · 21:05–22:15','Noche en el Ibis de Barajas'],
+    photo:{url:'https://loremflickr.com/1200/600/madrid,airport?lock=30',cap:'Barajas · La víspera del gran viaje'},
+    title:'Rumbo a Madrid · Empieza la aventura',
+    description:'La víspera. Vuelo corto A Coruña–Madrid por la tarde (UX7238, Air Europa en código compartido) y noche en el Ibis del aeropuerto para madrugar sin sustos. Mañana, China.',
+    transport:['LCG → MAD · UX7238 · 21:05–22:15'],
+    hotel:{name:'Ibis Madrid Aeropuerto Barajas',stars:'★★★',ci:'4 sep',co:'5 sep',room:'Superior · Cama doble Sweet Bed',ref:'Trip.com 1598739838722207',price:'Pack vuelos LCG ida+vuelta · 393,91 €'},
+    weather:{icon:'🌙',temp:'22°C',cond:'Noche despejada en Madrid',hum:'45%',wind:'8 km/h',rain:'5%',feels:'21°C'},
+    curiosities:[
+      {t:'La Torre de Hércules',x:'Despegaréis cerca del faro romano más antiguo del mundo aún en funcionamiento: casi 1.900 años guiando barcos.'},
+      {t:'509 km en 70 minutos',x:'El salto LCG–MAD es corto, pero evita la peor pesadilla del viajero: perder la conexión intercontinental.'},
+      {t:'Dormir junto a la terminal',x:'Truco de viajero pro: la noche previa en el aeropuerto convierte un madrugón infernal en un paseo.'},
+      {t:'Barajas T4',x:'La T4, de Rogers y Lamela, ganó el premio Stirling 2006. Fijaos en el techo ondulado de bambú.'},
+      {t:'17 días por delante',x:'A Coruña → Madrid → Ámsterdam → China → vuelta. Media vuelta al mundo empieza con un vuelo de 70 minutos.'}
+    ],notes:'Cena tranquila en Madrid. Revisar pasaportes, tarjetas y Alipay antes de dormir.'
+  },
+  {
     date:5,month:'sep',weekday:'Sábado',city:'Vuelo',theme:'avion',emoji:'✈️',night:'Avión',
     preview:['Madrid → Ámsterdam → Pekín','Salida 15:55 · Llega +1 a las 13:25'],
-    photo:{url:'https://loremflickr.com/1200/600/airplane,clouds?lock=1',cap:'Ruta MAD–AMS–PEK · Sobre las nubes'},
+    photo:{url:'https://loremflickr.com/1200/600/airplane,clouds?lock=1',cap:'Ruta MAD–AMS–PKX · Sobre las nubes'},
     title:'Despegue · Madrid → Pekín',
-    description:'El viaje empieza. Vuelo Madrid–Ámsterdam a las 15:55, y conexión en Schiphol con el largo vuelo nocturno a Pekín (21:40 → 13:25+1). Casi diez horas sobre Asia Central.',
-    transport:['MAD → AMS · 15:55–18:35','AMS → PEK · 21:40–13:25+1'],
+    description:'Ahora sí: rumbo a China. Vuelo Madrid–Ámsterdam con Iberia a las 15:55, y conexión en Schiphol con el vuelo nocturno de China Southern a Pekín Daxing (21:40 → 13:25+1). Casi diez horas sobre Asia Central.',
+    transport:['MAD → AMS · IB733 · 15:55–18:35','AMS → PKX · CZ346 · 21:40–13:25+1'],
     hotel:null,weather:null,
     curiosities:[
       {t:'La ruta sobrevuela Mongolia',x:'Madrid–Pekín cubre ~9.200 km cruzando Francia, Rusia, Siberia y el desierto de Gobi.'},
@@ -611,12 +634,12 @@ const DAYS = [
   },
   {
     date:6,month:'sep',weekday:'Domingo',city:'Pekín',theme:'beijing',emoji:'🏯',night:'Pekín',
-    preview:['Aterrizaje 13:25 en PEK','Primeras horas en la capital imperial'],
+    preview:['Aterrizaje 13:25 en PKX (Daxing)','Primeras horas en la capital imperial'],
     photo:{url:'https://loremflickr.com/1200/600/beijing,palace?lock=2',cap:'Ciudad Prohibida · Pekín'},
     title:'Bienvenidos a Pekín',
-    description:'Llegada a Capital International Airport con el cuerpo aún en hora española. Hay que aguantar hasta la noche: primer paseo por los hutongs del barrio, comida callejera y dejarse envolver por el olor a especias y carbón.',
-    transport:['Aterrizaje 13:25 · PEK'],
-    hotel:{name:'Manxin Mansion Beijing Shichahai',stars:'★★★★',ci:'6 sep',co:'9 sep',room:'Habitación estándar',ref:'北京南锣鼓巷什刹海公园漫心府'},
+    description:'Llegada al aeropuerto de Daxing — la estrella de mar gigante de Zaha Hadid — con el cuerpo aún en hora española. Hay que aguantar hasta la noche: primer paseo por los hutongs del barrio, comida callejera y dejarse envolver por el olor a especias y carbón.',
+    transport:['Aterrizaje 13:25 · PKX Daxing'],
+    hotel:{name:'Manxin Mansion Beijing Shichahai',stars:'★★★★',ci:'6 sep',co:'9 sep',room:'Xinyue · Cama grande y luz del sol',ref:'Trip.com 1598738822762366 · 北京南锣鼓巷什刹海公园漫心府',price:'287,01 € · 3 noches'},
     weather:{icon:'⛅',temp:'27°C',cond:'Parcialmente nublado',hum:'62%',wind:'14 km/h NE',rain:'20%',feels:'29°C'},
     curiosities:[
       {t:'9.999 habitaciones',x:'La Ciudad Prohibida tiene exactamente ese número según la leyenda — el 9 simboliza el cielo imperial.'},
@@ -633,7 +656,7 @@ const DAYS = [
     title:'Pekín · Día Imperial',
     description:'Día completo para la capital. La Ciudad Prohibida, Tiananmen, el Templo del Cielo o la Gran Muralla en Mutianyu. Pekín tiene capas de historia sobre capas de historia.',
     transport:[],
-    hotel:{name:'Manxin Mansion Beijing Shichahai',stars:'★★★★',ci:'6 sep',co:'9 sep',room:'Habitación estándar',ref:'北京南锣鼓巷什刹海公园漫心府'},
+    hotel:{name:'Manxin Mansion Beijing Shichahai',stars:'★★★★',ci:'6 sep',co:'9 sep',room:'Xinyue · Cama grande y luz del sol',ref:'Trip.com 1598738822762366 · 北京南锣鼓巷什刹海公园漫心府',price:'287,01 € · 3 noches'},
     weather:{icon:'☀️',temp:'28°C',cond:'Soleado',hum:'55%',wind:'10 km/h',rain:'5%',feels:'30°C'},
     curiosities:[
       {t:'El Templo del Cielo',x:'Construido en 1420, los emperadores venían aquí cada solsticio a rogar por buenas cosechas.'},
@@ -650,7 +673,7 @@ const DAYS = [
     title:'Pekín · Última noche',
     description:'Último día completo en la capital. Tiempo libre para los rincones que quedaron pendientes — los hutongs de Nanluoguxiang, el lago Houhai, el Parque Beihai. Mañana vuelo temprano a Chongqing (07:15 desde Daxing), así que preparar maletas esta noche.',
     transport:[],
-    hotel:{name:'Manxin Mansion Beijing Shichahai',stars:'★★★★',ci:'6 sep',co:'9 sep',room:'Habitación estándar',ref:'北京南锣鼓巷什刹海公园漫心府'},
+    hotel:{name:'Manxin Mansion Beijing Shichahai',stars:'★★★★',ci:'6 sep',co:'9 sep',room:'Xinyue · Cama grande y luz del sol',ref:'Trip.com 1598738822762366 · 北京南锣鼓巷什刹海公园漫心府',price:'287,01 € · 3 noches'},
     weather:{icon:'🌆',temp:'27°C',cond:'Noche cálida en Pekín',hum:'60%',wind:'10 km/h',rain:'10%',feels:'28°C'},
     curiosities:[
       {t:'Vuelo doméstico de 3h',x:'La distancia Pekín–Chongqing es de ~1.450 km, similar a Madrid–Berlín, pero en un solo país.'},
@@ -667,7 +690,7 @@ const DAYS = [
     title:'Chongqing · La Ciudad de la Niebla',
     description:'Vuelo matutino desde el aeropuerto de Daxing (PKX) — salida 07:15, llegada 10:00. China Eastern MU6681 en Airbus A321-200. Chongqing: 30 millones de personas, niebla permanente, el picante más brutal de China y una topografía vertical que parece de ciencia ficción. Check-in en el hotel a partir de las 14:00 — tiempo para explorar Jiefangbei y Hongyadong.',
     transport:['PKX → CKG · MU6681 · 07:15–10:00','China Eastern · Airbus A321-200 · Comida incluida'],
-    hotel:{name:'Maiyue Hotel · 麦悦空中酒店',stars:'★★★★',ci:'9 sep',co:'11 sep',room:'Habitación estándar',ref:'重庆解放碑洪崖洞 · Pago al llegar'},
+    hotel:{name:'Maiyue Hotel · 麦悦空中酒店',stars:'★★★★',ci:'9 sep',co:'11 sep',room:'Suite Peninsula 180° vista al río · Bañera + TV 100"',ref:'Trip.com 1598738822937902 · 重庆解放碑洪崖洞',price:'1.490 CNY · 2 noches'},
     weather:{icon:'🌫️',temp:'29°C',cond:'Nublado · Niebla matinal',hum:'80%',wind:'8 km/h',rain:'35%',feels:'33°C'},
     curiosities:[
       {t:'La ciudad más grande del mundo',x:'Con 82.000 km², Chongqing es el municipio más grande del mundo por área — más que Austria.'},
@@ -684,7 +707,7 @@ const DAYS = [
     title:'Chongqing · Profundidades',
     description:'Un día para perderse de verdad: los bunkers de la Segunda Guerra Mundial, el barrio antiguo de Ciqikou, el teleférico sobre el río. Por la noche, hotpot obligatorio.',
     transport:[],
-    hotel:{name:'Maiyue Hotel · 麦悦空中酒店',stars:'★★★★',ci:'9 sep',co:'11 sep',room:'Habitación estándar',ref:'重庆解放碑洪崖洞 · Pago al llegar'},
+    hotel:{name:'Maiyue Hotel · 麦悦空中酒店',stars:'★★★★',ci:'9 sep',co:'11 sep',room:'Suite Peninsula 180° vista al río · Bañera + TV 100"',ref:'Trip.com 1598738822937902 · 重庆解放碑洪崖洞',price:'1.490 CNY · 2 noches'},
     weather:{icon:'🌧️',temp:'27°C',cond:'Lluvia intermitente',hum:'85%',wind:'12 km/h',rain:'60%',feels:'30°C'},
     curiosities:[
       {t:'Km de bunkers bajo la ciudad',x:'Cientos de km de túneles excavados en los años 30 para protegerse de los bombardeos japoneses.'},
@@ -701,7 +724,7 @@ const DAYS = [
     title:'Zhangjiajie · Columnas del Cielo',
     description:'Tren temprano desde Chongqing. Zhangjiajie: el parque que inspiró las montañas flotantes de Avatar. Pilares de arenisca que emergen entre nubes, una naturaleza que parece generada por ordenador.',
     transport:['CKG → ZJJ · Tren 07:00–09:40'],
-    hotel:{name:'Avatar Hotel Zhangjiajie',stars:'★★★★',ci:'11 sep',co:'13 sep',room:'Mountain View Suite',ref:'MOCK-ZJJ-003'},
+    hotel:{name:'Veil Canyon Lodge',stars:'★★★★',ci:'11 sep',co:'13 sep',room:'Habitación superior con cama grande',ref:'Trip.com 1598739236790493',price:'76,86 € · 2 noches'},
     weather:{icon:'🌫️',temp:'23°C',cond:'Niebla matinal · Despeja a mediodía',hum:'75%',wind:'6 km/h',rain:'25%',feels:'22°C'},
     curiosities:[
       {t:'El origen de Avatar',x:'James Cameron visitó Zhangjiajie antes de rodar Avatar. Las Hallelujah Mountains están modeladas sobre este parque.'},
@@ -718,7 +741,7 @@ const DAYS = [
     title:'Zhangjiajie · Entre Nubes',
     description:'Día completo para explorar. El funicular de Bailong, los senderos entre pilares, el puente de vidrio. Si la niebla matinal cubre los picos, los pilares flotan sobre un mar de nubes.',
     transport:[],
-    hotel:{name:'Avatar Hotel Zhangjiajie',stars:'★★★★',ci:'11 sep',co:'13 sep',room:'Mountain View Suite',ref:'MOCK-ZJJ-003'},
+    hotel:{name:'Veil Canyon Lodge',stars:'★★★★',ci:'11 sep',co:'13 sep',room:'Habitación superior con cama grande',ref:'Trip.com 1598739236790493',price:'76,86 € · 2 noches'},
     weather:{icon:'🌤️',temp:'24°C',cond:'Parcialmente nublado',hum:'70%',wind:'8 km/h',rain:'15%',feels:'23°C'},
     curiosities:[
       {t:'50 millones de turistas al año',x:'Zhangjiajie recibe más visitantes anuales que Alemania entera como destino turístico.'},
@@ -735,7 +758,7 @@ const DAYS = [
     title:'Furong · El Pueblo Suspendido',
     description:'Autobús desde Zhangjiajie hacia Furong, un pueblo Tujia colgado sobre un precipicio. Casas de madera antiquísimas, ambiente tranquilo y la sensación de haber encontrado algo que la mayoría de turistas se salta.',
     transport:['ZJJ → Furong · Autobús ~3h'],
-    hotel:{name:'Furong Cliff House',stars:'★★★',ci:'13 sep',co:'14 sep',room:'Casa tradicional Tujia',ref:'MOCK-FRG-004'},
+    hotel:{name:'Huayangnianhua Inn · junto a la cascada de Furong',stars:'★★★',ci:'13 sep',co:'14 sep',room:'Twin "Dreamy Riverside" · Balcón privado + proyector gigante',ref:'Trip.com 1598739236444633',price:'57,48 € · 1 noche'},
     weather:{icon:'🌤️',temp:'25°C',cond:'Soleado con brisa',hum:'65%',wind:'10 km/h',rain:'10%',feels:'24°C'},
     curiosities:[
       {t:'Los Tujia, minoría ancestral',x:'Una de las 55 minorías étnicas reconocidas en China, con lengua propia no relacionada con el mandarín.'},
@@ -752,7 +775,7 @@ const DAYS = [
     title:'Fenghuang · Ciudad Fénix',
     description:'Fenghuang. Casas de madera sobre pilotes en el río Tuojiang, puentes de piedra, faroles rojos al atardecer. Una ciudad antigua conservada como si el tiempo se hubiera detenido en la dinastía Ming.',
     transport:['Furong → Fenghuang · Autobús ~2h'],
-    hotel:{name:'Tuojiang Riverside Inn',stars:'★★★',ci:'14 sep',co:'15 sep',room:'Vista al río',ref:'MOCK-FHG-005'},
+    hotel:{name:'To the Clouds Serenity B&B · Vista 180° (Nanhuqiao)',stars:'★★★',ci:'14 sep',co:'15 sep',room:'King "Pine & Moon" · Vista al río 180°',ref:'Trip.com 1598739236513876',price:'42,45 € · 1 noche'},
     weather:{icon:'🌅',temp:'25°C',cond:'Soleado · Perfecto para fotos',hum:'60%',wind:'8 km/h',rain:'5%',feels:'24°C'},
     curiosities:[
       {t:'El nombre',x:'Fenghuang significa "Fénix". Dos colinas a sus lados, vistas desde el aire, recuerdan las alas del ave mítica.'},
@@ -763,47 +786,47 @@ const DAYS = [
     ],notes:'Atardecer junto al río: el momento más especial. Llegar con luz.'
   },
   {
-    date:15,month:'sep',weekday:'Martes',city:'Shanghái',theme:'shanghai',emoji:'🌃',night:'Shanghái',
-    preview:['Tren 08:39 → 15:09 vía Huaihua','Bienvenidos al futuro'],
-    photo:{url:'https://loremflickr.com/1200/600/shanghai,bund,night?lock=11',cap:'El Bund · Shanghái de noche'},
-    title:'SHANGHÁI · SISTEMA INICIADO',
-    description:'De la China milenaria al siglo XXII en un tren. El skyline del Bund aparece como una alucinación después de días en pueblos de madera. La ciudad más densa, más rápida y más eléctrica del viaje.',
-    transport:['Fenghuang → SHA · Tren 08:39–15:09 (vía Huaihua)'],
-    hotel:{name:'The Peninsula Shanghai',stars:'★★★★★',ci:'15 sep',co:'19 sep',room:'Deluxe Bund View',ref:'MOCK-SHA-006'},
-    weather:{icon:'🌆',temp:'28°C',cond:'Cálido · Algo brumoso',hum:'72%',wind:'15 km/h SE',rain:'20%',feels:'31°C'},
+    date:15,month:'sep',weekday:'Martes',city:'Suzhou',theme:'suzhou',emoji:'🌸',night:'Suzhou',
+    preview:['Tren desde Fenghuang · rumbo al este','💝 Noche sorpresa · Aza tiene un plan'],
+    photo:{url:'https://loremflickr.com/1200/600/suzhou,garden,canal?lock=31',cap:'Suzhou · Canales y jardines de seda'},
+    title:'Suzhou · La Sorpresa de Aza 💝',
+    description:'Día de tren hacia el este y... hasta aquí puede leer Pablo. La noche del 15 está en manos de Aza, que lo tiene todo planeado y no piensa soltar prenda. Solo hay tres pistas: Suzhou, la Venecia de Oriente — canales, jardines clásicos Patrimonio de la Humanidad y 2.500 años de seda. Lo demás, sorpresa.',
+    transport:['Fenghuang → Suzhou · Tren · salida 08:39','Destino exacto: clasificado 🤫'],
+    hotel:{name:'Alojamiento secreto de Aza',stars:'💝💝💝💝💝',ci:'15 sep',co:'16 sep',room:'Sorpresa',ref:'Solo Aza lo sabe',mock:'SORPRESA'},
+    weather:{icon:'🌸',temp:'27°C',cond:'Agradable · Perfecto para pasear canales',hum:'70%',wind:'10 km/h',rain:'20%',feels:'29°C'},
     curiosities:[
-      {t:'El metro más largo del mundo',x:'831 km de red, 508 estaciones — el más extenso del planeta, por delante de Pekín y Londres.'},
-      {t:'Capital del jazz asiático',x:'En los años 30, Shanghái tenía más salas de jazz que Nueva York. El French Concession era el epicentro.'},
-      {t:'25.000 refugiados judíos',x:'Entre 1937 y 1941, Shanghái acogió a 25.000 refugiados huyendo del nazismo — la mayor comunidad judía de Asia.'},
-      {t:'El Bund fue territorio extranjero',x:'Sus edificios fueron construidos íntegramente por empresas británicas, francesas y americanas entre 1860 y 1940.'},
-      {t:'5ª ciudad del mundo en 1930',x:'Y la más cosmopolita: 52 nacionalidades distintas con consulado propio en la ciudad.'}
-    ],notes:'Primera tarde: orientarse en el Bund. Reservar cena en el French Concession.'
+      {t:'La Venecia de Oriente',x:'Marco Polo la describió como una de las ciudades más bellas del mundo. Sus canales tienen 2.500 años.'},
+      {t:'Jardines Patrimonio UNESCO',x:'Nueve jardines clásicos de Suzhou son Patrimonio de la Humanidad. El arte de encerrar el universo en un patio.'},
+      {t:'Capital mundial de la seda',x:'Suzhou lleva 4.000 años tejiendo seda. En la dinastía Song vestía a toda la corte imperial.'},
+      {t:'"Arriba el cielo, abajo Suzhou"',x:'El dicho 上有天堂，下有苏杭 equipara Suzhou y Hangzhou con el paraíso. Sin presión, Aza.'},
+      {t:'A 25 min de Shanghái',x:'El tren bala cubre Suzhou–Shanghái en menos de media hora. La escapada perfecta dentro del viaje.'}
+    ],notes:'Pablo: no hagas preguntas. Aza: lo tienes todo controlado 😉'
   },
   {
-    date:16,month:'sep',weekday:'Miércoles',city:'Shanghái',theme:'shanghai',emoji:'🌃',night:'Shanghái',
-    preview:['Día completo · Shanghái','Bund · Pudong · French Concession'],
-    photo:{url:'https://loremflickr.com/1200/600/shanghai,pudong,skyline?lock=12',cap:'Pudong · Skyline del futuro'},
-    title:'SHANGHÁI · EXPLORACIÓN',
-    description:'Shanghái tiene capas: la arquitectura colonial del Bund, los rascacielos imposibles de Pudong, los callejones art-déco del French Concession, los jardines de Yu Garden.',
-    transport:[],
-    hotel:{name:'The Peninsula Shanghai',stars:'★★★★★',ci:'15 sep',co:'19 sep',room:'Deluxe Bund View',ref:'MOCK-SHA-006'},
-    weather:{icon:'☀️',temp:'29°C',cond:'Soleado',hum:'68%',wind:'12 km/h',rain:'8%',feels:'32°C'},
+    date:16,month:'sep',weekday:'Miércoles',city:'Nanjing',theme:'nanjing',emoji:'🐉',night:'Nanjing',
+    preview:['Tren Suzhou → Nanjing (~1h30)','Capital Ming · Faroles del Qinhuai'],
+    photo:{url:'https://loremflickr.com/1200/600/nanjing,china?lock=32',cap:'Nanjing · Faroles sobre el río Qinhuai'},
+    title:'Nanjing · Capital del Sur',
+    description:'Tren de mañana a Nanjing, la capital de las Seis Dinastías. La muralla Ming más larga del mundo, el mausoleo del primer emperador Ming en la Montaña Púrpura y, al caer la noche, los faroles del barrio de Qinhuai reflejados en el agua. Hotel en Xinjiekou, el kilómetro cero de la ciudad.',
+    transport:['Suzhou → Nanjing · Tren de alta velocidad ~1h30'],
+    hotel:{name:'Atour Hotel Nanjing · Xinjiekou (Shanghai Road)',stars:'★★★★',ci:'16 sep',co:'17 sep',room:'Premium · Cama doble grande · Vistas a la ciudad',ref:'Trip.com 1598739707181383',price:'533 CNY · 1 noche'},
+    weather:{icon:'⛅',temp:'28°C',cond:'Parcialmente nublado',hum:'68%',wind:'12 km/h',rain:'20%',feels:'30°C'},
     curiosities:[
-      {t:'Oriental Pearl Tower',x:'Inaugurada en 1994, fue el edificio más alto de China durante una década. Hoy es el 9.º.'},
-      {t:'Xintiandi',x:'Era una favela hasta 2001. Hoy es el barrio más caro de Shanghái, rehabilitado con arquitectura shikumen.'},
-      {t:'Metro cuadrado de lujo',x:'El French Concession figura entre los cinco barrios más caros del mundo en precio/m², por encima de Mayfair.'},
-      {t:'Yu Garden, 1559',x:'El Jardín Yu fue construido como regalo de un funcionario Ming a sus padres ancianos. Tardó 18 años.'},
-      {t:'24 millones de habitantes',x:'Si fuese un país, sería el 48.º más poblado del mundo, por delante de Australia.'}
-    ],notes:'Por completar — ¿Tianzifang? ¿Xintiandi? ¿Museo de Arte Moderno?'
+      {t:'La muralla urbana más larga',x:'La muralla Ming de Nanjing medía 35 km — la muralla de ciudad más larga jamás construida. Se conservan 25 km.'},
+      {t:'Capital de las Seis Dinastías',x:'Nanjing ha sido capital de China en diez periodos distintos, de los reinos del s. III a la República de 1912.'},
+      {t:'Ladrillos firmados',x:'Cada ladrillo de la muralla lleva grabado el nombre de su fabricante: control de calidad del siglo XIV.'},
+      {t:'El pato salado',x:'El pato de Nanjing (盐水鸭) lleva 600 años en las mesas de la ciudad. Los locales lo comen frío, a cualquier hora.'},
+      {t:'La Montaña Púrpura',x:'Zijin Shan concentra el mausoleo Ming Xiaoling (UNESCO), la tumba de Sun Yat-sen y un observatorio de 1934.'}
+    ],notes:'Atardecer en Qinhuai, junto al Templo de Confucio: barcas y faroles. Probar el pato salado.'
   },
   {
     date:17,month:'sep',weekday:'Jueves',city:'Shanghái',theme:'shanghai',emoji:'🌃',night:'Shanghái',
-    preview:['Shanghái · Día 3','La ciudad que siempre tiene otra capa'],
+    preview:['Tren Nanjing → Shanghái (~1h30)','Bienvenidos al futuro'],
     photo:{url:'https://loremflickr.com/1200/600/shanghai,street?lock=13',cap:'French Concession · Shanghái'},
-    title:'SHANGHÁI · PROFUNDIDAD',
-    description:'Con dos días encima, Shanghái empieza a revelar sus capas más interesantes: barrios que no salen en las guías, restaurantes con menú solo en chino, la vida del río Huangpu por la noche.',
-    transport:[],
-    hotel:{name:'The Peninsula Shanghai',stars:'★★★★★',ci:'15 sep',co:'19 sep',room:'Deluxe Bund View',ref:'MOCK-SHA-006'},
+    title:'SHANGHÁI · SISTEMA INICIADO',
+    description:'De la China clásica al siglo XXII en hora y media de tren. El skyline del Bund aparece como una alucinación después de jardines, canales y murallas. La ciudad más densa, más rápida y más eléctrica del viaje — y el hotel, a un paso del Bund y del Templo Chenghuang.',
+    transport:['Nanjing → Shanghái · Tren de alta velocidad ~1h30'],
+    hotel:{name:'Sushi Light Luxury Hotel · Bund / Templo Chenghuang',stars:'★★★★',ci:'17 sep',co:'19 sep',room:'Deluxe con cama grande',ref:'Trip.com 1598739236883950',price:'117,67 € · 2 noches'},
     weather:{icon:'⛅',temp:'27°C',cond:'Parcialmente nublado',hum:'70%',wind:'18 km/h SE',rain:'25%',feels:'29°C'},
     curiosities:[
       {t:'La gastronomía más dulce',x:'La cocina shanghainesa es la más dulce de China — el azúcar se añade incluso a platos salados como el cerdo estofado (红烧肉).'},
@@ -811,7 +834,7 @@ const DAYS = [
       {t:'El Barrio Judío de Tilanqiao',x:'El mayor gueto voluntario de la historia: 25.000 personas en 1 km² durante la Segunda Guerra Mundial.'},
       {t:'Shanghái en la ciencia ficción',x:'Aparece en más de 50 películas de ciencia ficción como símbolo del futuro: Her, Blade Runner 2049...'},
       {t:'El tren maglev más rápido',x:'El Transrapid, operativo desde 2004, alcanza 431 km/h y conecta el aeropuerto con la ciudad en 7 minutos.'}
-    ],notes:'Por completar — ¿excursión a Suzhou en el día?'
+    ],notes:'Primera tarde: el Bund al anochecer. La excursión a Suzhou ya no hace falta — ¡dormisteis allí! 😏'
   },
   {
     date:18,month:'sep',weekday:'Viernes',city:'Shanghái',theme:'shanghai',emoji:'🌃',night:'Shanghái',
@@ -820,7 +843,7 @@ const DAYS = [
     title:'SHANGHÁI · ÚLTIMA NOCHE',
     description:'Último día. Compras pendientes, sitios que quedaron en el tintero, o simplemente sentarse en un café del French Concession a ver pasar la vida. Mañana vuelo muy temprano.',
     transport:['Vuelo mañana: SHA → CAN · 08:50'],
-    hotel:{name:'The Peninsula Shanghai',stars:'★★★★★',ci:'15 sep',co:'19 sep',room:'Deluxe Bund View',ref:'MOCK-SHA-006'},
+    hotel:{name:'Sushi Light Luxury Hotel · Bund / Templo Chenghuang',stars:'★★★★',ci:'17 sep',co:'19 sep',room:'Deluxe con cama grande',ref:'Trip.com 1598739236883950',price:'117,67 € · 2 noches'},
     weather:{icon:'🌤️',temp:'28°C',cond:'Buena tarde',hum:'65%',wind:'10 km/h',rain:'10%',feels:'30°C'},
     curiosities:[
       {t:'Huaihai Lu',x:'La calle comercial Huaihai Road tiene más de 6 km de boutiques, cafés y restaurantes — la 5ª Avenida de Asia.'},
@@ -836,8 +859,8 @@ const DAYS = [
     photo:{url:'https://loremflickr.com/1200/600/guangzhou,china?lock=15',cap:'Guangzhou · Templo de los Seis Banyans'},
     title:'Cantón · Guangzhou',
     description:'Vuelo matutino a Cantón, la capital gastronómica de China. La cocina cantonesa es la más refinada: dim sum de calidad imposible, mariscos, pato al horno. Un día y noche para disfrutar antes del vuelo de vuelta.',
-    transport:['SHA → CAN · 08:50–11:15'],
-    hotel:{name:'Four Points by Sheraton Guangzhou',stars:'★★★★',ci:'19 sep',co:'20 sep',room:'Superior Room',ref:'MOCK-CAN-007'},
+    transport:['SHA → CAN · CZ3596 · 08:50–11:15'],
+    hotel:{name:'Vanburgh Hotel · Guangzhou',stars:'★★★★',ci:'19 sep',co:'20 sep',room:'Superior con cama grande',ref:'Trip.com 1598739236658229',price:'542 CNY · 1 noche'},
     weather:{icon:'☀️',temp:'31°C',cond:'Cálido y húmedo',hum:'78%',wind:'12 km/h S',rain:'15%',feels:'35°C'},
     curiosities:[
       {t:'El único puerto abierto al mundo',x:'Durante más de 1.000 años, Cantón fue el único puerto de China autorizado para el comercio exterior.'},
@@ -848,16 +871,16 @@ const DAYS = [
     ],notes:'Dim sum imprescindible para desayunar. ¿Templo de los Seis Banyan? ¿Shamian Island?'
   },
   {
-    date:20,month:'sep',weekday:'Domingo',city:'Vuelo',theme:'avion',emoji:'✈️',night:'Madrid',
-    preview:['Vuelo 09:45 → Madrid 18:15','Fin del viaje · Hasta la próxima'],
+    date:20,month:'sep',weekday:'Domingo',city:'Vuelo',theme:'avion',emoji:'✈️',night:'A Coruña 🏠',
+    preview:['CAN → MAD 09:45–18:15 · MAD → LCG 22:20','Fin del viaje · Hasta la próxima'],
     photo:{url:'https://loremflickr.com/1200/600/sunset,airplane?lock=16',cap:'Volviendo a casa'},
     title:'Vuelta a Casa',
-    description:'El último amanecer en China. Vuelo a las 09:45 hacia Madrid, llegando a las 18:15. El tiempo en el avión para procesar 16 días: emperadores, montañas imposibles, niebla de Chongqing, neon de Shanghái, faroles en el agua.',
-    transport:['CAN → MAD · 09:45–18:15'],
+    description:'El último amanecer en China. Vuelo a las 09:45 hacia Madrid (llegada 18:15) y por la noche el último salto a casa: Madrid–A Coruña con Iberia a las 22:20. El tiempo en el avión para procesar 17 días: emperadores, montañas imposibles, niebla de Chongqing, canales de Suzhou, neon de Shanghái, faroles en el agua.',
+    transport:['CAN → MAD · 09:45–18:15','MAD → LCG · IB463 · 22:20–23:40'],
     hotel:null,weather:null,
     curiosities:[
-      {t:'16 días, 8 destinos',x:'Del Imperio a la modernidad, de la niebla al neon. Un itinerario que cruza 3.000 años de historia.'},
-      {t:'~25.000 km recorridos',x:'MAD→PEK→CKG→ZJJ→Fenghuang→SHA→CAN→MAD. Casi dos tercios de vuelta al mundo.'},
+      {t:'17 días, 10 destinos',x:'Del Imperio a la modernidad, de la niebla al neon — con sorpresa incluida. 3.000 años de historia en dos semanas y media.'},
+      {t:'~26.200 km recorridos',x:'LCG→MAD→PEK→CKG→ZJJ→Fenghuang→Suzhou→Nanjing→SHA→CAN→MAD→LCG. Dos tercios de vuelta al mundo.'},
       {t:'El jetlag de vuelta',x:'La ruta hacia el oeste es la peor: llegaréis con el cuerpo en la madrugada china.'},
       {t:'Las 3 semanas de los recuerdos',x:'Los expertos dicen que los mejores recuerdos cristalizan a las tres semanas de volver. Preparad el álbum.'},
       {t:'China tiene mucho más',x:'Yunnan, Tibet, Guilin, Xi\'an, Chengdu... Quedan pendientes. Hay excusa para volver.'}
@@ -867,25 +890,31 @@ const DAYS = [
 
 const CITIES = [
   {id:'beijing',name:'Pekín',theme:'beijing',emoji:'🏯',coords:[39.9042,116.4074],color:'#d4a017',
-   dayIndices:[1,2,3],transport:'3 noches · Vuelo MAD→PEK',
+   dayIndices:[2,3,4],transport:'3 noches · Vuelo AMS→PKX',
    photo:'https://loremflickr.com/300/180/beijing,china?lock=21'},
   {id:'chongqing',name:'Chongqing',theme:'chongqing',emoji:'🌶️',coords:[29.5630,106.5516],color:'#ff4d00',
-   dayIndices:[4,5],transport:'2 noches · Vuelo PEK→CKG',
+   dayIndices:[5,6],transport:'2 noches · Vuelo PKX→CKG',
    photo:'https://loremflickr.com/300/180/chongqing,china?lock=22'},
   {id:'zhangjiajie',name:'Zhangjiajie',theme:'zhangjiajie',emoji:'🏔️',coords:[29.1252,110.4791],color:'#5dba6e',
-   dayIndices:[6,7],transport:'2 noches · Tren desde Chongqing',
+   dayIndices:[7,8],transport:'2 noches · Tren desde Chongqing',
    photo:'https://loremflickr.com/300/180/zhangjiajie,china?lock=23'},
   {id:'furong',name:'Furong',theme:'furong',emoji:'🌿',coords:[28.9184,110.0158],color:'#e8945a',
-   dayIndices:[8],transport:'1 noche · Autobús desde Zhangjiajie',
+   dayIndices:[9],transport:'1 noche · Autobús desde Zhangjiajie',
    photo:'https://loremflickr.com/300/180/hunan,village,china?lock=24'},
   {id:'fenghuang',name:'Fenghuang',theme:'fenghuang',emoji:'🏮',coords:[27.9487,109.5988],color:'#c0392b',
-   dayIndices:[9],transport:'1 noche · Autobús desde Furong',
+   dayIndices:[10],transport:'1 noche · Autobús desde Furong',
    photo:'https://loremflickr.com/300/180/fenghuang,china?lock=25'},
+  {id:'suzhou',name:'Suzhou',theme:'suzhou',emoji:'🌸',coords:[31.2989,120.5853],color:'#e8a0c8',
+   dayIndices:[11],transport:'1 noche · 💝 Sorpresa de Aza',
+   photo:'https://loremflickr.com/300/180/suzhou,garden,china?lock=28'},
+  {id:'nanjing',name:'Nanjing',theme:'nanjing',emoji:'🐉',coords:[32.0603,118.7969],color:'#9b7ede',
+   dayIndices:[12],transport:'1 noche · Tren desde Suzhou',
+   photo:'https://loremflickr.com/300/180/nanjing,china?lock=29'},
   {id:'shanghai',name:'Shanghái',theme:'shanghai',emoji:'🌃',coords:[31.2304,121.4737],color:'#00ffcc',
-   dayIndices:[10,11,12,13],transport:'4 noches · Tren desde Fenghuang',
+   dayIndices:[13,14],transport:'2 noches · Tren desde Nanjing',
    photo:'https://loremflickr.com/300/180/shanghai,night?lock=26'},
   {id:'canton',name:'Cantón',theme:'canton',emoji:'🌺',coords:[23.1291,113.2644],color:'#ff6b35',
-   dayIndices:[14],transport:'1 noche · Vuelo SHA→CAN',
+   dayIndices:[15],transport:'1 noche · Vuelo SHA→CAN',
    photo:'https://loremflickr.com/300/180/guangzhou,china?lock=27'},
 ];
 
@@ -906,7 +935,7 @@ window.phFail = function(img){
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0d0d16"/><stop offset="1" stop-color="${c}"/></linearGradient></defs><rect width="1200" height="600" fill="url(#g)" opacity=".85"/><text x="600" y="330" font-size="150" text-anchor="middle">${e}</text><text x="600" y="440" font-size="36" text-anchor="middle" fill="rgba(255,255,255,.6)" font-family="Georgia,serif" letter-spacing="6">${l}</text></svg>`;
   img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
 };
-const THEME_COLORS={avion:'#7eb8f7',beijing:'#d4a017',chongqing:'#ff4d00',zhangjiajie:'#5dba6e',furong:'#e8945a',fenghuang:'#c0392b',shanghai:'#00ffcc',canton:'#ff6b35'};
+const THEME_COLORS={avion:'#7eb8f7',beijing:'#d4a017',chongqing:'#ff4d00',zhangjiajie:'#5dba6e',furong:'#e8945a',fenghuang:'#c0392b',suzhou:'#e8a0c8',nanjing:'#9b7ede',shanghai:'#00ffcc',canton:'#ff6b35'};
 
 /* ═══ TABS ═══ */
 let mapInited = false;
@@ -933,12 +962,13 @@ function buildCard(day, idx) {
 
   const hotelH = day.hotel ? `
     <div class="hotel-box">
-      <div class="sec-label">🏨 Hotel <span class="mock">MOCK</span></div>
+      <div class="sec-label">🏨 Hotel ${day.hotel.mock?`<span class="mock">${day.hotel.mock}</span>`:''}</div>
       <div class="hotel-name">${day.hotel.name}</div>
       <div class="hotel-stars">${day.hotel.stars}</div>
       <div class="hotel-row"><span class="hotel-k">Check-in</span><span class="hotel-v">${day.hotel.ci}</span></div>
       <div class="hotel-row"><span class="hotel-k">Check-out</span><span class="hotel-v">${day.hotel.co}</span></div>
       <div class="hotel-row"><span class="hotel-k">Habitación</span><span class="hotel-v">${day.hotel.room}</span></div>
+      ${day.hotel.price?`<div class="hotel-row"><span class="hotel-k">Precio</span><span class="hotel-v">${day.hotel.price}</span></div>`:''}
       <div class="hotel-ref">REF: ${day.hotel.ref}</div>
     </div>` : '';
 
@@ -1087,6 +1117,22 @@ const POIS = {
     {n:'Aldea Miao · Excursión',c:[27.9600,109.6100],e:'👘',d:'A 20 min en moto-taxi. Las mujeres Miao con sus tocados de plata. Cultura viva.'},
     {n:'Mirador del Fénix',c:[27.9500,109.5970],e:'🦅',d:'El punto más alto del casco antiguo. Las dos colinas que dan nombre a la ciudad.'},
   ],
+  suzhou:[
+    {n:'Jardín del Administrador Humilde',c:[31.3239,120.6294],e:'🌿',d:'El jardín clásico más grande de Suzhou, Patrimonio UNESCO. La cima del arte paisajístico chino.'},
+    {n:'Pingjiang Road',c:[31.3131,120.6327],e:'🏮',d:'La calle-canal histórica: 800 años de casas blancas, puentes de piedra y casas de té.'},
+    {n:'Museo de Suzhou',c:[31.3222,120.6255],e:'🏛️',d:'Diseñado por I.M. Pei (el de la pirámide del Louvre), hijo de Suzhou. Gratuito y precioso.'},
+    {n:'Colina del Tigre',c:[31.3378,120.5715],e:'🐯',d:'La pagoda inclinada de 1.000 años — la "Torre de Pisa de Oriente" — sobre la tumba del rey He Lü.'},
+    {n:'Calle Shantang',c:[31.3196,120.6008],e:'🚣',d:'Canal de 1.100 años entre Tiger Hill y el centro. En barca al atardecer, con los faroles encendidos.'},
+    {n:'Jardín del Maestro de las Redes',c:[31.2977,120.6304],e:'🌙',d:'El jardín pequeño más perfecto de China. De noche, con actuaciones a la luz de los faroles.'},
+  ],
+  nanjing:[
+    {n:'Puerta Zhonghua',c:[32.0125,118.7789],e:'🏯',d:'La fortaleza-puerta de la muralla Ming: la más compleja del mundo, con 27 arcos y patios-trampa.'},
+    {n:'Templo de Confucio · Qinhuai',c:[32.0212,118.7887],e:'🏮',d:'El corazón histórico junto al río Qinhuai. De noche, faroles y barcas lo convierten en un cuadro.'},
+    {n:'Mausoleo Ming Xiaoling',c:[32.0587,118.8340],e:'🐘',d:'La tumba del primer emperador Ming, Patrimonio UNESCO. Camino Sagrado con elefantes de piedra.'},
+    {n:'Mausoleo de Sun Yat-sen',c:[32.0605,118.8486],e:'🔵',d:'392 escalones en la Montaña Púrpura hasta la tumba del padre de la China moderna.'},
+    {n:'Palacio Presidencial',c:[32.0451,118.7915],e:'🏛️',d:'Sede del gobierno de la República (1927–49) y del reino Taiping. 600 años de historia política.'},
+    {n:'Xinjiekou',c:[32.0426,118.7785],e:'🛍️',d:'El kilómetro cero comercial de Nanjing — la zona del hotel. Todo a mano.'},
+  ],
   shanghai:[
     {n:'El Bund (外滩)',c:[31.2397,121.4900],e:'🌆',d:'El skyline más famoso de Asia. Mejor al caer la noche, con Pudong iluminado al otro lado.'},
     {n:'Yu Garden (豫园)',c:[31.2276,121.4928],e:'🌿',d:'Jardín imperial de 1559. El bazaar de alrededor es trampa turística; el jardín no.'},
@@ -1130,7 +1176,9 @@ function initMap(){
   L.polyline([[29.5630,106.5516],[29.1252,110.4791]],trainStyle).addTo(map);  // CKG→ZJJ train
   L.polyline([[29.1252,110.4791],[28.9184,110.0158]],busStyle).addTo(map);    // ZJJ→Furong bus
   L.polyline([[28.9184,110.0158],[27.9487,109.5988]],busStyle).addTo(map);    // Furong→FHG bus
-  L.polyline([[27.9487,109.5988],[31.2304,121.4737]],trainStyle).addTo(map);  // FHG→SHA train
+  L.polyline([[27.9487,109.5988],[31.2989,120.5853]],trainStyle).addTo(map);  // FHG→Suzhou train
+  L.polyline([[31.2989,120.5853],[32.0603,118.7969]],trainStyle).addTo(map);  // Suzhou→Nanjing train
+  L.polyline([[32.0603,118.7969],[31.2304,121.4737]],trainStyle).addTo(map);  // Nanjing→SHA train
   L.polyline([[31.2304,121.4737],[23.1291,113.2644]],flightStyle).addTo(map); // SHA→CAN flight
 
   // POI photo keywords (English, per city × POI index)
@@ -1140,6 +1188,8 @@ function initMap(){
     zhangjiajie:['avatar+hallelujah+mountain+zhangjiajie','bailong+elevator+zhangjiajie+cliff','glass+bridge+zhangjiajie','yuanjiajie+plateau+misty','golden+whip+stream+zhangjiajie','tianmen+mountain+cave+zhangjiajie','tianzi+mountain+zhangjiajie+mist','zhangjiajie+sandstone+pillars','wulingyuan+quartzite+pillars','zhangjiajie+valley+forest'],
     furong:     ['furong+stilted+village+cliff+china','tujia+village+canyon+china','youshui+river+china+boat','tujia+stilt+house+china','tujia+minority+temple+china'],
     fenghuang:  ['fenghuang+stepping+stones+river','fenghuang+north+gate+tower+night','shen+congwen+museum+fenghuang','hong+bridge+fenghuang+covered','tuojiang+river+fenghuang+lanterns','east+gate+tower+fenghuang','fenghuang+ancient+town+aerial','fenghuang+old+street+artisan','miao+village+hunan+silver','phoenix+ancient+town+hill'],
+    suzhou:     ['humble+administrator+garden+suzhou','pingjiang+road+suzhou+canal','suzhou+museum+architecture','tiger+hill+pagoda+suzhou','shantang+street+suzhou+night','master+of+nets+garden+suzhou'],
+    nanjing:    ['zhonghua+gate+nanjing+wall','confucius+temple+qinhuai+nanjing','ming+xiaoling+mausoleum+nanjing','sun+yatsen+mausoleum+nanjing','presidential+palace+nanjing','xinjiekou+nanjing+city'],
     shanghai:   ['the+bund+shanghai+night+skyline','yu+garden+shanghai+classical','french+concession+shanghai+cafe','shanghai+tower+pudong+skyline','xintiandi+shanghai+evening','tianzifang+lanes+shanghai','jade+buddha+temple+shanghai','shanghai+museum+bronze','m50+art+district+shanghai','longhua+temple+shanghai+pagoda'],
     canton:     ['canton+tower+guangzhou+night','shamian+island+guangzhou+colonial','six+banyan+trees+temple+guangzhou','chen+clan+academy+guangzhou+ornate','yuexiu+park+five+rams+guangzhou','xiguan+qilou+guangzhou','dim+sum+guangzhou+teahouse+traditional','beijing+road+guangzhou+archaeological','baiyun+mountain+guangzhou+peak','qingping+market+guangzhou+herbs'],
   };
@@ -1250,7 +1300,7 @@ function initMap(){
 
 /* ═══ REVIEWS ═══ */
 const TYPE_LABELS = {food:'🍜 Comida',attraction:'🎡 Atracción',hotel:'🏨 Hotel',shop:'🛍️ Tienda',experience:'💆 Experiencia',cafe:'☕ Café/Bar'};
-const CITY_LABELS = {beijing:'Pekín',chongqing:'Chongqing',zhangjiajie:'Zhangjiajie',furong:'Furong',fenghuang:'Fenghuang',shanghai:'Shanghái',canton:'Cantón'};
+const CITY_LABELS = {beijing:'Pekín',chongqing:'Chongqing',zhangjiajie:'Zhangjiajie',furong:'Furong',fenghuang:'Fenghuang',suzhou:'Suzhou',nanjing:'Nanjing',shanghai:'Shanghái',canton:'Cantón'};
 let rvStars = 0;
 
 function renderReviews(){
@@ -1574,7 +1624,7 @@ DAYS.forEach((d,i)=>cal.appendChild(buildCard(d,i)));
 
 /* ═══ MODO HOY ═══ */
 function todayIdx(){
-  const start = new Date(2026,8,5); // 5 sep 2026, hora local
+  const start = new Date(2026,8,4); // 4 sep 2026, hora local
   const n = new Date();
   const diff = Math.floor((new Date(n.getFullYear(),n.getMonth(),n.getDate()) - start)/864e5);
   return (diff>=0 && diff<DAYS.length) ? diff : null;
@@ -1586,7 +1636,7 @@ function todayIdx(){
   sel.addEventListener('change',()=>{ if(sel.value!=='') window.goToDay(+sel.value); });
   document.getElementById('today-btn').addEventListener('click',()=>{
     const i = todayIdx();
-    if(i===null){ alert('El viaje es del 5 al 20 de septiembre de 2026 — todavía no toca 😉'); return; }
+    if(i===null){ alert('El viaje es del 4 al 20 de septiembre de 2026 — todavía no toca 😉'); return; }
     sel.value = i; window.goToDay(i);
   });
   const i = todayIdx();
@@ -1602,8 +1652,8 @@ function todayIdx(){
 
 // Countdown
 (function(){
-  const TARGET = new Date('2026-09-05T15:55:00+02:00'); // Madrid, hora de salida
-  const END    = new Date('2026-09-20T18:15:00+02:00'); // Vuelta a Madrid
+  const TARGET = new Date('2026-09-04T21:05:00+02:00'); // Salida LCG → MAD
+  const END    = new Date('2026-09-20T23:40:00+02:00'); // Aterrizaje en A Coruña
   function tick(){
     const now  = new Date();
     const diff = TARGET - now;
@@ -1627,24 +1677,28 @@ function todayIdx(){
 
 /* ═══ TIMELINE ═══ */
 (function(){
-  const TOTAL_KM = 24762;
+  const TOTAL_KM = 26215;
   // vpct = posición visual en el track (espaciado uniforme para evitar solapamientos)
   // km   = kilómetros reales acumulados en ese punto
   const TL_STOPS = [
-    {e:'✈️', n:'Madrid',     km:0,     vpct:0,   above:true },
-    {e:'🌷', n:'Ámsterdam',  km:1488,  vpct:10,  above:false},
-    {e:'🏯', n:'Pekín',      km:9269,  vpct:20,  above:true },
-    {e:'🌶️', n:'Chongqing', km:10816, vpct:31,  above:false},
-    {e:'🏔️', n:'ZJJ',       km:11612, vpct:41,  above:true },
-    {e:'🏘️', n:'Furong',    km:11688, vpct:50,  above:false},
-    {e:'🦅', n:'Fenghuang',  km:11732, vpct:58,  above:true },
-    {e:'💫', n:'Shanghái',   km:12979, vpct:67,  above:false},
-    {e:'🌺', n:'Cantón',     km:14178, vpct:83,  above:true },
-    {e:'🏠', n:'Madrid',     km:24762, vpct:100, above:false},
+    {e:'🏠', n:'A Coruña',   km:0,     vpct:0,   above:true },
+    {e:'🧳', n:'Madrid',     km:510,   vpct:8,   above:false},
+    {e:'🌷', n:'Ámsterdam',  km:1998,  vpct:15,  above:true },
+    {e:'🏯', n:'Pekín',      km:9779,  vpct:23,  above:false},
+    {e:'🌶️', n:'Chongqing', km:11326, vpct:31,  above:true },
+    {e:'🏔️', n:'ZJJ',       km:12122, vpct:39,  above:false},
+    {e:'🏘️', n:'Furong',    km:12198, vpct:46,  above:true },
+    {e:'🦅', n:'Fenghuang',  km:12242, vpct:53,  above:false},
+    {e:'🌸', n:'Suzhou',     km:13442, vpct:60,  above:true },
+    {e:'🐉', n:'Nanjing',    km:13642, vpct:67,  above:false},
+    {e:'💫', n:'Shanghái',   km:13912, vpct:74,  above:true },
+    {e:'🌺', n:'Cantón',     km:15111, vpct:82,  above:false},
+    {e:'✈️', n:'Madrid',     km:25705, vpct:92,  above:true },
+    {e:'🏠', n:'A Coruña',   km:26215, vpct:100, above:false},
   ];
 
-  const TL_START = new Date('2026-09-05T13:55:00Z');
-  const TL_END   = new Date('2026-09-20T16:15:00Z');
+  const TL_START = new Date('2026-09-04T19:05:00Z');
+  const TL_END   = new Date('2026-09-20T21:40:00Z');
 
   const stage    = document.getElementById('tl-stage');
   const fill     = document.getElementById('tl-fill');
