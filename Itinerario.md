@@ -11,7 +11,7 @@
 | 5 sep | Madrid → Ámsterdam | IB733 (Iberia) | 15:55 | 18:35 |
 | 5 sep | Ámsterdam → Pekín Daxing (PKX) | CZ346 (China Southern) | 21:40 | 13:25 +1 |
 | 9 sep | Pekín (PKX) → Chongqing (CKG) | MU6681 (China Eastern, A321) | 07:15 | 10:00 |
-| 11 sep | Chongqing → Zhangjiajie 🚄 | — | 07:00 | 09:40 |
+| 11 sep | Chongqing Este → Zhangjiajie Oeste 🚄 | G3869 (control acceso 9B) | 07:12 | 09:41 |
 | 13 sep | Zhangjiajie → Furong 🚌 | — | mediodía | ~3h |
 | 14 sep | Furong → Fenghuang 🚌 | — | — | ~2h |
 | 15 sep | Fenghuang → Suzhou 🚄 | vía Huaihua | 08:39 | — |
@@ -69,7 +69,7 @@
 - 🌙 **Chongqing**
 
 ### Viernes 11 sep — Zhangjiajie
-- Tren 07:00 → 09:40
+- Tren G3869 · Chongqing Este (重庆东) → Zhangjiajie Oeste (张家界西) · 07:12 → 09:41 · control de acceso 9B (puede variar)
 - 🌙 **Zhangjiajie** · Veil Canyon Lodge
 
 ### Sábado 12 sep — Zhangjiajie
